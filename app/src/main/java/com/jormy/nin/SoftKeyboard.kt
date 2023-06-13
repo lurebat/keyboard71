@@ -587,15 +587,12 @@ class SoftKeyboard : InputMethodService() {
                         index = 0
                     }
                     index
-                }  else {
-                    WordHelper.lastWord(seq.toString())
+                } else {
+                    WordHelper.lastWordBreak(seq.toString())
                 }
-
-                start = (currentSelectionStart - (seq.length - index)).coerceAtLeast(0)
-                end = currentSelectionEnd
+                ic.deleteSurroundingText(seq.length - index, 0)
+                return;
             }
-            start = Math.max(0, start)
-            end = Math.max(0, end)
             ic.setComposingRegion(start, start)
             ic.setSelection(start, start)
             ic.deleteSurroundingText(0, end - start)
@@ -639,7 +636,10 @@ class SoftKeyboard : InputMethodService() {
                                         try {
                                             handleSpecialText(ic!!, theop, taskerstring)
                                         } catch (e: Exception) {
-                                            Log.e("NIN", "Error handling special text: " + e.message)
+                                            Log.e(
+                                                "NIN",
+                                                "Error handling special text: " + e.message
+                                            )
                                             ic!!.commitText(theop.strarg, 1)
                                         }
                                     } else {
@@ -655,7 +655,12 @@ class SoftKeyboard : InputMethodService() {
                                     ic!!
                                 )
                             } else if (theop.type == 'r') {
-                                performBackReplacement(theop.intarg1, theop.intarg2, theop.strarg, ic!!)
+                                performBackReplacement(
+                                    theop.intarg1,
+                                    theop.intarg2,
+                                    theop.strarg,
+                                    ic!!
+                                )
                             } else if (theop.type == 'l') {
                                 ic!!.setComposingText(theop.strarg, 1)
                             } else if (theop.type == '<') {
@@ -666,7 +671,13 @@ class SoftKeyboard : InputMethodService() {
                                 if (theop.type == '!') {
                                     signalCursorCandidacyResult(ic, "requestsel")
                                 } else if (theop.type == 'C') {
-                                    performMUCommand(theop.strarg, theop.a1, theop.a2, theop.a2, ic!!)
+                                    performMUCommand(
+                                        theop.strarg,
+                                        theop.a1,
+                                        theop.a2,
+                                        theop.a2,
+                                        ic!!
+                                    )
                                 } else if (theop.type == 'm') {
                                     performCursorMovement(
                                         theop.intarg1,
@@ -865,7 +876,7 @@ object WordHelper {
         } - start
     }
 
-    fun lastWord(text: String): Int {
+    fun lastWordBreak(text: String): Int {
         val iterator = android.icu.text.BreakIterator.getWordInstance()
         iterator.setText(text)
         return try {
