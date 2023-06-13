@@ -4,6 +4,7 @@ plugins {
 
 android {
     defaultConfig {
+        compileSdk 33
         applicationId 'com.lurebat.keyboard71'
         minSdkVersion 18
         targetSdkVersion 33
