@@ -1,0 +1,8 @@
+uniform vec4 vertcolorizer_color;
+
+vertpipe vec4 vertcolor, order 2
+   float factor = vertcolorizer_color.w;
+   float origfac = 1.0 - factor;
+   vertcolor.x = (vertcolorizer_color.x * factor) + vertcolor.x * origfac;
+   vertcolor.y = (vertcolorizer_color.y * factor) + vertcolor.y * origfac;
+   vertcolor.z = (vertcolorizer_color.z * factor) + vertcolor.z * origfac;

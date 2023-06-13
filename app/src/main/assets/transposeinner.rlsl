@@ -1,0 +1,3 @@
+mat4 mat4_transpose(mat4 inMatrix) {
+   // here here: not done yet
+}

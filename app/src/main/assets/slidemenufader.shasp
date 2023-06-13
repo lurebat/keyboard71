@@ -1,0 +1,7 @@
+uniform float fadeness;
+uniform float yfadestart;
+
+vertpipe vec4 vertcolor, vec4 mmpos, order 70
+   if(mmpos.y > yfadestart){
+      vertcolor.w = vertcolor.w * fadeness;
+   }

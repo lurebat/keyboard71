@@ -1,0 +1,10 @@
+attrib vec4 _texcoord;
+varying vec4 _texcoordV;
+uniform sampler2D _r_tex1;
+
+vertpipe order 1
+   _texcoordV = _texcoord;
+   
+fragpipe order 1
+   vec2 finaltexcoord = (_texcoordV.xy) * (1.0 / _texcoordV.w);
+   finalcolor = finalcolor * textureProj(_r_tex1, finaltexcoord);

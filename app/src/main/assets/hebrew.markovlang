@@ -1,0 +1,14 @@
+dict /home/yose/bennylava/wordlist/otherlangs/hebrew/dictfiles
+corpus /home/yose/bennylava/wordlist/otherlangs/hebrew/corpus
+
+rankscorer:
+   1 => 1.0
+   100 => 0.85
+   200 => 0.8
+   300 => 0.75
+   400 = 0.72
+   1000 = 0.7
+   2000 = 0.66
+   4000 = 0.6
+   10000 = 0.5
+

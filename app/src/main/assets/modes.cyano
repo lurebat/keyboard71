@@ -1,0 +1,142 @@
+nexus4:
+   width: 384
+   height: 640
+   resoscale: 2.0
+   deviceppi: 320.0
+iPad:
+   width: 768
+   height: 1024
+iPadHalf:
+   width: 384
+   height: 512
+   resoscale: 2.0
+iPhone:
+   width: 320
+   height: 480
+   resoscale: 2.0
+wideDroid:
+   width: 540
+   height: 480
+   resoscale: 2.0
+iPhoneOld:
+   width: 320
+   height: 480
+iPhone5:
+   width: 320
+   height: 568
+   resoscale: 2.0
+iPhone5thin:
+   width: 320
+   height: 568
+   resoscale: 2.0
+   leftgap: -160
+   rightgap: -160
+squarey:
+   width: 500
+   height: 500
+   resoscale: 2.0
+   leftgap: 90
+   rightgap: 90
+iPhone6:
+   width: 376
+   height: 668
+   resoscale: 2.0
+iPhone6plus:
+   width: 414
+   height: 736
+   resoscale: 2.0
+iPhone6pluslandscape:
+   width: 414
+   height: 736
+   resoscale: 2.0
+   topgap: -300
+   botgap: -300
+   leftgap: 100
+   rightgap: 100
+iPhone6pluswidth:
+   width: 414
+   height: 700
+   leftgap: 90
+   rightgap: 90
+   resoscale: 2.0
+   topgap: -200
+   botgap: -200
+iPhone6true:
+   width: 376
+   height: 667
+   resoscale: 2.0
+iPhone6landscape:
+   width: 376
+   height: 667
+   resoscale: 2.0
+   leftgap: 100
+   rightgap: 100
+   topgap: -290
+   botgap: -290
+iPhone6width:
+   width: 376
+   height: 376
+   resoscale: 2.0
+   leftgap: 120
+   rightgap: 120
+   topgap: 120
+   botgap: 120
+iPadwidth:
+   width: 768
+   height: 500
+   resoscale: 2.0
+   leftgap: 120
+   rightgap: 120
+   topgap: -260
+   botgap: -260
+iPadRetina:
+   width: 768
+   height: 1024
+   resoscale: 2.0
+iPod:
+   width: 320
+   height: 480
+oculus:
+   width: 800
+   height: 1280
+nintendoDS:
+   width: 256
+   height: 384
+testdevice:
+   width: 512
+   height: 512
+raexmode:
+   width: 1300
+   height: 900
+bigscreen:
+   width: 500
+   height: 1500
+   resoscale: 2.0
+gametest:
+   width: 700
+   height: 500
+   resoscale: 2.0
+   resoscale: 2.0
+widegametest:
+   width: 920
+   height: 500
+   resoscale: 2.0
+   resoscale: 2.0
+biggametest:
+   width: 960
+   height: 500
+   resoscale: 2.0
+   resoscale: 2.0
+normal169:
+   width: 960
+   height: 540
+   resoscale: 2.0
+   resoscale: 2.0
+smallbox:
+   width: 220
+   height: 220
+   resoscale: 2.0
+   leftgap: 0
+   rightgap: 0
+   topgap: 220
+   botgap: 200

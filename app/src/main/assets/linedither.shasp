@@ -1,0 +1,5 @@
+fragpipe order 10
+   int numbero = int(gl_FragCoord.y);
+   if((numbero / 6) % 2 == 0){
+      discard;
+   }

@@ -1,0 +1,23 @@
+// German Markovlang Definitions!
+// we'll see soon enough, won't we?
+
+dict /home/yose/bennylava/wordlist/otherlangs/french/dict
+corpus /home/yose/bennylava/wordlist/otherlangs/french/corpus
+
+specchars é à, è, ù â, ê, î, ô, û ë, ï, ü, ÿç
+
+rankscorer:
+   1 => 1.0
+   100 => 0.85
+   200 => 0.8
+   300 => 0.75
+   400 = 0.72
+   1000 = 0.7
+   2000 = 0.66
+   4000 = 0.6
+   10000 = 0.5
+
+
+credit "A man chooses, a slave obeys" -- Kigao
+credit "Hi RealityGaming :D" --- Corentin
+credit "He's been through a lot" -- Saber

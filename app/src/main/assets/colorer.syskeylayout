@@ -1,0 +1,35 @@
+extrarows 1
+issystem
+
+row:
+   :dontsplit
+   "abcdefgthisbetternotwork" @ 25 label test
+   "tmenu_stripes" @ 25 label strpe
+   "tmenu_popups" @ 25 label popups
+   "tmenu_topbar" @ 25 label topbar
+row:
+   :dontsplit
+   "tmenu_lflow" @ 25 label path
+   "tmenu_rainbow_left" @ 12 label rl
+   "tmenu_rainbow_right" @ 13 label rr
+   "tmenu_touchcol" @ 25 label touch
+   "tmenu_shine" @ 25 label shine
+row:
+   :dontsplit
+   "tmenu_lcd" @ 25 label lcd
+   "tmenu_forecol" @ 25 label fore
+   "tmenu_padcol" @ 25 label pad
+   "tmenu_bgcol" @ 25 label bgc
+row:
+   :dontsplit
+   "tmenu_themes" @ 20 altpic "small64_archive.png"
+   "tmenu_colormod" @ 20 altpic "small64_paint.png"
+   "tmenu_gradientchooser" @ 20 altpic "journbadges_0126.png"
+   "tmenu_patternchooser" @ 20 label pat
+   "tmenu_fonts" @ 20 altpic "journbadges_0059.png"
+row:
+   "tmenu_miscmenu" @ 20 label FX
+   "tmenu_misctwo" @ 20 label PAL
+   "tmenu_stylemenu" @ 20 label style
+   "tmenu_darklight" @ 20 altpic "hollowsun.png"
+   "fin" @ 20 summon main altpic "small64_tick.png"

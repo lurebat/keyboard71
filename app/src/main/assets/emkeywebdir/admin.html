@@ -1,0 +1,134 @@
+<html>
+<head>
+   
+   @@jormhead
+     stdjorm
+     humane (bigbox)
+     
+     admin.js
+     quizbuttons.js
+     aris.css
+     
+     include stdapple.partml
+     
+   @@/
+
+</head>
+<body>
+
+   <div>
+   
+   <div id="statusbarcontainers" class="statusbarcontainer">
+      <div id="statusbar" class="statusbar">
+         connecting..
+      </div>
+      
+      <div id="statusbar2" class="statusbar statusbar2" order="secondary">
+         ><((o>
+      </div>
+      
+   </div>
+   
+   <div karlet id="waiting" class="rollcall midscreen">
+      
+      <div><h1>Wait!</h1></div>
+      .. for further instructions from your instructor. <br>
+      <small>you can actually lock your phone (if you're accessing this from a phone) to save battery. <br>
+      when the teacher sets a question, you can turn your phone on again to enter your responses. </small>
+
+   </div>
+   
+   <div karlet id="rollcall" class="rollcall midscreen">
+      
+      <div id="rollcallheader"><h1>Roll Call</h1></div>
+      Enter your name, and wait for further instructions.
+      <input id="studentname" type="text" style="text-align:center;" placeholder="enter your name here" maxlength="30"/>
+      <br>Keep this screen. Don't go anywhere, or your roll call won't be collected!
+
+   </div>
+   
+   <div karlet id="textquiz" class="demo midscreen">
+   
+      <div class="quizheader"> Enter your response below </div> <br>
+
+      <input id="freequizinput" type="text" style="text-align:center;" placeholder="enter your response here" maxlength="30"/>
+      
+      <br>Keep this screen, and don't turn off wifi!
+   
+   </div>
+   
+   <div karlet id="choicequiz" class="demo midscreen">
+   
+      <div class="quizheader"> Enter your response below </div> <br>
+      
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+      <button type="button" quizbutton class="quizbutton">submit</button> <br>
+   
+   </div>
+   
+   <div karlet id="demo" class="demo midscreen">
+       <div>connected clients:</div>
+       <div id="clients"></div>
+       <br/>
+       <input id="username" value="anon"/><button onclick="setusername()">set username</button>
+       <div id="messages" style="height:200px;border:1px solid #aaa;"></div>
+       <input id="message"><button onclick="say()">say</button>
+   </div>
+   
+   <div karlet id="whatever" class="midscreen">
+      
+      <h1> Hey guys! </h1>
+      <h2>This is a whatever page!</h2>
+      <h3>and this is an H3</h3>
+      
+   </div>
+   <div karlet id="boohoo" class="midscreen">
+      <h1> And yeah</h1>
+      <h2><i>Italic!</i></h2>
+   </div>
+   
+   
+   
+   
+   
+   <div id="botstatusbarcontainers" class="botstatusbarcontainer">
+   
+      <div id="botstatusbar2" class="statusbar statusbar2" order="secondary">
+         ><((o>
+      </div>
+   
+      <div id="botstatusbar1" class="statusbar">
+         ><((o>
+      </div>
+      
+   </div>
+   
+   
+   
+   </div>
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+fragpipe order 156
+   #flagreq !no_alphatest
+      if(finalcolor.w < 0.02)
+         discard;

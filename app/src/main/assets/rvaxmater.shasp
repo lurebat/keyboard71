@@ -1,0 +1,17 @@
+uniform vec4 rvaxmater_mat_colors[20];
+uniform vec4 rvaxmater_mat_specular[20];
+uniform vec4 rvaxmater_mat_diffuse[20];
+uniform vec4 rvaxmater_mat_ambient[20];
+
+flag vertcolor_override
+flag has_material
+
+attribute float _rvax_matnum;
+
+vertpipe vec4 vertcolor, +vec4 vertspecular, +vec4 vertdiffuse, +vec4 vertambient, order 1
+   vertcolor = rvaxmater_mat_colors[int(_rvax_matnum)];
+   vertspecular = rvaxmater_mat_specular[int(_rvax_matnum)];
+   vertdiffuse = rvaxmater_mat_diffuse[int(_rvax_matnum)];
+   vertambient = rvaxmater_mat_ambient[int(_rvax_matnum)];
+   
+   

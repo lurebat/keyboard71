@@ -1,0 +1,15 @@
+uniform vec3 dirlighting_dir;
+uniform vec4 dirlighting_color;
+uniform vec4 dirlighting_ambient;
+// wait..
+
+varying vec3 dirlighting_var_strength;
+
+vertpipe order 55
+   float thedot = pow(max(-dot(mvnormal, dirlighting_dir), 0.0), 1.5f);
+   dirlighting_var_strength = dirlighting_color.xyz * (thedot);
+   //dirlighting_var_strength = vec3(thedot, thedot, thedot);
+   
+fragpipe order 10
+   finalcolor.xyz = finalcolor.xyz * (dirlighting_ambient.xyz + dirlighting_var_strength.xyz);
+   //finalcolor.xyz = dirlighting_var_strength;

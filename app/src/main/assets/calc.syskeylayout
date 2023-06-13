@@ -1,0 +1,43 @@
+extrarows 2
+issystem
+
+row:
+   :dontsplit
+   "calc_b" @ 10 altpic "small32_left.png"
+   "calc_display" @ 80 namify calc_display label " "
+   "calc_upload" @ 10 altpic "small64_upvote.png"
+row:
+   :dontsplit
+   "calc_<" @ 20 altpic "keyboard_backspace.png"
+   "calc_c" @ 20 label "C"
+   "calc_m" @ 20 label "-+"
+   "calc_%" @ 20 label "%"
+   "calc_/" @ 20 label "/"
+row:
+   :dontsplit
+   "calc_mc" @ 20 label " "
+   "calc_7" @ 20 label "7"
+   "calc_8" @ 20 label "8"
+   "calc_9" @ 20 label "9"
+   "calc_*" @ 20 label "x"
+row:
+   :dontsplit
+   "calc_mr" @ 20 label " "
+   "calc_4" @ 20 label "4"
+   "calc_5" @ 20 label "5"
+   "calc_6" @ 20 label "6"
+   "calc_-" @ 20 label "-"
+row:
+   :dontsplit
+   "calc_sci" @ 20 label " "
+   "calc_1" @ 20 label "1"
+   "calc_2" @ 20 label "2"
+   "calc_3" @ 20 label "3"
+   "calc_+" @ 20 label "+"
+row:
+   :dontsplit
+   "r" @ 20 summon main altpic "keyboard_abc.png"
+   "calc_ "  @ 20 label " "
+   "calc_0" @ 20 label "0"
+   "calc_." @ 20 label "."
+   "calc_=" @ 20 label "="

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="drawable" name="nintype_zenkey" id="0x7f020000" />
+    <public type="xml" name="method" id="0x7f030000" />
+    <public type="string" name="nin_activity" id="0x7f040000" />
+</resources>

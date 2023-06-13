@@ -1,0 +1,33 @@
+issystem
+isqbr
+backafteranyrelease
+hasrechooser
+
+row:
+   :dontsplit
+   "leftcursorer" nobacker altpic "keyboard_dragdown.png"
+   one @ 27 namify one
+   two @ 26 namify two
+   three @ 27 namify choicer 
+   "rightcursorer" nobacker altpic "keyboard_dragright.png"
+row:
+   "hadd:www." @ 25 label "www."
+   "hadd:.org" @ 25 label ".org"
+   "hadd:.net" @ 25 label ".net"
+   "hadd:.com" @ 25 label ".com"
+row:
+   '- @ 40
+   '# @ 20
+   '/ @ 20
+   '' @ 20
+row:
+   "hadd:lol" @ 30 label "lol
+   '$ @ 15
+   '@ @ 20
+   '! @ 25
+   '" @ 10
+row:
+   "hadd:omg"  @ 25 label "omg"
+   ', @ 45
+   '. @ 15 noaltchooser
+   '? @ 15

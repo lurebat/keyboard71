@@ -1,0 +1,4 @@
+vertpipe vec4 mmpos, order 55
+   float theval = max(0.3 + ((mmpos.y - 3.0) / 7.0), 0.5);
+   vertcolor.rgb = vertcolor.rgb * theval;
+   // vertcolor.r = vertcolor.g = vertcolor.b = theval;

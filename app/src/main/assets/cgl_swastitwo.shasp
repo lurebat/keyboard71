@@ -1,0 +1,14 @@
+uniform float swastitwo_rotamount;
+uniform vec2 swastitwo_center;
+
+vertpipe vec4 mmpos, order 69
+   vec2 rel = mmpos.xz - swastitwo_center;
+   
+   float amount = min(length(rel) / 15.0, 1.0);
+   
+   vec2 rotator = vec2(cos(swastitwo_rotamount * amount), sin(swastitwo_rotamount * amount));
+   
+   rel = vec2(rel.x * rotator.x - rel.y * rotator.y, rel.x * rotator.y + rel.y * rotator.x);
+   
+   mmpos.xz = swastitwo_center + rel;
+   

@@ -1,0 +1,46 @@
+row:
+   :dontsplit
+   "leftcursorer" nobacker altpic "small24_dragindi.png"
+   one @ 27 namify one
+   two @ 26 namify two
+   three @ 27 namify choicer 
+   "rightcursorer" nobacker altpic "keyboard_dragright.png"
+row:
+   'q >>
+   'w >>
+   'e >>
+   'r >>
+   't >>
+   'z >>
+   'u >>
+   'i >>
+   'o >>
+   'p >>
+row:
+   'a >>
+   's >>
+   'd >>
+   'f >>
+   'g >>
+   'h >>
+   'j >>
+   'k >>
+   'l >> nexttoapos
+   '' @ 5 >> nobacker isapostrophe
+   :aposShiftXworth -4
+row:
+   "^" @ 15 >> namify caps genchara y altpic "keyboard_shift.png"
+   'y >>
+   'x >>
+   'c >>
+   'v >>
+   'b >>
+   'n >>
+   'm >>
+   "<" @ 15 namify backspace altpic "keyboard_backspace.png"
+row:
+   "123" @ 15 summon num altpic "keyboard_123.png"
+   '  @ 10 namify langer
+   '  @ 50 namify space
+   "maindot" @ 10 namify maindot
+   "ret" @ 15 namify ret altpic "keyboard_enter.png"

@@ -1,0 +1,7 @@
+vertpipe vec3 vvnormal, order 105
+   
+   vec3 normed = normalize(vvnormal);
+   float dotted = dot(normed, vec3(1,1,0));
+   
+   float theval = 0.5f + normed.y * 0.4;
+   vertcolor.rgb = vertcolor.rgb * (theval + pow(max(dotted, 0.0), 5.2) * 2);

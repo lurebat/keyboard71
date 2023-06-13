@@ -1,0 +1,11 @@
+Extra Tips
+
+Notes are unfiled by default, but you can file them to different folders easily. Set shortcuts to those folders for quick filing.
+
+In the list view, you can select notes by tapping their leftmost side.
+
+Tap and hold an item to see its context menu.
+
+That's about it, this app is pretty simple once you get the hang of it. Most of the functionalities are discoverable.
+
+p.s check out the options, it has some extra features you might like. take it one step at a time though.

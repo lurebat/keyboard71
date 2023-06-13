@@ -1,0 +1,19 @@
+uniform float backswirl_rotamount;
+uniform vec2 backswirl_center;
+uniform vec2 backswirl_direction;
+
+vertpipe vec4 mmpos, order 69
+   vec2 rel = mmpos.xz - backswirl_center;
+   
+   float rellen = length(rel);
+   
+   float sideness = 1.0 - (dot(rel, backswirl_direction) / rellen);
+   
+   float amount = min(rellen / 15.0, 1.0) * sideness;
+   
+   vec2 rotator = vec2(cos(backswirl_rotamount * amount), sin(backswirl_rotamount * amount));
+   
+   rel = vec2(rel.x * rotator.x - rel.y * rotator.y, rel.x * rotator.y + rel.y * rotator.x);
+   
+   mmpos.xz = backswirl_center + rel;
+   

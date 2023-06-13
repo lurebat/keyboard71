@@ -1,0 +1,13 @@
+uniform vec3 gridshaderdiscarder_midpos;
+uniform float gridshaderdiscarder_maxdist;
+
+varying vec2 gridshaderdiscarder_relposer;
+
+vertpipe vec4 mmpos, order 60
+   gridshaderdiscarder_relposer = (mmpos.xyz - gridshaderdiscarder_midpos).xy;
+
+fragpipe vec4 finalcolor, order 92
+   float distancer = length(gridshaderdiscarder_relposer) / gridshaderdiscarder_maxdist;
+   if(distancer > 1.0){
+      finalcolor.w = 0.0;
+   }

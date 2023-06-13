@@ -1,0 +1,15 @@
+attrib vec2 _texcoord;
+varying vec2 _texcoordV;
+uniform sampler2D _r_tex1;
+flag texture_data;
+fragvar vec4 texture_color
+
+vertpipe order 1
+   _texcoordV = _texcoord;
+   
+fragpipe order 2
+   #flagreq !tex_override
+      texture_color = texture2D(_r_tex1, _texcoordV);
+
+fragpipe order 10
+   finalcolor = finalcolor * texture_color;

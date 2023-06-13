@@ -1,0 +1,13 @@
+uniform vec4 focusbackershader_linecol;
+uniform float focusbackershader_yshift;
+
+varying float focusbackershader_yness;
+
+vertpipe vec4 mmpos, order 60
+   focusbackershader_yness = (mmpos.y + focusbackershader_yshift) / 16.0;
+
+fragpipe vec4 finalcolor, order 44
+   // if((int(focusbackershader_yness)) % 2 == 0){
+   if(int(floor(mod(focusbackershader_yness, 2.0))) == 0){
+      finalcolor.xyz = focusbackershader_linecol.xyz;
+   }

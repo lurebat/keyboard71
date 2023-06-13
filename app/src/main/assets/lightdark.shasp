@@ -1,0 +1,4 @@
+fraglib lightdark
+
+fragpipe vec4 finalcolor, order 15
+   finalcolor = lightdark_conversion(finalcolor);

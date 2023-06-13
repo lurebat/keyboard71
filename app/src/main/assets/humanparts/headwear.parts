@@ -1,0 +1,300 @@
+type: parts
+testhat:
+   pos: leftfoot
+   model: @turret-04 !turrethead
+   scale 0.6 0.6 0.6
+   col 0.3
+   testing
+lefttestshoes:
+   pos: leftfoot
+   model: @turret-18 !turrethead
+   shift 0.1 0 0
+   rot -10 0 1 0
+   scale 0.1 0.2 0.22
+   testing
+righttestshoes:
+   pos: rightfoot
+   model: @turret-18 !turrethead
+   rot 10 0 1 0
+   scale 0.1 0.22 0.2
+   testing
+testhelmet
+   pos: head
+   model: @ship-03
+   scale 0.16 0.2 0.15
+   scale 0.9
+   shift 0 25 4
+   rot 70 1 0 0
+   col 0.3
+devilhorns:
+   pos: head
+   model: @ship-29
+   scale 0.2
+   shift 0 35 -10
+   rot 70 1 0 0
+   col 0.3
+goathorns:
+   pos: head
+   model: @ship-20
+   scale 0.2
+   shift 0 15 -4
+   rot 30 1 0 0
+   col 0.3
+trihorns:
+   pos: head
+   model: @ship-26
+   scale 0.2
+   shift 0 45 -4
+   rot 70 1 0 0
+   col 0.3
+afro:
+   pos: head
+   model: @jormball
+   scale 0.3
+   shift 0 18 3
+   rot 70 1 0 0
+   col 0.3
+mohawk:
+   pos: head
+   model: @ship-67
+   scale 0.12 0.4 0.2
+   shift 0 18 0
+   rot 180 0 1 0
+   rot 10 1 0 0
+   col 0.3
+bowlcut:
+   pos: head
+   model: @ufo-21
+   scale 0.15
+   shift 0 45 -3
+   rot -00 1 0 0
+   col 0.3
+stupidhat:
+   pos: head
+   model: @turret-04 !turrethead
+   scale 0.4 0.4 0.4
+   shift 0 15 -3
+   rot -30 1 0 0
+   col 0.3
+   testing
+bonewings_right:
+   pos: back
+   model: @ship-28
+   scale 0.23
+   shift 20 0 -30
+   rot 90 0 0 1
+   rot -40 1 0 0
+   col 0.3
+bonewings_left:
+   pos: back
+   model: @ship-28
+   scale 0.25
+   shift -25 0 -21
+   rot -90 0 0 1
+   rot -55 1 0 0
+   col 0.3
+fairywings_right:
+   pos: back
+   model: @ship-53
+   scale 0.23 0.23 0.23
+   shift 20 0 -30
+   rot 90 0 0 1
+   rot -40 1 0 0
+   col 0.3
+fairywings_left:
+   pos: back
+   model: @ship-53
+   scale 0.23
+   shift -25 0 -21
+   rot -90 0 0 1
+   rot -55 1 0 0
+   col 0.3
+jetwings_right:
+   pos: back
+   model: @ship-64
+   scale 0.23 0.23 0.23
+   shift 20 -15 -30
+   rot 90 0 0 1
+   rot -40 1 0 0
+   rot 30 0 1 0
+   col 0.3
+jetwings_left:
+   pos: back
+   model: @ship-64
+   scale 0.23 0.23 0.23
+   shift -25 -15 -21
+   rot -90 0 0 1
+   rot -40 1 0 0
+   rot -30 0 1 0
+   col 0.3
+jetter:
+   pos: back
+   model: @r-launcher-04 +turrethead
+   scale 0.3
+   shift 0 -5 12
+   rot -90 1 0 0
+   rot -6 0 0 1
+   col 0.3
+gunbacks:
+   pos: back
+   model: @turret-04 +turrethead
+   scale 0.3
+   shift 0 0 5
+   rot -90 1 0 0
+   rot -6 0 0 1
+   rot 180 0 1 0
+   col 0.3
+gunbacks2:
+   pos: back
+   model: @antiair5 !base
+   scale 0.3
+   shift 0 0 5
+   rot -90 1 0 0
+   rot -6 0 0 1
+   rot 180 0 1 0
+   col 0.3
+policearmor_front:
+   pos: chest
+   model: @turret-12 !turrethead
+   scale 0.3
+   col 0.3
+   rot -90 1 0 0
+   shift 0 2 -9
+policearmor_back:
+   pos: back
+   model: @turret-12 !turrethead
+   scale 0.3
+   col 0.3
+   rot -90 1 0 0
+   shift 0 2 -9
+bodyarmor_front:
+   pos: chest
+   model: @turret-18 !turrethead
+   scale 0.3
+   col 0.3 0 0
+   rot -90 1 0 0
+   shift 0 0 -9
+   testing
+bodyarmor_back:
+   pos: back
+   model: @turret-18 !turrethead
+   scale 0.3
+   col 0.3 0 0
+   rot -90 1 0 0
+   shift 0 0 -9
+   testing
+alienarmor_front:
+   pos: chest
+   model: @ship-65
+   scale 0.15
+   col 0.3
+   rot -90 1 0 0
+   shift 0 20 -13
+   rot 9 0 0 1
+alienarmor_back:
+   pos: back
+   model: @ship-65
+   scale 0.15
+   col 0.3
+   rot -90 1 0 0
+   shift 0 26 -13
+   rot 9 0 0 1
+shiparmor_front:
+   pos: chest
+   model: @spacefighter03
+   scale 0.15
+   col 0.3
+   rot -90 1 0 0
+   shift 0 10 -13
+   rot 9 0 0 1
+shiparmor_back:
+   pos: back
+   model: @spacefighter03
+   scale 0.15
+   col 0.3
+   rot -90 1 0 0
+   shift 0 16 -13
+   rot 9 0 0 1
+skirt:
+   pos: groin
+   model: @antiair3 +turret
+   scale 0.45 0.65 0.25
+   shift 0 -6 -3
+   col 0.3
+belt:
+   pos: groin
+   model: @sf-ring
+   scale 0.1 0.4 0.09
+   shift 0 3 -3
+   col 0.3
+   testing
+lefthandshield:
+   pos: lefthand
+   model: @ship-16
+   scale 0.2
+   rot -90 0 0 1
+   shift 20 20 0
+   col 0.3
+righthandshield:
+   pos: righthand
+   model: @ship-16
+   scale 0.2
+   rot 90 0 0 1
+   shift -40 10 0
+   rot -90 0 1 0
+   col 0.3
+lefthandsword:
+   pos: lefthand
+   model: @ninjablade
+   scale 0.5
+   shift 5 -5 0
+   rot -90 1 0 0
+   rot 180 0 1 0
+   rot 20 0 0 1
+   col 0.3
+holsteredsword_left:
+   pos: groin
+   model: @ninjablade
+   scale 0.5
+   shift 10 0 0
+   rot -90 1 0 0
+   rot 180 0 1 0
+   rot 160 1 0 0
+   shift 0 -6 0
+   col 0.8 0 0
+   testing
+holsteredsword_right:
+   pos: groin
+   model: @ninjablade
+   scale 0.5
+   shift -10 0 0
+   rot -90 1 0 0
+   rot 180 0 1 0
+   rot 160 1 0 0
+   shift 0 -6 0
+   col 0.8 0 0
+   testing
+holsteredsword_backleft:
+   pos: back
+   model: @ninjablade
+   scale 0.5
+   rot 90 0 0 1
+   rot 10 0 1 0
+   shift 0 0 -10
+   rot 90 0 1 0
+   rot -45 1 0 0
+   shift 0 -5 0
+   col 0.8 0 0
+   testing
+holsteredsword_backright:
+   pos: back
+   model: @ninjablade
+   scale 0.5
+   rot -90 0 0 1
+   rot -10 0 1 0
+   shift 0 0 -10
+   rot 90 0 1 0
+   rot 45 1 0 0
+   shift 0 -5 0
+   col 0.8 0 0
+   testing

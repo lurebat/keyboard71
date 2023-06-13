@@ -1,0 +1,4 @@
+vertpipe order 0
+   float oldy = vertpos.y;
+   vertpos.y = vertpos.z;
+   vertpos.z = oldy;

@@ -1,0 +1,859 @@
+default
+   dated fore warn past /+ 0
+blueplan
+   global back2 0.0 0.0 0.4
+   global sideback 0 0 0
+   global sidefore 0.5
+   global back 0 0.2 0.5
+   dated fore 1 1 1 0.5
+   note fore 1 1 1 0.5
+   global fore2 1 1 1 0.5
+   dated back present plain 1 1 1 0.2
+   dated past back 0 0 0 0.5
+   haste header back 0 0 0 0.1
+   haste sched past linecol 0 0 0 0.7
+   note header round false
+   dated warn back present 1 0.6 0.3 0.5
+   note header back 0 0 0 0.7
+   note header fore 1 1 1 0.7
+   aux back 0 0.2 0.5
+   aux fore 1
+   aux fore key 1 1 1 0.4
+   evented signcol #000
+   plusmode false
+   sched day #59f8
+   sched day weekend #f00
+pinkplan
+   extends blueplan
+   hsvshift 110
+advancedplan
+   extends blueplan
+   hsvshift 350 0.7 0.9
+   picmid #389
+   pichigh #999
+   dated fore 1
+   dated fore star 0
+   dated fore warn #ff9
+celticplan
+   extends blueplan
+   hsvshift 240 0.7 0.8
+   pichigh #999
+   dated fore 1
+   dated fore star 0
+   dated fore warn 0
+   dated warn back #9f9
+woodenplan
+   extends blueplan
+   hsvshift 170
+   global back hsvshift 0 1.0 0.5
+   dated fore star 0
+   dated back warn #673
+   dated fore warn 0
+retroplan
+   extends blueplan
+   hsvshift 180
+darkblueplan
+   extends blueplan
+   hsvshift 20 1.4 0.5
+   dated fore hsvshift 0 1.0 5.2
+   ticked fore hsvshift 0 1.0 1.8
+   haste header fore hsvshift 0 1.0 5.0
+   clock 1
+   aux back 0
+   ticked fore 0.7
+   ticked strike 1
+cherryplan
+   extends blueplan
+   hsvshift 120
+   dated back present plain #feedccaa
+   dated fore present plain 0 0 0 0.7
+   dated warn back present #aa7733
+   dated star back present #993311
+   ticked strike 1
+   ticked fore +0.7
+fabulousplan
+   title you can't trademark this color!
+   extends blueplan
+   hsvshift 70
+   dated star back #65f
+   dated warn back #ff3344
+greyplan
+   extends blueplan
+   hsvshift 340 0.1 0.6
+   dated fore hsvshift 0 1.0 5.2
+   ticked fore hsvshift 0 1.0 1.8
+   haste header fore hsvshift 0 1.0 5.0
+   clock 1
+   ticked fore 0.7
+   aux fore 0
+   ticked strike 1
+stoneplan
+   extends greyplan
+   hsvshift 60
+clayplan
+   extends greyplan
+   hsvshift 140
+greenplan
+   extends blueplan
+   picmid #005
+   pichigh #003
+   rybshift 70
+   dated star fore present #000
+   ticked fore 0
+   ticked strike 0
+   dated present fore 0
+   global fore 0
+   aux fore 0
+blackplan
+   extends blueplan
+   global hsvshift 0 0
+   global back 0.1
+   picmid #333
+   pichigh #666
+   note back hsvshift 0 0 0.4
+   dated star back present #133459
+   haste sched past linecol #600
+   global altback2 #05b
+   global altfore #0f0
+blackestplan
+   extends blackplan
+   hsvshiftex 0 0 1.3 0.9 false 0 1.0 3.0
+   picmid #222
+   pichigh #444
+   dated back plain #111
+   dated back warn #411
+   dated back star #040415
+   dated fore +0.3
+   dated plusmode true
+   global altfore #39f
+blackletter
+   extends blueplan
+   global hsvshift 0 0
+   global back 0.23
+   picmid #444
+   pichigh #ca7
+   note back hsvshift 0 0 0.4
+   dated back past 0.3
+   dated back present 0.1
+   note back 0.1
+   star fore present #996600
+   warn fore present #992200
+   dated fore past 0
+   haste sched hsvshift 0 0
+   haste sched past linecol #600
+   aux back #500
+   global altback2 #05b
+   global altfore #f93
+antares
+   extends blackplan
+   rybshift 90
+   haste sched past linecol #600
+   dated warn back present #996600
+   dated star back present #992200
+   evented signcol #ff9900
+   aux back 0
+   aux fore key 0.3
+   global altfore #f00
+redplan
+   title then, everything changed when the f*** nation attacked
+   extends blueplan
+   rybshift 200
+   dated star back present 1 0.6 0.3 0.5
+   dated warn back present 1 1 0.3 0.5
+   dated star fore 0
+   dated warn fore 0
+   ticked fore 0
+   ticked strike 1
+orangeplan
+   title wouldn't it be nice to have some orange juice right now?
+   extends blueplan
+   hsvshift 170 1.3 1.9
+   pichigh #000
+   picmid #b00
+   global back2 #f33
+   global fore2 1 1 1 0.8
+   dated past back #fa2
+   dated past fore 1.0
+   dated star back present #f22
+   dated warn back present #fe0
+   dated fore 0
+   dated present star fore 1
+   dated present warn fore 0
+   ticked fore 0
+   ticked strike 1
+   aux fore 1
+   aux back #f33
+   misckarl back #f33
+tomatoplan
+   title wish someone would donate a ferrari
+   extends blueplan
+   hsvshift 150
+   picmid #b55
+   pichigh #f99
+   dated star back present 1 0.6 0.3 0.5
+   dated warn back present 1 1 0.3 0.5
+   dated star fore 0
+   dated warn fore 0
+   ticked fore 0
+   ticked strike 1
+   global back2 #500
+limeplan
+   extends blueplan
+   rybshift 90
+   picmid #9b3
+   pichigh #000
+   dated present fore /+ 0
+   dated present star back #fbe93d
+   dated present warn back #c15203
+   ticked strike #ff0
+   aux fore 0
+yellowplan
+   extends blueplan
+   rybshift 130 1.5 2.2
+   picmid #b90
+   pichigh #940
+   dated present fore /+ 0
+   dated present warn back #bbbb55
+   dated present star back #994412
+   dated present star fore 1
+   sidefore #fe2
+   misckarl fore #fe2
+   global fore 0
+   header fore 0
+   ticked strike #f00
+   ticked fore 0
+   aux fore 0
+   global back2 #c30
+   global fore2 0
+   misckarl back #000
+brightblueplan
+   extends yellowplan
+   rybshift 240
+   picmid #05b
+   pichigh #048
+   global back2 #6bf
+   misckarl back 0.1 0.3 1.0
+paperyplan
+   extends yellowplan
+   rybshift 40 0.4 1.0
+   global back2 #cb8
+   misckarl back 0.1 0.3 1.0
+   global altfore #900
+plinplan
+   extends yellowplan
+   rybshift 120 0.4 1.0
+   misckarl back 0.1 0.3 1.0
+hazardplan
+   extends yellowplan
+   rybshift 120 1.5 1.5
+   pichigh #fba
+   picmid #f33
+   global back #f00
+   global back2 #f50
+   aux back #f00
+   aux fore 0
+   misckarl back 0.1 0.3 1.0
+   dated star back #000
+   dated warn back #fff
+mapleplan
+   extends yellowplan
+   misckarl back 0.5 0.3 0.2
+   rybshift 30 0.3 1.0
+   global altfore #f00
+   dated warn back #f22
+   dated star back #22f
+   dated warn fore 0
+   dated star fore 1
+   ticked strike #f00
+midnightplan
+   extends yellowplan
+   rybshift 220 0.2 0.2
+   pichigh #555
+   picmid #444
+   global fore #fff3
+   dated fore +0.5
+betterinconcept
+   extends blueplan
+   global back #031634
+   global back2 #033649
+   global fore #E8DDCB
+   dated back #E8DDCB
+   dated fore #033649
+   dated warn back #CDB380
+   dated warn fore #031634
+   dated star back #036564
+   dated star fore #E8DDCB
+   ticked strike #CDB380
+   ticked fore #CDB380
+   aux back #033649
+kindacolorful
+   extends blueplan
+   pichigh #EDC951
+   picmid #00A0B0
+   global back #6A4A3C
+   global back2 #6A4A3C
+   global fore #000
+   dated back #EDC951
+   dated fore #6A4A3C
+   dated warn back #CC333F
+   dated warn fore #000
+   dated star back #00A0B0
+   dated star fore #000
+   ticked strike #EB6841
+   ticked fore #EB6841
+   aux back #033649
+tallprisoner
+   extends blueplan
+   pichigh #47a
+   picmid #00A0B0
+   global back #DCE9BE
+   global back2 #DCE9BE
+   global fore #2E2633
+   global fore2 #555152
+   header back #555152
+   header fore #EFFFCD
+   dated back #2E2633
+   dated fore #DCE9BE
+   dated warn back #99173C
+   dated warn fore #EFFFCD
+   dated star fore #fff
+   ticked strike #99173C
+   ticked fore #EFFFCD
+   ticked back #555152
+   aux back #033649
+talmudist
+   extends tallprisoner
+   hsvshift 90 0.3
+   pichigh #bd9
+   picmid #973
+   global back #666
+   global back2 #999
+   misckarl back #444
+plaintiff
+   extends bright
+   pichigh #059
+   dated back #F0F2EB
+   ticked strike #FF4242
+   dated warn back #FF4242
+   dated warn fore #fff
+   dated star back #D4EE5E
+   dated star fore #555
+   past linecol #FF4242
+   sched day #D4EE5E
+bishbosh
+   extends plaintiff
+   rybshift 130
+   misckarl back #f00
+whiteknightlucha
+   extends plaintiff
+   rybshift -120
+   dated fore warn 0
+   dated fore star #fff
+softplan
+   extends blueplan
+   rybshift 230
+   pichigh #F67280
+   picmid #C06C84
+   global back #355C7D
+   global back2 #6C5B7B
+   global fore #F8B195
+   dated back #F8B195
+   dated fore #355C7D
+   dated warn back #F67280
+   dated warn fore #355C7D
+   dated star back #C06C84
+   dated star fore #F8B195
+   ticked back #F8B195
+   ticked strike #F67280
+   ticked fore #355C7D
+   aux back #F67280
+   aux fore #fff
+   misckarl back #F67280
+   past linecol #0009
+   sched day #F8B195
+fauxinquisition
+   extends softplan
+   rybshift 222
+   aux fore #000
+   ticked strike #900
+peacefulautumn
+   extends softplan
+   rybshift -30
+softerstill
+   extends blueplan
+   picmid #F4B36C
+   pichigh #E98977
+   global back #F4DEC2
+   global back2 #F4DEC2
+   global fore #E98977
+   global fore2 #E98977
+   misckarl back #E98977
+   dated back #F4DEC2
+   dated fore #E98977
+   dated warn back #F4B36C
+   dated warn fore #F8F4D7
+   dated star back #E98977
+   dated star fore #F8F4D7
+   ticked back #F8F4D7
+   ticked strike #F67280
+   ticked fore #E98977
+   aux back #F67280
+   aux fore #F4DEC2
+   header back #E98977
+   header fore #F4DEC2
+   past linecol #E98977
+   sched day #fff
+softwinter
+   extends softerstill
+   hsvshiftex 190 0 1.3 0.7 false 0 1.04 9.0
+prescription
+   extends softerstill
+   hsvshiftex 120 0 1.3 0.7 false 0 1.04 9.0
+   dated fore warn #070
+   misckarl back #0c8
+kilimanjaro
+   extends softerstill
+   hsvshiftex 40 0 1.3 0.7 false 0 1.04 9.0
+   dated fore warn #952
+peaceplan
+   extends blueplan
+   rybshift 230
+   picmid #3B8686
+   pichigh #A8DBA8
+   sideback #0B486B
+   global back #0B486B
+   global back2 #0B486B
+   global fore #CFF09E
+   global fore2 #CFF09E
+   sidefore #CFF09E
+   misckarl back #CFF09E
+   misckarl fore #0B486B
+   dated back #CFF09E
+   dated fore #0B486B
+   dated warn back #3B8686
+   dated warn fore #CFF09E
+   dated star back #A8DBA8
+   ticked strike #CFF09E
+   ticked fore #CFF09E
+   aux back #0B486B
+   aux fore #CFF09E
+   past linecol #0B486B
+   past linecol hsvshift 0 1 0.7
+   sched day #3B8686
+fauxindependence
+   extends peaceplan
+   hsvshift 150
+recyclingplan
+   extends peaceplan
+   hsvshift -50
+highcontrastblue
+   extends peaceplan
+   hsvshiftex 50 0 1.7 1.9 false 0 1.0 1.0
+highcontrastred
+   extends peaceplan
+   hsvshiftex 170 0 1.7 1.9 false 0 1.0 1.0
+yetanothergreen
+   extends peaceplan
+   hsvshiftex 330 0 0.6 0.8 false 0 1.0 1.3
+superretrogreen
+   extends peaceplan
+   hsvshiftex -50 0 0.6 0.8 true 0 1.0 1.3
+   global emptyback 0.05
+superretroblue
+   extends peaceplan
+   hsvshiftex 10 0 0.6 0.8 true 0 1.0 1.3
+   global emptyback 0.05
+   picmid #014
+superretropurple
+   extends superretrogreen
+   hsvshift 130
+superretrored
+   extends superretrogreen
+   hsvshift 210
+superretroyellow
+   extends superretrogreen
+   hsvshift 230
+   dated warn back #532
+einkgrey
+   extends superretrogreen
+   hsvshift 0 0 1
+   global altfore #ff0
+einkold
+   extends superretrogreen
+   hsvshift 0 0.3 1
+   global altfore #0b9
+einkgreybright
+   extends superretrogreen
+   hsvshiftex 0 0 0 1 true 0 1.0 4.0
+   hsvshift 0 1 0.7
+einkoldbright
+   extends superretrogreen
+   hsvshiftex 0 0 0.3 1 true 0 1.0 4.0
+   hsvshift 0 1 0.7
+shadowplan
+   extends peaceplan
+   hsvshift -340 0.6
+juicyplan
+   extends yellowplan
+   rybshift 45
+   global back2 #f00
+   misckarl back #f00
+   dated warn back #f00
+   dated warn fore 1
+organicplan
+   extends yellowplan
+   rybshift 300
+   misckarl back #393
+mandarinplan
+   extends yellowplan
+   hsvshift -30
+   aux fore #fffa
+stickypinkplan
+   extends yellowplan
+   hsvshift -90
+   aux fore #fffa
+   back warn #f06
+psychicplan
+   extends yellowplan
+   hsvshift -120
+   aux fore #fffa
+   back warn #f06
+stickyblueplan
+   extends yellowplan
+   pichigh #233
+   hsvshift -190
+   aux fore #fffa
+   back warn #f06
+brightgreenplan
+   extends yellowplan
+   hsvshift -270
+   aux fore #000
+   back warn #9f0
+brighttealplan
+   extends yellowplan
+   hsvshift -220
+   aux fore #000
+   back warn #39f
+   ticked strike #f00
+eyecatchingplan
+   extends yellowplan
+   hsvshift -50
+   pichigh #d00
+   picmid #f40
+   global back2 #f30
+   aux fore #fffa
+   dated back star #f40
+   dated back warn #f90
+   ticked strike 1
+   past linecol #900
+   sched day #fff9
+savannahplan
+   extends blueplan
+   rybshift 120
+   pichigh #333
+   picmid #994412
+   dated present fore /+ 0
+   dated present warn back #bbbb55
+   dated present star back #994412
+   aux fore #530
+medicalplan
+   title doctor I..
+   extends blueplan
+   global back2 #349
+   rybshift 20
+   aux fore #fff6
+   picmid #48d
+   pichigh #9ff
+trendyneon
+   extends default
+   rybshift 90
+   dated warn fore past /+ 0
+   dated star fore past /+ 1
+   misckarl fore /+ 0
+   note fore 0 0 0
+   plain fore /+ 0 0 0
+   dated past plain fore + 1
+   dated past star back #ff6612
+   dated past star fore /+ 0
+   dated present star fore /+ 0
+   dated present star back /+ #ff9944
+   aux fore #fa08
+tokyorave
+   extends trendyneon
+   rybshift 180
+   dated warn fore /+ 0
+moskowrave
+   extends trendyneon
+   rybshift 290
+   dated warn fore /+ #420
+   picmid #03f
+   pichigh #ff3
+dangdut
+   extends trendyneon
+   picmid #03f
+   pichigh #ff3
+   rybshift 90
+nightlight
+   extends trendyneon
+   rybshift 260 0.3 1.0
+   dated fore /+0
+   picmid #059
+bright
+   extends default
+   invert
+   clock 1
+   hsvshift 180
+   global back 1
+   global fore 0.4
+   header back #bbb
+   dated back #ddd
+   dated fore 0 0 0 0.5
+   note fore 0 0 0 0.5
+   global fore2 0 0 0 0.3
+   dated warn back #fb9
+   dated star back #9bf
+   past sched linecol #fca
+   plusmode false
+monochromebright
+   extends bright
+   hsvshift 0 0.0
+   dated back #bbb
+   header back #aaa
+   header fore #fff
+   past sched linecol #777
+   global fore 0.0
+   strike 0
+subtle
+   extends default
+   invert
+   clock 1
+   hsvshift 180 0.1
+   global back 0.7
+   global sideback 0.5
+   global sidefore 0.2
+   dated fore 0 0 0 0.5
+   note fore 0 0 0 0.5
+   global fore2 0 0 0 0.3
+   global altfore 0.5 0 0
+   dated back present plain 0.86
+   dated back past hsvshift 0 1.6 0.5
+   haste sched past linecol hsvshift 0 1.6 0.5
+   haste sched past linecol 0.25
+   dated back past plain 0.25
+   dated fore past 0.78
+   misckarl back 0.5
+   haste header back 0.56
+   haste header fore 0.8
+   note header round false
+   note header back 0.4
+   note header fore 0.7
+   ticked fore 0.5
+   ticked strike 0.3
+   plusmode false
+mongoose
+   extends default
+   invert
+   hsvshift 180 0.0
+   clock #F2E9E1
+   global back #F2E9E1
+   global fore #1C140D
+   global fore2 #1C140D99
+   dated fore #1C140D
+   note back #CBE86B
+   note back mid hsvshift 0 0.8
+   note back end hsvshift 0 0.5
+   note fore #1C140D
+   dated back past #1C140D55
+   dated fore past 0
+   dated back present #CBE86B
+   dated present back warn #fff
+   dated present back star #A9F04F
+   haste sched past linecol #1C140D88
+   note header round false
+   note header back #1C140D
+   note header selected #C83
+   note header fore #CBE86B
+   haste header fore /+ #0005
+   plusmode false
+   ticked strike 0
+   ticked fore 0
+   picmid #CBE86B
+   pichigh #395
+   global altfore #990
+mahoushoujo
+   extends mongoose
+   hsvshift 250
+   misckarl back #f6b
+   global altfore #f09
+boros
+   extends mongoose
+   hsvshift 290
+   pichigh #900
+lawmages
+   extends mongoose
+   hsvshift 130
+   misckarl back #6bf
+   pichigh #009
+strawberrycream
+   extends default
+   invert
+   hsvshift 180 0.0
+   
+   global sideback 0 0 0
+   global sidefore 0.5
+   global emptyback 0.1
+   
+   grey = #555152
+   dark = #2E2633
+   pink = #99173C
+   palelime = #DCE9BE
+   lightlime = #EFFFCD
+   
+   clock lightlime
+   
+   global altback pink
+   global altback2 pink @ 0.7
+   
+   global back2 dark
+   
+   misckarl back pink
+   misckarl fore palelime
+   
+   global back grey
+   global fore lightlime
+   global fore2 palelime
+   note back palelime
+   note back mid hsvshift 0 0.8
+   note back end hsvshift 0 0.5
+   note fore dark
+   dated fore grey
+   dated back palelime
+   dated back warn pink
+   dated back star 1
+   
+   haste header back dark
+   haste header fore palelime @ 0.6
+   
+   dated fore warn 1
+   dated fore star pink
+   
+   haste sched past linecol pink
+   
+   note header round false
+   note header back dark
+   note header selected #C83
+   note header fore lightlime
+   plusmode false
+   
+   aux back pink
+   aux fore 1.0
+   
+   picmid pink
+   pichigh dark
+   
+trevi
+   extends strawberrycream
+   rybshift 90 0.8
+darklemon
+   extends strawberrycream
+   rybshift 120 0.8
+   dated fore star #f40
+gargantia
+   extends strawberrycream
+   rybshift 140 0.8
+   dated fore star #f40
+orangejuice
+   extends strawberrycream
+   rybshift 290 0.8 1.9
+   dated fore 0.5
+   dated fore warn 0
+   dated fore star #f40
+fatdroid
+   extends strawberrycream
+   rybshift 160 0.8
+   dated fore star #000
+socialnews
+   extends default
+   invert
+   hsvshift 180 0.0
+   
+   aoi = #CEE3F8
+   pond = #A7DBD8
+   beach = #E0E4CC
+   orange = #F38630
+   reddish = #FA6900
+   blueish = #5F99CF
+   dark = #444444
+   bluetext = #002FFF
+   
+   clock beach
+   
+   global altback pond
+   global altback2 pond @ 0.7
+   
+   global back2 aoi * 0.8
+   
+   misckarl back orange
+   misckarl fore beach
+   
+   global back aoi
+   global fore dark
+   global fore2 0
+   dated fore dark
+   ticked back #fff
+   ticked fore dark
+   ticked strike 0
+   note back pond
+   note back mid hsvshift 0 0.8
+   note back end hsvshift 0 0.5
+   note fore dark
+   dated back #fff
+   dated back past #fff
+   dated fore past dark
+   
+   haste header back blueish
+   haste header fore /+ 0
+   
+   dated fore present dark
+   dated fore warn reddish
+   dated fore star bluetext
+   
+   haste sched past linecol reddish
+   
+   note header round false
+   note header back dark
+   note header selected #C83
+   note header fore #000
+   plusmode false
+   
+   picmid orange
+   
+   global altfore #f93
+   
+alien
+   extends socialnews
+   rybshift 140
+   dated fore warn #aa6633
+   dated fore star #25b
+   sched past linecol #235
+   global fore2 0
+   pichigh #00b
+laogai
+   extends socialnews
+   rybshift 60 0.6
+   dated fore past dark
+   misckarl fore blueish
+   dated present fore star hsvshift 0 0.4 0.6
+   dated present fore warn hsvshift 0 0.4 0.6
+   sched past linecol #353
+   misckarl back 0.5
+   misckarl fore 0.1
+shaolin
+   extends socialnews
+   rybshift 190 1.2
+   dated fore past dark
+   misckarl fore blueish
+   dated present fore star hsvshift 0 0.4 0.6
+   dated present fore warn hsvshift 0 0.4 0.6
+   misckarl fore 0
+   pichigh #559

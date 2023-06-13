@@ -1,0 +1,47 @@
+issystem
+hasrechooser
+nospacealphareturn
+
+row:
+   :dontsplit
+   "leftcursorer" nobacker altpic "small24_dragindi.png"
+   one @ 27 namify one
+   two @ 26 namify two
+   three @ 27 namify choicer 
+   "rightcursorer" nobacker altpic "keyboard_dragright.png"
+row:
+   :dontsplit
+   "emoji_prev" @ 12 label ""
+   "emoji_button" @ 13
+   "emoji_button" @ 12
+   "emoji_button" @ 13
+   "emoji_button" @ 12
+   "emoji_button" @ 13
+   "emoji_button" @ 12
+   "emoji_next" @ 13 label ""
+row:
+   :dontsplit
+   "emoji_button" @ 12
+   "emoji_button" @ 13
+   "emoji_button" @ 12
+   "emoji_button" @ 13
+   "emoji_button" @ 12
+   "emoji_button" @ 13
+   "emoji_button" @ 12
+   "emoji_button" @ 13
+row:
+   :dontsplit
+   "emoji_button" @ 12
+   "emoji_button" @ 13
+   "emoji_button" @ 12
+   "emoji_button" @ 13
+   "emoji_button" @ 12
+   "emoji_button" @ 13
+   "emoji_help" @ 12 label "?"
+   "<" @ 13 namify backspace cannoborder altpic "keyboard_backspace.png"
+row:
+   "r" @ 15 summon main altpic "keyboard_abc.png"
+   "emoji_recent" @ 15 altpic "small32_clock.png"
+   "emoji_menu" @ 40 label "menu"
+   '  @ 15
+   "ret" @ 15 namify ret altpic "keyboard_enter.png"

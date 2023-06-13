@@ -1,0 +1,54 @@
+uniform float shaderizerratio;
+uniform float shaderizer_curvepower;
+uniform float shaderizer_brightpower;
+uniform float shaderizer_steps;
+uniform vec4 shaderizer_dark;
+uniform vec4 shaderizer_mid;
+uniform vec4 shaderizer_light;
+
+varying float shaderizer_rizerpoint;
+
+fraglib grayscale_brightness
+
+vertpipe vec4 mmpos, order 60
+   shaderizer_rizerpoint = (mmpos.x + mmpos.y);
+
+fragpipe vec4 finalcolor, order 19
+   float brightness = grayscale_brightness(finalcolor.xyz);
+   brightness = pow(brightness, shaderizer_brightpower);
+   
+   vec4 colorizedcolor;
+   
+   float ratiopoint = mod(shaderizer_rizerpoint / 4.0, 1.0);
+   
+   if(brightness < 0.5){
+      // dark interpolate
+      float ratio = pow(brightness * 2.0, shaderizer_curvepower);
+      if(ratio < 0.3)
+         ratio = -0.1;
+      else if (ratio > 0.7)
+         ratio = 1.1;
+         
+      if(ratiopoint > ratio){
+         colorizedcolor.xyzw = shaderizer_dark.xyzw;
+      } else {
+         colorizedcolor.xyzw = shaderizer_mid.xyzw;
+      }
+      
+   } else {
+      float ratio = pow((brightness - 0.5) * 2.0, 1.0 / shaderizer_curvepower);
+      
+      if(ratio < 0.3)
+         ratio = -0.1;
+      else if (ratio > 0.7)
+         ratio = 1.1;
+      
+      if(ratiopoint > ratio){
+         colorizedcolor.xyzw = shaderizer_mid.xyzw;
+      } else {
+         colorizedcolor.xyzw = shaderizer_light.xyzw;
+      }
+   }
+   
+   finalcolor.xyzw = (finalcolor.xyzw * (1.0 - shaderizerratio)) + (colorizedcolor * shaderizerratio);
+

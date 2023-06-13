@@ -1,0 +1,4 @@
+uniform float fadeness;
+
+fragpipe vec4 finalcolor, order 888
+   finalcolor.w = finalcolor.w * fadeness;

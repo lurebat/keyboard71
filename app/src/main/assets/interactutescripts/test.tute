@@ -1,0 +1,272 @@
+task:
+   Now let's try more!
+   join multiple slides into a single word!
+   target: nicely
+   script: 2n-i! 2c-e! 2l-y!
+
+
+task:
+   let's start simple
+   make sure you give it time
+   autophrase: poo poo moo
+
+task:
+   let's start simple
+   make sure you give it time
+   autophrase: in my car
+
+
+task:
+   try this one
+   it's not that hard
+   autophrase: how are you
+
+task:
+   try this one
+   it's not that hard
+   autophrase: too soon mate
+
+task:
+   Brake at the "R" key to hint
+   Hint the word so you won't have to choose 'em
+   target: art
+   script: 1a-r-t!
+   
+task:
+   This one is commonly used
+   target: i'll
+   script: 2i-'-l! 2l!
+   The apostrophe hints the system!
+task:
+   let's try another one!
+   Like 'thing' for example
+   target: thing
+   script: 2t-h-i-n-g!
+
+task:
+   peck the 'k' in between the left finger slide!
+   timing is kinda important here!
+   target: fake
+   script: 1f-a 2k! 1e!
+
+task:
+   this one is a simple word
+   target: too
+   script: 2t-o! 2o!
+   tap 'o' at the end to tell nintype of it!
+   
+task:
+   or simply just peck the letters
+   like with this one!
+   target: is
+   script: 2i! 1s!
+
+:flashwords on
+
+text: 30 seconds tutorial begins now.   Are  you  ready?
+
+text: slide your finger.   follow the paths   [autoend]
+
+task:
+   Let's try with two fingers!
+   Just follow the ghost fingers!
+   target: nice
+   script: 2n-i! 1c-e!
+   
+text: Good!  that's the basics.   Now try with two hands.   [autoend] 
+
+task:
+   Now let's try more!
+   join multiple slides into a single word!
+   target: nicely
+   script: 2n-i! 2c-e! 2l-y!
+   
+text: Baby, Baby!  Close your eyes!  [autoend]
+
+task:
+   you can combine taps and slides
+   make them a single word!
+   target: pins
+   script: 2p-i-n! 1s!
+   
+task:
+   let's try this one!
+   remember, tap the 'p'
+   target: zap
+   script: 1z-a! 2p!
+   
+task:
+   peck the 'k' in between the left finger slide!
+   timing is kinda important here!
+   target: fake
+   script: 1f-a 2k! 1e!
+   
+text: So by now the textbox is probably full of text, and you need a quick way to delete the texts.
+
+text: You can do that quickly by sliding LEFT from the spacebar!
+   
+task:
+   Try it!
+   target: slide backspace!
+   wantedaction: IA_SlideBackspace
+   script: notext 2\<-x!
+   You can slide back to the right too!
+   
+text: you can also just tap the letters normally, like the traditional keyboard. It makes sense for some words! Not very many words though.
+
+task:
+   or simply just peck the letters
+   like with this one!
+   target: is
+   script: 2i! 1s!
+   
+text: Now let's combine them all together! slides and pecks together, and you'll see how comfortable it is!
+
+task:
+   remember, try use two fingers!
+   it'll make your life easier!
+   target: polymers
+   script: 2p-o-l-y-m! 1e-r-s!
+   
+task: 
+   now let's combine the different ones
+   try to follow the finger
+   target: amazing
+   script: 1a! 2m! 1a-z! 2i-n-g!
+   
+task:
+   Let's try again with another one!
+   target: awesome
+   script: 1a-w-e-s! 2o-m! 1e!
+   Remember, build up the word!
+   
+text: when you build words with clusters of letter slides and individual letter taps, you can type faster than ever. It also lets nintype guess your word better, than if you slide the whole thing through!
+
+task:
+   Let's try a harder word now
+   just watch the ghost fingers
+   target: seriously
+   script: 1s-e-r! 2i-o-u 1s! 2l-y!
+   
+task:
+   How about this one?
+   target: magical
+   script: 2m! 1a! 2g-i 1c-a! 2l!
+   
+task:
+   Can you do this one?
+   target: changes
+   script: 1c! 2h! 1a! 2n-g! 1e-s!
+task:
+   Keep it up!
+   target: everything
+   script: 1e! 2v! 1e-r! 2y-t-h-i-n-g!
+
+text: Remember. this is Nintype. Timing is important, so tap the letters roughly in the order they appear in the word.
+   
+task:
+   now try this one
+   don't forget the 'e' tap in the end
+   target: people
+   script: 2p 1e! 2o-p-l! 1e!
+   
+text: but what do you do with words with double letters? For example, the words "son" vs "soon", "to" vs "too"?
+
+text: You just tap the letter again, or include the letter in more than one slide!
+   
+task:
+   this one is a simple word
+   target: too
+   script: 2t-o! 2o!
+   tap 'o' at the end to tell nintype of it!
+   
+task:
+   Now try this simple word!
+   target: son
+   script: 1s! 2o-n!
+   Easy isn't it?
+   
+task:
+   Pay attention to the tap at 'o'!
+   target: soon
+   script: 1s! 2o! 2o-n!
+   You just need to 'o' again
+   
+task:
+   Alternatively, for double letters,
+   target: pool
+   script: 2p-o! 2o-l!
+   Just release and re-tap at that letter!
+   
+text: remember, releasing and re-tapping on double letters in words helps nintype know which word you mean (for example, "soon" instead of "son")
+
+text: however, sometimes this double letter thing is optional, only necessary so nintype doesn't confuse it between similar words. Some words are obvious enough, you can skip the double letter hinting completely.
+
+task:
+   This word has many double letters
+   target: assassin
+   script: 1a-S-a-S! 2i-n!
+   But it's obvious, no need to hint
+   
+task:
+   many words with double letters
+   target: jimmy
+   script: 2j-i-m-y!
+   don't need hints either
+
+text: However, for words that ends in double letters, tapping the extra letter will really help nintype with the prediction!
+   
+task:
+   For example, this word
+   target: guess
+   script: 2g-u! 1e-s! 1s!
+   Just do us a solid, and tap the ending 's'
+   
+task:
+   This one too
+   target: fill
+   script: 1f! 2i-l! 2l!
+   Less ambiguity, better typing experience!
+   
+task:
+   Now try this one out
+   target: impressed
+   script: 2i-m-p! 1r-e-S-e-d!
+   An advanced word, indeed.
+   
+text: You'll get a feel on which words you need to double-tap on as you type more with nintype. It'll just come to you naturally as you use nintype more and more.
+
+text: one last thing! what about words with apostrophes in them?
+
+text: You just need to slide through the apostrophe key, on the right side of the L key!
+  
+task:
+   Hint apostrophe by going through here!
+   target: i'm
+   script: 2i-'-m!
+   Just slide through that key!
+task:
+   And yet another example!
+   target: it's
+   script: 2i 1t 2'! 1s!
+   The apostrophe hints the system!
+task:
+   This one is commonly used
+   target: i'll
+   script: 2i-'-l! 2l!
+   The apostrophe hints the system!
+   
+task:
+   And then try this one toO!
+   target: you'll
+   script: 2y-o-u-'-L!
+   See how easy it is?
+   
+text: Just one more thing..
+   
+text: nintype depends on the dictionary, if a word isn't in it you have to peck-type it first
+
+task:
+   if a word isn't in the dictionary
+   peck-type them first!
+   :madeupword_target

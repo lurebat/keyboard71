@@ -1,0 +1,102 @@
+body {
+   left:0;
+   right:0;
+   padding: 0;
+   margin: 0;
+   border: 0;
+    font-size: 16px;
+    color: #777;
+    overflow: hidden;
+}
+
+div {
+   margin: 0;
+   border: 0;
+   padding: 0;
+}
+
+div .fullscreenbaby{
+   margin: 0;
+   border: 0;
+   padding: 0;
+   width: 100%;
+   height: 900;
+}
+
+div .statusbar{
+   left:0px;
+   right:0px;
+   top:0px;
+   text-align: left;
+   background: #000;
+   margin-top: 0px;
+   margin-bottom: 0px;
+   margin: 0px;
+   padding: 0px;
+   padding-left: 10px;
+   padding-right: 10px;
+   padding-top: 5px;
+   font-family: Verdana, Geneva, sans-serif;
+   font-weight: bold;
+}
+
+div .statusbar2{
+   background: #333;
+   color: #bbb;
+}
+
+div .statusbar3{
+   background: #550;
+   color: #bb0;
+}
+
+div .statusbarcontainer{
+   position: fixed;
+   margin: 0px;
+   padding: 0px;
+   left: 0px;
+   right: 0px;
+   top: 0px;
+}
+
+div .botstatusbarcontainer{
+   position: fixed;
+   margin: 0px;
+   padding: 0px;
+   left: 0px;
+   right: 0px;
+   bottom: 0px;
+}
+
+.midscreen{
+   position: fixed;
+   padding-top: 90px;
+   top: 0px;
+   left: 0px;
+   right: 0px;
+   bottom: 0px;
+}
+
+.quizbutton {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: #ffffff;
+	padding: 10px 20px;
+   background: #333;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	border: 2px solid #333;
+}
+
+.quizbuttonchosen{
+   background: #37a;
+	border: 2px solid #37a;
+}
+
+.loading{
+   background: #333
+            url('flower-loader.gif') 
+            no-repeat right top;
+   
+}

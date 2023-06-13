@@ -1,0 +1,19 @@
+>> Timing and Ordering
+
+So maybe you came from another two-handed slide keyboard, like this one we shall not name that's available from Android.
+
+Cool keyboard, but kinda different than nintype. Let's highlight one difference. Timing and order is important here in this keyboard, and it's evident when you try to type the word "people" with this keyboard.
+
+With that other Android keyboard, you can just tap "e" on the left hand, and slide "p-o-p-l" on the right hand.
+
+If you try to do that on nintype it will think you're trying to type "prop".
+
+To type "people" in nintype, you would land your right finger on the "p" key, tap the "e" with the left finger, slide your right finger to the "o-p-l" path, and end with an extra "e" tap.
+
+Why does nintype require so much more granularity and explicitness to your typing? That's because this way, you can get the word you mean on nintype, without having to choose from a list of possible words. This way, the specificity of your typing will be much better, and it means you'll be able to have different swipes for most different words.
+
+This is why double-tapping is a thing in nintype, it's so that you can hint double lettered-words as opposed to their single-lettered alternatives (son vs soon).
+
+In short, this helps the typing algorithm greatly, which in turn helps nintype get you the right word that you mean.
+
+So yeah, this is obviously the one true way to do slide keyboards.

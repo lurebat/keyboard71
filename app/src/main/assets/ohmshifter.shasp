@@ -1,0 +1,10 @@
+uniform float ohmshifter_left_x;
+uniform float ohmshifter_right_x;
+uniform float ohmshifter_letterareaheight;
+
+vertpipe vec4 vertcolor, vec4 mmpos, order 66
+   
+   float xfac = (mmpos.x - ohmshifter_left_x) / (ohmshifter_right_x - ohmshifter_left_x);
+   float downshift = pow(1.0 - xfac, 2.3) * 0.33 * ohmshifter_letterareaheight;
+   
+   mmpos.y += downshift;

@@ -1,0 +1,90 @@
+:flashwords on
+text: these are hard ones
+
+
+
+task:
+   autophrase: [waer|htv] whatever
+   cascade
+   
+
+task:
+   autophrase: probably
+   cascade 1
+
+
+
+
+
+
+
+task:
+   autophrase: [|pot]pot
+   cascade 1
+
+task:
+   autophrase: probably
+   cascade 1
+
+task:
+   autophrase: hello
+   cascade
+   
+task:
+   autophrase: nicely
+   cascade
+
+:flashwords on
+text: easy, isn't it?
+
+task:
+   autophrase: typing
+   cascade
+
+task:
+   autophrase: japan
+   cascade
+   
+task:
+   autophrase: believe
+   cascade
+   
+task:
+   autophrase: create
+   cascade
+   
+task:
+   autophrase: at
+   cascade
+   
+task:
+   autophrase: art
+   cascade
+   
+task:
+   autophrase: [e|thn] then
+   cascade
+
+task:
+   autophrase: [waer|htv] whatever
+   cascade
+   
+task:
+   autophrase: soon
+   cascade
+
+task:
+   autophrase: cycle
+   cascade 1
+   
+task:
+   autophrase: seriously
+   cascade 1
+   
+task:
+   autophrase: [e|nintyp] nintype
+   cascade 1
+   
+task:
+   autophrase: awesome
+   cascade 1

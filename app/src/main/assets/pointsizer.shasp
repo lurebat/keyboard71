@@ -1,0 +1,4 @@
+uniform float pointsize;
+
+vertpipe order 100
+   gl_PointSize = pointsize;

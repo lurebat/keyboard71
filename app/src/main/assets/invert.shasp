@@ -1,0 +1,4 @@
+fragpipe vec4 finalcolor, order 99
+   finalcolor.x = 1.0 - finalcolor.x;
+   finalcolor.y = 1.0 - finalcolor.y;
+   finalcolor.z = 1.0 - finalcolor.z;

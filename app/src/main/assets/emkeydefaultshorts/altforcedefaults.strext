@@ -1,0 +1,37 @@
+1_0:
+1_1: smrt: @
+1_2: smrt: '
+1_3: smrt: &
+1_4: smrt: *
+1_5: smrt: -
+1_6: smrt: :
+1_7: smrt: %
+1_8: smrt: ^
+1_9: a: peckmode
+
+2_0: a: menu
+2_1: smrt: :
+2_2: smrt: =
+2_3: smrt: ~
+2_4: smrt: [
+2_5: smrt: <
+2_6: smrt: \
+2_7: smrt: >
+2_8: smrt: ]
+2_9:
+
+3_0: smrt: ?
+3_1: smrt: ;
+3_2: smrt: %
+3_3: smrt: /
+3_4: smrt: |
+3_5: smrt: +
+3_6: smrt: "
+3_7: smrt: '
+3_8:
+
+caps: a: wordtweak
+space: smrt:: space
+backspace: a: bksp
+maindot: smrt:.
+ret: smrt:: newline

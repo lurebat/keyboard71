@@ -1,0 +1,5 @@
+extrarows -3
+issystem
+
+row:
+   "unshrink" @ 100 altpic "small32_up.png"

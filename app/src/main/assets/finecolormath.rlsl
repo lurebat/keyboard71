@@ -1,0 +1,16 @@
+float finecolor_convert(float value, int pix_num, int pix_maxnum){
+
+   int base = int(floor(value * 255.0));
+   float remainder = (value * 255.0) - float(base);
+   
+   int numberedrem = int(floor(remainder * float(pix_maxnum) + 0.5));
+   
+   if(numberedrem > pix_num){
+      return float(base + 1) / 255.0;
+   } else {
+      return float(base) / 255.0;
+   }
+   
+   
+   
+}

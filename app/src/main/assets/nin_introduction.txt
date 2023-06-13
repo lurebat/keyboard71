@@ -1,0 +1,35 @@
+Hello!
+
+You probably care more about the custom keyboard than this app itself.
+
+Press Home Button, Go to iOS Settings -> General -> Keyboard -> Add New Keyboard.
+Add Nintype.
+You can then switch to nintype using the globe button at the bottom left of the keyboards.
+
+Try it out on the iOS notes app, for your best learning experience!
+
+Follow @jormy at twitter for updates and the like.
+
+You can get really quick support at reddit.com/r/nintype. Easy to register, don't even need your email!
+
+Keyboard options is at the keyboard. Press and hold spacebar to open the options.
+
+Feel free to mail yose@jormy.com for comments, etc. I get a lot of emails but I will try to answer questions whenever possible.
+
+This app cannot access the keyboard options because of open access restrictions.
+
+This keyboard will be continually updated for a long while until it's super stable.
+
+---------------------------
+
+Now, as for the nintype app itself
+
+Slide left and right to navigate.
+
+Most menus are operated through sliding.
+
+The keyboard is special, instead of tapping the letters, you can slide between them instead. And you can use both hands while doing that!
+
+There's more tutorials on other files. Find them!
+
+Thanks, and enjoy!

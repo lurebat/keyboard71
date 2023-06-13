@@ -1,0 +1,23 @@
+vowels:
+ㅏ	ㅐ	ㅑ	ㅒ	ㅓ	ㅔ	ㅕ	ㅖ	ㅗ	ㅘ	ㅙ	ㅚ	ㅛ	ㅜ	ㅝ	ㅞ	ㅟ	ㅠ	ㅡ	ㅢ	ㅣ
+a	ae	ya	yae	eo	e	yeo	ye	o	wa	wae	oe	yo	u	wo	we	wi	yu	eu	ui	i
+
+consonants:
+ㄱ	ㄲ	ㄴ	ㄷ	ㄸ	ㄹ	ㅁ	ㅂ	ㅃ	ㅅ	ㅆ	ㅇ	ㅈ	ㅉ	ㅊ	ㅋ	ㅌ	ㅍ	ㅎ
+g	kk	n	d	tt	r	m	b	pp	s	ss	^	j	jj	ch	k	t	p	h
+k	k	n	t	-	l	m	p	-	t	t	ng	t	-	t	k	t	p	t
+
+combos:
+	ㅇ	ㄱ	ㄴ	ㄷ	ㄹ	ㅁ	ㅂ	ㅅ	ㅈ	ㅊ	ㅋ	ㅌ	ㅍ	ㅎ
+ㄱ	g	kg	ngn	kd	ngn	ngm	kb	ks	kj	kch	k-k	kt	kp	kh,k
+ㄴ	n	n-g	nn	nd	ll,nn	nm	nb	ns	nj	nch	nk	nt	np	nh
+ㄷ	d,j	tg	nn	td	nn	nm	tb	ts	tj	tch	tk	t-t	tp	th,t,ch
+ㄹ	r	lg	ll,nn	ld	ll	lm	lb	ls	lj	lch	lk	lt	lp	lh
+ㅁ	m	mg	mn	md	mn	mm	mb	ms	mj	mch	mk	mt	mp	mh
+ㅂ	b	pg	mn	pd	mn	mm	pb	ps	pj	pch	pk	pt	p-p	ph,p
+ㅇ	ng-	ngg	ngn	ngd	ngn	ngm	ngb	ngs	ngj	ngch	ngk	ngt	ngp	ngh
+
+endtoinitials:
+ᆨ	ᆩ	ᆫ	ᆮ	ㄸ	ᆯ	ᆷ	ᆸ	ㅃ	ᆺ	ᆻ	ᆼ	ᆽ	ㅉ	ᆾ	ᆿ	ᇀ	ᇁ	ᇂ
+ㄱ	ㄲ	ㄴ	ㄷ	ㄸ	ㄹ	ㅁ	ㅂ	ㅃ	ㅅ	ㅆ	ㅇ	ㅈ	ㅉ	ㅊ	ㅋ	ㅌ	ㅍ	ㅎ
+

@@ -1,0 +1,11 @@
+fraglib depthpack
+
+flag tex_override
+
+fragpipe vec4 finalcolor, order 400
+   
+fragpipe order 2
+   vec4 raw_tex = texture2D(_r_tex1, _texcoordV);   
+   float valer = unpack_depth(raw_tex);;
+   texture_color = vec4(valer, valer, valer, 1.0);
+   //texture_color = raw_tex;

@@ -1,0 +1,39 @@
+uniform vec2 beveller_fingpos1;
+uniform float beveller_factor1;
+
+uniform vec2 beveller_fingpos2;
+uniform float beveller_factor2;
+
+uniform float beveller_idealdist;
+uniform float beveller_ringdist;
+uniform float beveller_pow;
+
+uniform float beveller_light_factor;
+uniform float beveller_shadow_factor;
+
+vertpipe vec4 vertcolor, vec4 vertpos, order 44
+   
+   vec2 diff = vertpos.xy - vertmid.xy;
+   diff.x *= 0.01;
+   vec2 lightdir = vec2(0.0, -0.957);
+   
+   float power = dot(normalize(diff), lightdir);
+   
+   float distance1 = length(vertpos.xy - beveller_fingpos1);
+   float fromideal1 = max(abs(distance1 - beveller_idealdist), 0.05);
+   float factor1 = pow(max(1.0 - (fromideal1 / beveller_ringdist), 0.0), beveller_pow);
+   
+   float distance2 = length(vertpos.xy - beveller_fingpos2);
+   float fromideal2 = max(abs(distance2 - beveller_idealdist), 0.05);
+   float factor2 = pow(max(1.0 - (fromideal2 / beveller_ringdist), 0.0), beveller_pow);
+   
+   float inversion = max(beveller_factor2 * factor2, beveller_factor1 * factor1);
+   
+   power = power * (1.0 - inversion * 2.0);
+   
+   if(power > 0.0){
+      vertcolor = vec4(1.0, 1.0, 1.0, power * beveller_light_factor);
+   } else {
+      vertcolor = vec4(0.0, 0.0, 0.0, -power * beveller_shadow_factor);
+   }
+   

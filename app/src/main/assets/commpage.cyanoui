@@ -1,0 +1,81 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uitemplates:
+   invisi: peerdisplay
+      gusto: button2
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: iconser
+         iconrowsize: 4
+         icon:
+            > uidot.png
+            > uidot.png
+            > uidot.png
+            > uidot.png
+            > uidot.png
+            > uidot.png
+            > uidot.png
+            > uidot.png
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: textbit
+         minsize: 150 10
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      button: actionbutton
+         gusto: button2, warningpattern
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   invisi: roompeerdisplay
+      gusto: button2
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: textbit
+         minsize: 150 10
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      button: actionbutton
+         gusto: button2, warningpattern
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+cyanoui:
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   invisi: topui
+      agentpos: 15 15 290
+      gusto: plainborder
+      rowsize: 1
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: headerbit
+         icon> jormnetheader.png
+         rowsize: 1
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: peerbit
+         gusto: default
+         rowsize: 1
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         invisi: peertexter
+            gusto: warningpattern
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         invisi: peerlist
+            rowsize: 1
+            minsize: 10 60
+            scroller:
+               height: 160
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: roombit
+         gusto: default
+         rowsize: 1
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         invisi: roomtexter
+            gusto: warningpattern
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         invisi: roomatecontainer
+            rowsize: 1
+            minsize: 10 60
+            scroller:
+               height: 160
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: botbuttons
+         rowsize: 5
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         button: dcbutton
+            gusto: button2, ditherpattern, patborder6
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         button: closebutton
+            gusto: button2, ditherpattern, patborder6
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

@@ -1,0 +1,19 @@
+:Word Learning
+
+How does nintype learn new words?
+
+If a word isn't in the dictionary, peck-type them first (on slidemode, not peckmode though) and after that you'll be able to use it by sliding.
+
+The new word will be then given a 'pending' status.
+
+After you use the word for a bit, it'll be 'induced' into the main dictionary. 
+
+If you backspace on the word, however, it'll reduce the pending score by one, and after you keep on backspacing on the word, eventually it'll be rid of.
+
+If you don't use the word after a few months, it'll be forgotten, unless it got induced to the main dictionary.
+
+The developer (yours truly) thinks this works quite well, after using the keyboard for a while himself.
+
+The starting dictionary is less than perfect but you can get rapidly fix it by adding your own words rather easily, so it's not that big of a deal, mostly.
+
+(I will get to that dictionary quality improvements soon though, but time is short)

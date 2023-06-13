@@ -1,0 +1,12 @@
+system: selfipaddress
+use: ua.js
+use: delayfor.js
+use: jorm-jquery.min.js
+use: store.js
+use: morestring.js
+use: jormrpc.js
+use: karlets.js
+use: css/darktheme.css
+use: css/mobilebase.css
+use: humane.js
+se: humanethemes/bigbox.css

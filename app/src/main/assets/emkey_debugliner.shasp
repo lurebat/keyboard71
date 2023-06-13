@@ -1,0 +1,9 @@
+varying float mmyness;
+
+vertpipe vec4 mmpos, order 60
+   mmyness = mmpos.y;
+   
+fragpipe order 80
+   if(int(floor(mmyness / 2.0)) % 2 == 0){
+      discard;
+   }

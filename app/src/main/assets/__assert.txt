@@ -1,0 +1,3198 @@
+
+
+At : 02:17 Fri, Sep 16 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:04 Fri, Sep 16 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:04 Fri, Sep 16 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 22:19 Fri, Sep 16 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:49 Sat, Sep 17 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:56 Sat, Sep 17 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:06 Sat, Sep 17 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:06 Sat, Sep 17 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:08 Sat, Sep 17 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:47 Sat, Sep 17 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:47 Sat, Sep 17 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:30 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:31 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:40 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:41 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:15 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:15 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:17 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:17 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:18 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:19 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:20 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:22 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:22 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:26 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:27 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:59 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:05 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:09 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:16 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:21 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:36 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:37 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:42 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:58 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 16:17 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 16:18 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 16:30 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 16:30 Sun, Sep 18 2016:
+Assertion (0) at roengl/roengl.cpp:4947 failed
+With Message "unknown roengl::glState flag : GL_DEPTH"
+Empty Shing::LogStack!
+
+
+
+
+At : 16:31 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 16:31 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 16:36 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 16:37 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 17:03 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 17:04 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:56 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:04 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:08 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:13 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:14 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:14 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:15 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:17 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:19 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:21 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:33 Sun, Sep 18 2016:
+Assertion (__softpr.record->target != NULL) at rouge/../shing/softpointer.hpp:225 failed
+With Message "Null endref from softpointer of N5Rouge4UnitE"
+Empty Shing::LogStack!
+
+
+
+
+At : 20:35 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:36 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:26 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:26 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:27 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:28 Sun, Sep 18 2016:
+Assertion (0) at roengl/modelreg.cpp:217 failed
+With Message ""
+SHINGLOGSTACK -------------------
+updating page : karui:Rou @ updateState@roengl/roengl.cpp:3944
+updateState@roengl/roengl.cpp:3685
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 21:42 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:44 Sun, Sep 18 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:38 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:52 Mon, Sep 19 2016:
+Assertion (__softpr.record->target != NULL) at rouge/../shing/softpointer.hpp:225 failed
+With Message "Null endref from softpointer of N5Rouge4UnitE"
+Empty Shing::LogStack!
+
+
+
+
+At : 00:53 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:57 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:25 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:27 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:42 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:52 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:52 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:53 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:54 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:55 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:55 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:56 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:27 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:24 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:58 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:08 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:24 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:25 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:26 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:26 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:27 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:30 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:32 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:33 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:34 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 13:11 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 13:13 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:30 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:50 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:51 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:52 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:59 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:01 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:29 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:32 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:39 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:44 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:49 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:50 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:54 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:57 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:07 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:10 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:20 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:21 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:25 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:27 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:35 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:39 Mon, Sep 19 2016:
+Assertion (gotdot) at roengl/shasps.cpp:84 failed
+With Message "the form of shaspautouni should be something like huerot.huerot_deg etc"
+Empty Shing::LogStack!
+
+
+
+
+At : 21:40 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:41 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:41 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:43 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:44 Mon, Sep 19 2016:
+Assertion (0) at roengl/shasps.cpp:336 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:45 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:45 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:47 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:49 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:57 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:58 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 22:11 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 22:13 Mon, Sep 19 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:14 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:20 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:26 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:28 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:52 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:58 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:03 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:05 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:09 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:15 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:15 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:22 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:27 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:28 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:29 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:32 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:33 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:34 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:40 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:41 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:44 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:45 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:37 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:52 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 12:11 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 12:16 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 12:17 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 12:18 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 12:28 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 12:29 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 12:50 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:33 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:34 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:35 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:35 Tue, Sep 20 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:35 Wed, Sep 21 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:17 Wed, Sep 21 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 11:56 Wed, Sep 21 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 16:40 Wed, Sep 21 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:40 Wed, Sep 21 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:56 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:22 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:25 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:26 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:44 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:33 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:37 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:38 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:39 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 13:22 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:04 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:17 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:08 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:15 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:22 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:23 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:25 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:27 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:32 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:37 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:43 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:44 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:45 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:47 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:52 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:53 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:57 Thu, Sep 22 2016:
+Assertion (__softpr.record != NULL) at rouge/../shing/softpointer.hpp:224 failed
+With Message "Null ref from softpointer of N5Rouge4UnitE"
+SHINGLOGSTACK -------------------
+distributeTouchEvent@roengl/roengl.cpp:4514
+handleTouchEvent@roengl/roengl.cpp:4327
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 21:57 Thu, Sep 22 2016:
+Assertion (__softpr.record != NULL) at rouge/../shing/softpointer.hpp:224 failed
+With Message "Null ref from softpointer of N5Rouge4UnitE"
+SHINGLOGSTACK -------------------
+distributeTouchEvent@roengl/roengl.cpp:4514
+handleTouchEvent@roengl/roengl.cpp:4327
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 22:01 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 22:06 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 22:07 Thu, Sep 22 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:46 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:56 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:59 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:40 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:44 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:51 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:56 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:02 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:03 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:13 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:17 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:12 Fri, Sep 23 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:39 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:14 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:11 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:12 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:15 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:31 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 22:19 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:18 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:31 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:52 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:54 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:57 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:58 Sat, Sep 24 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:22 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:35 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:35 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:36 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:38 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:45 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:48 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:53 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:00 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:21 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:22 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:24 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:31 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:35 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:45 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:46 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:47 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 13:14 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 13:22 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 13:22 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 13:26 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:06 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:45 Sun, Sep 25 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:21 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:22 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:34 Mon, Sep 26 2016:
+Assertion (es) at rouge/energy.cpp:206 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:41 Mon, Sep 26 2016:
+Assertion (es) at rouge/energy.cpp:209 failed
+With Message "What, bad codemap : 1"
+Empty Shing::LogStack!
+
+
+
+
+At : 03:45 Mon, Sep 26 2016:
+Assertion (es) at rouge/energy.cpp:210 failed
+With Message "What, bad codemap : 1"
+Empty Shing::LogStack!
+
+
+
+
+At : 03:47 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:19 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:20 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:37 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:38 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 13:16 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 13:22 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 17:36 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:22 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:23 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:43 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:21 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:28 Mon, Sep 26 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:32 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:33 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:36 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:39 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:41 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:42 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:43 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:11 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:14 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:27 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:28 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:28 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:30 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:31 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:32 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:33 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:36 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:48 Tue, Sep 27 2016:
+Assertion (0) at emkeyboard/moopad.cpp:17547 failed
+With Message ""
+SHINGLOGSTACK -------------------
+distributeTouchEvent@roengl/roengl.cpp:4514
+handleTouchEvent@roengl/roengl.cpp:4327
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 03:56 Tue, Sep 27 2016:
+Assertion (0) at emkeyboard/moopad.cpp:17547 failed
+With Message ""
+SHINGLOGSTACK -------------------
+distributeTouchEvent@roengl/roengl.cpp:4514
+handleTouchEvent@roengl/roengl.cpp:4327
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 05:15 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 20:58 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 22:10 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:10 Tue, Sep 27 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:06 Wed, Sep 28 2016:
+Assertion (activegd) at rouge/rouge.cpp:59 failed
+With Message ""
+SHINGLOGSTACK -------------------
+asynca action:karui/gamekarpage.cpp:86 @ runUntilBeforeBlocking@shing/asynca.cpp:614
+updateState@roengl/roengl.cpp:3685
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 02:08 Wed, Sep 28 2016:
+Assertion (0) at shing/flector.cpp:1455 failed
+With Message ""
+SHINGLOGSTACK -------------------
+asynca action:karui/gamekarpage.cpp:86 @ runUntilBeforeBlocking@shing/asynca.cpp:614
+updateState@roengl/roengl.cpp:3685
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 02:09 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:10 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:10 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:12 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:18 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:22 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:23 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:24 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:25 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:25 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:27 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:27 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:28 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:28 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:30 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:31 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:32 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:32 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:36 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:08 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:08 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:10 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:11 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:11 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:19 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:12 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 21:32 Wed, Sep 28 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:55 Thu, Sep 29 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:11 Thu, Sep 29 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:12 Thu, Sep 29 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:13 Thu, Sep 29 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:14 Thu, Sep 29 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:16 Thu, Sep 29 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 23:17 Thu, Sep 29 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:36 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 00:37 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:43 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:53 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:55 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:56 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 01:58 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:04 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:12 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:34 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:43 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:46 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:47 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:51 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:53 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:54 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:55 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:57 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 02:58 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:00 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:04 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:26 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:32 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:49 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:50 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:27 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 17:12 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 17:14 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 17:16 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 17:51 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 17:58 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:01 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:02 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 18:58 Fri, Sep 30 2016:
+Assertion (dh) at commongamelib/defs.cpp:567 failed
+With Message ""
+SHINGLOGSTACK -------------------
+asynca action:karui/gamekarpage.cpp:86 @ runUntilBeforeBlocking@shing/asynca.cpp:614
+updateState@roengl/roengl.cpp:3685
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 19:00 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:01 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:02 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:02 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:06 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:09 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:09 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:11 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:13 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:14 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 19:16 Fri, Sep 30 2016:
+Assertion (0) at rouge/side.cpp:46 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 04:16 Tue, Nov 29 2016:
+Assertion (0) at emkeyboard/spacecompleter_holder.cppinl:445 failed
+With Message ""
+SHINGLOGSTACK -------------------
+distributeTouchEvent@roengl/roengl.cpp:4542
+handleTouchEvent@roengl/roengl.cpp:4351
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 04:19 Tue, Nov 29 2016:
+Assertion (0) at emkeyboard/spacecompleter_holder.cppinl:450 failed
+With Message ""
+SHINGLOGSTACK -------------------
+distributeTouchEvent@roengl/roengl.cpp:4542
+handleTouchEvent@roengl/roengl.cpp:4351
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 14:48 Sat, Jan 21 2017:
+Assertion (0) at roengl/shaderprog.cpp:223 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 14:49 Sat, Jan 21 2017:
+Assertion (0) at roengl/shaderprog.cpp:223 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 14:49 Sat, Jan 21 2017:
+Assertion (0) at roengl/shaderprog.cpp:223 failed
+With Message ""
+Empty Shing::LogStack!
+
+
+
+
+At : 03:20 Wed, Mar 29 2017:
+Assertion (0) at emkeyboard/moopad.cpp:16750 failed
+With Message ""
+SHINGLOGSTACK -------------------
+distributeTouchEvent@roengl/roengl.cpp:4543
+handleTouchEvent@roengl/roengl.cpp:4352
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 17:58 Sun, Jul 9 2017:
+Assertion (mmapbuffer != MAP_FAILED) at shing/mmap.cpp:315 failed
+With Message "Failed MMAping : data/appdata/scdbs2/pi WTF"
+SHINGLOGSTACK -------------------
+RoenGL@roengl/roengl.cpp:823
+RoenGL@roengl/roengl.cpp:815
+RoenGL@roengl/roengl.cpp:810
+RoenGL@roengl/roengl.cpp:806
+RoenGL@roengl/roengl.cpp:798
+RoenGL@roengl/roengl.cpp:792
+RoenGL@roengl/roengl.cpp:787
+RoenGL@roengl/roengl.cpp:770
+RoenGL@roengl/roengl.cpp:755
+RoenGL@roengl/roengl.cpp:676
+RoenGL@roengl/roengl.cpp:611
+RoenGL init! @ RoenGL@roengl/roengl.cpp:597
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 17:59 Sun, Jul 9 2017:
+Assertion (mmapbuffer != MAP_FAILED) at shing/mmap.cpp:315 failed
+With Message "Failed MMAping : data/appdata/scdbs2/pp WTF"
+SHINGLOGSTACK -------------------
+RoenGL@roengl/roengl.cpp:823
+RoenGL@roengl/roengl.cpp:815
+RoenGL@roengl/roengl.cpp:810
+RoenGL@roengl/roengl.cpp:806
+RoenGL@roengl/roengl.cpp:798
+RoenGL@roengl/roengl.cpp:792
+RoenGL@roengl/roengl.cpp:787
+RoenGL@roengl/roengl.cpp:770
+RoenGL@roengl/roengl.cpp:755
+RoenGL@roengl/roengl.cpp:676
+RoenGL@roengl/roengl.cpp:611
+RoenGL init! @ RoenGL@roengl/roengl.cpp:597
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 18:00 Sun, Jul 9 2017:
+Assertion (mmapbuffer != MAP_FAILED) at shing/mmap.cpp:315 failed
+With Message "Failed MMAping : data/appdata/scdbs2/pp WTF @ mmaplength 0"
+SHINGLOGSTACK -------------------
+RoenGL@roengl/roengl.cpp:823
+RoenGL@roengl/roengl.cpp:815
+RoenGL@roengl/roengl.cpp:810
+RoenGL@roengl/roengl.cpp:806
+RoenGL@roengl/roengl.cpp:798
+RoenGL@roengl/roengl.cpp:792
+RoenGL@roengl/roengl.cpp:787
+RoenGL@roengl/roengl.cpp:770
+RoenGL@roengl/roengl.cpp:755
+RoenGL@roengl/roengl.cpp:676
+RoenGL@roengl/roengl.cpp:611
+RoenGL init! @ RoenGL@roengl/roengl.cpp:597
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 12:13 Tue, Jul 11 2017:
+Assertion (mmapbuffer != MAP_FAILED) at shing/mmap.cpp:315 failed
+With Message "Failed MMAping : data/appdata/scdbs2/pi WTF @ mmaplength 0"
+SHINGLOGSTACK -------------------
+RoenGL@roengl/roengl.cpp:823
+RoenGL@roengl/roengl.cpp:815
+RoenGL@roengl/roengl.cpp:810
+RoenGL@roengl/roengl.cpp:806
+RoenGL@roengl/roengl.cpp:798
+RoenGL@roengl/roengl.cpp:792
+RoenGL@roengl/roengl.cpp:787
+RoenGL@roengl/roengl.cpp:770
+RoenGL@roengl/roengl.cpp:755
+RoenGL@roengl/roengl.cpp:676
+RoenGL@roengl/roengl.cpp:611
+RoenGL init! @ RoenGL@roengl/roengl.cpp:597
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 09:58 Wed, Jul 12 2017:
+Assertion (mmapbuffer != MAP_FAILED) at shing/mmap.cpp:315 failed
+With Message "Failed MMAping : data/appdata/scdbs2/pi WTF @ mmaplength 0"
+SHINGLOGSTACK -------------------
+RoenGL@roengl/roengl.cpp:823
+RoenGL@roengl/roengl.cpp:815
+RoenGL@roengl/roengl.cpp:810
+RoenGL@roengl/roengl.cpp:806
+RoenGL@roengl/roengl.cpp:798
+RoenGL@roengl/roengl.cpp:792
+RoenGL@roengl/roengl.cpp:787
+RoenGL@roengl/roengl.cpp:770
+RoenGL@roengl/roengl.cpp:755
+RoenGL@roengl/roengl.cpp:676
+RoenGL@roengl/roengl.cpp:611
+RoenGL init! @ RoenGL@roengl/roengl.cpp:597
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 10:06 Wed, Jul 12 2017:
+Assertion (mmapbuffer != MAP_FAILED) at shing/mmap.cpp:315 failed
+With Message "Failed MMAping : data/appdata/scdbs2/pi WTF @ mmaplength 0"
+SHINGLOGSTACK -------------------
+RoenGL@roengl/roengl.cpp:823
+RoenGL@roengl/roengl.cpp:815
+RoenGL@roengl/roengl.cpp:810
+RoenGL@roengl/roengl.cpp:806
+RoenGL@roengl/roengl.cpp:798
+RoenGL@roengl/roengl.cpp:792
+RoenGL@roengl/roengl.cpp:787
+RoenGL@roengl/roengl.cpp:770
+RoenGL@roengl/roengl.cpp:755
+RoenGL@roengl/roengl.cpp:676
+RoenGL@roengl/roengl.cpp:611
+RoenGL init! @ RoenGL@roengl/roengl.cpp:597
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 11:24 Sat, Jul 22 2017:
+Assertion (0) at shing/discmap.cpp:84 failed
+With Message "trying to discmap an empty file!"
+SHINGLOGSTACK -------------------
+performNBIPackLoading@emkeyboard/langenv.cpp:3367
+distributeTouchEvent@roengl/roengl.cpp:4543
+handleTouchEvent@roengl/roengl.cpp:4352
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 11:25 Sat, Jul 22 2017:
+Assertion (0) at shing/discmap.cpp:84 failed
+With Message "trying to discmap an empty file!"
+SHINGLOGSTACK -------------------
+performNBIPackLoading@emkeyboard/langenv.cpp:3367
+distributeTouchEvent@roengl/roengl.cpp:4543
+handleTouchEvent@roengl/roengl.cpp:4352
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 19:21 Sun, Sep 3 2017:
+Assertion (0) at roengl/roengl.cpp:3257 failed
+With Message ""
+SHINGLOGSTACK -------------------
+asynca action:emkeyboard/moopad.cpp:3414 @ runUntilBeforeBlocking@shing/asynca.cpp:614
+updateState@roengl/roengl.cpp:3733
+SHINGLOGSTACKEND -------------------
+
+
+
+
+At : 18:00 Mon, Sep 4 2017:
+Assertion (0) at shing/utf8/checked.h:152 failed
+With Message ""
+SHINGLOGSTACK -------------------
+addText@roengl/consularetext.cpp:1426
+distributeTouchEvent@roengl/roengl.cpp:4535
+handleTouchEvent@roengl/roengl.cpp:4344
+SHINGLOGSTACKEND -------------------
+
+

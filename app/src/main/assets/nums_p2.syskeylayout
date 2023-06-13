@@ -1,0 +1,45 @@
+issystem
+hasrechooser
+bos_oain
+
+row:
+   :dontsplit
+   "leftcursorer" nobacker altpic "small24_dragindi.png"
+   one @ 27 namify one
+   two @ 26 namify two
+   three @ 27 namify choicer 
+   "rightcursorer" nobacker altpic "keyboard_dragright.png"
+row:
+   '[
+   ']
+   '{
+   '}
+   '#
+   '%
+   '^
+   '*
+   '+
+   '=
+row:
+   '_
+   '\
+   '|
+   '~
+   '<
+   '>
+   !u 163 userenderer
+   !u 8364 userenderer
+   !u 165 userenderer
+   !u 8226 userenderer
+row:
+   "e" @ 15 summon num altpic "keyboard_123.png"
+   '. @ 14
+   ', @ 14
+   '? @ 14
+   '! @ 14
+   '' @ 14
+   "<" @ 15 >> namify backspace altpic "keyboard_backspace.png"
+row:
+   "abc" @ 15 summon main altpic "keyboard_abc.png"
+   '  @ 70 >> namify space
+   "ret" @ 15 namify ret altpic "keyboard_enter.png"

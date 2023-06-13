@@ -1,0 +1,38 @@
+uniform vec2 fingerdisplacer_fingpos1;
+uniform float fingerdisplacer_factor1;
+
+uniform vec2 fingerdisplacer_fingpos2;
+uniform float fingerdisplacer_factor2;
+
+uniform float fingerdisplacer_idealdist;
+uniform float fingerdisplacer_ringdist;
+uniform float fingerdisplacer_pow;
+
+vertpipe vec4 vertcolor, vec4 vertpos, order 43
+   vec2 focustouse = vertmid.xy;
+   if(focustouse.x < 1.0){
+      focustouse = vertpos.xy;
+   }
+   
+   vec2 diff1 = focustouse.xy - fingerdisplacer_fingpos1;
+   float distance1 = length(diff1);
+   float fromideal1 = max(abs(distance1 - fingerdisplacer_idealdist), 0.05);
+   float factor1 = pow(max(1.0 - (fromideal1 / fingerdisplacer_ringdist), 0.01), fingerdisplacer_pow);
+   
+   vec2 diff2 = focustouse.xy - fingerdisplacer_fingpos2;
+   float distance2 = length(diff2);
+   float fromideal2 = max(abs(distance2 - fingerdisplacer_idealdist), 0.05);
+   float factor2 = pow(max(1.0 - (fromideal2 / fingerdisplacer_ringdist), 0.01), fingerdisplacer_pow);
+   
+   if(distance1 > 0.05){
+      vec2 normalizedmove1 = vec2(0, 1);
+      vertpos.x += factor1 * (normalizedmove1.x * 9.0) * fingerdisplacer_factor1;
+      vertpos.y += factor1 * (normalizedmove1.y * 9.0) * fingerdisplacer_factor1;
+   }
+   
+   if(distance2 > 0.05){
+      vec2 normalizedmove2 = vec2(0, 1);
+      vertpos.x += factor2 * (normalizedmove2.x * 9.0) * fingerdisplacer_factor2;
+      vertpos.y += factor2 * (normalizedmove2.y * 9.0) * fingerdisplacer_factor2;
+   }
+   

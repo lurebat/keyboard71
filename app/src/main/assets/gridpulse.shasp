@@ -1,0 +1,14 @@
+uniform float gridpulse_timing;
+uniform float gridpulse_ratio;
+
+fraglib floatinterpolate
+
+varying float gridpulse_pixeldepth;
+
+vertpipe vec4 mmpos, order 60
+   gridpulse_pixeldepth = mmpos.z;
+   
+fragpipe vec4 finalcolor, order 14
+   float thefac = abs((mod(gridpulse_pixeldepth / 10.0 + gridpulse_timing, 1.0) * 2.0) - 1.0) + 0.5;
+   float finalratio = floatinterpolate(gridpulse_ratio, 1.0, thefac);
+   finalcolor.xyz = (finalcolor.xyz * finalratio);

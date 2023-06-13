@@ -1,0 +1,12 @@
+attrib float _texcoord_depth;
+varying float _texcoord_depthV;
+flag tex_override
+
+vertpipe order 1
+   _texcoord_depthV = _texcoord_depth;
+   
+fragpipe order 2
+   vec2 finaltexcoord = (_texcoordV) * (1.0 / _texcoord_depthV);
+   //finalcolor = _vr_colorout * texture2D(_r_tex1, finaltexcoord);
+   texture_color = texture2D(_r_tex1, finaltexcoord);
+   //finalcolor = vec4(_texcoord_depthV, 0, 0, 1);

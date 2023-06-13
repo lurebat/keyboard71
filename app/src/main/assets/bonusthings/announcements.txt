@@ -1,0 +1,149 @@
+Sept 2017
+   Oh hey, it's been a while huh?
+      Sorry about yet another late update. I've been enjoying life
+      not having anything to do with nintype, and let me tell you.
+      Life has never been better.
+   ----
+   Fixed the issue with "TV" and "PC" when you try to type "I"
+      was a corrupted dictionary file, in a way
+   ----
+   Added a dictionary management tool
+      you can now backup your whole dictionary and "recompile" it
+      this tool is for those who want to make their own custom dicts
+      only accessible from servermode.
+      I'm starting to think servermode console is the answer
+      to options or management of nintype
+   ----
+   Servermode now works for android too
+      You can now activate servermode on android nintype.
+      You can use this to backup words, etc, or just mess around
+   ----
+   What's next?
+      when's <insert your language> going to be implemented?
+      who knows at this point. I'm enjoying life without worrying
+      about nintype a little too much.
+   ----
+   What am I working on other than nintype?
+      A few games.
+      That, and a java development tool. If you use java, you might
+      find a use of it! This'll probably be the next thing I release.
+July 2017
+   Oh hey, what's up? It's been a while!
+      let's get on with the news shall we?
+      also apologies for twitter silence, staying away from that thing
+      really does wonders for my sanity though. Lets me concentrate on my other projects.
+   ----
+   Topbar improvements:
+      press-hold on a word to change capitalization easily
+      Sliding left/right now has a new mode (go to options for that)
+      insta cap switching of words now easily done through the menu
+      fixed bug where cap switching didn't reflect properly
+      fixed retype->rewind bugs (UI misplacement, etc)
+   ----
+   Shortcuts
+      you can now add big shortcut slots on the main menu
+      it's easier to see than the current "5 icons" slots.
+      it's off by default, so you have to enable it first
+   ----
+   Updated dictionary
+      improved, in general. Thanks for your dictionary donations.
+      I haven't put in the credits yet (one day..). Also, removed
+      some silly dictionary words too, like "huang", "saturaday"
+April 2017
+   What is nintype? I almost forgot. 
+      Sorry for the late update - been busy with "stuff"
+   ----
+   Topbar is revamped, should be much better now in terms of
+   experience. You can see the cursor, etc.
+February 2017
+   Oh yeah, sorry about that last update breaking options menu
+      it should be fixed now.
+   ----
+   This is just a quick update.
+      My todo list is super long, and there are other things left.
+      But I'm still working on a game, amongst other things.
+      If only I can clone myself.
+      Feel free to keep nagging me about bugs I forget to fix
+      (just mail me, you've got my number hit me up)
+   ----
+   Revamping the main menu
+      it's about time to make it more logical. Work in progress.
+   ----
+   Fixed the kaomoji page
+      Colors should be right now
+   ----
+   An engineer from Apple mailed me
+      and let me know about a deprecated API usage related to sounds
+      so I went and fixed things. Let me know if sounds work better now.
+      (thanks, Josh)
+   ----
+   Haptic feedback!
+      it's now an option.
+      Enable it from the "sounds" options. Let me know how it feels?
+      Only works on iPhone 7 and up
+December Drought
+   Hebrew kinda works properly now? Maybe not.
+   Still need to make spacebar slider work left-to-right though
+   ----
+   Hey there iOS users. First time seeing this eh?
+      It's because android limited its changelog to 500chars
+      so I had to make this as well, and I had a few quick android releases
+      you may have heard, my attention have shifted to android recently
+   ----
+   Donate your dictionary to me, please!
+      go to the options, and scroll down. You'll see a pink button.
+   ----
+   You can now adjust vertical positioning of letter keys
+      from the same UI where you change fonts
+   ----
+   Sorry for ignoring twitter for a bit
+      I got in the zone on this project, and twitter was usually quiet
+   I've been busy working on something
+      you might know what it is, if you've been following me on twitter
+      not related to the calendar or nintype though
+      nintype isn't really paying the bills anymore
+      but unlike other keyboards, what fuels nintype isn't its
+      ability to pay the bill, but the fact that I, the only developer
+      still uses nintype for everyday usage.
+      SO don't you worry, and just give me time to work on things
+   ----
+   I still haven't installed 10.2 as of now
+      Did it make the 3rd party keyboard in iOS better? Probably
+      But given my disappointment in the past, I feel no obligation to
+      install it first day.
+      The damn emojis though, they mean more work for me :/
+   ----
+   16 Dec 2016
+Yet another update eh?
+   Updates won't be this consistent. Please don't get used to it.
+   I do plan to get some stuff done though, so more are incoming
+   ----
+   What do you think about this news system?
+   ----
+   you can now export settings by copy/paste rather than inserting to textboxes
+      you can also import via copy/paste too
+   ----
+   It turns out servermode won't work for a while (android)
+      because nintype didn't ask for internet permissions.
+      might have to make a different version with internet permissions
+      or maybe it's not worth the effort?
+      if only android has an on/off switch for these
+   ----
+   New settings:
+      "reverse thicc flick direction" for those who can't flick the other way
+      "quit peckmode on slide" can now be disabled
+   ----
+   30 nov 2016
+First Android Update
+   Android specific Spacebar Push
+      (slide down from spacebar, instead of force pushing)
+      !! please report back to tell me if this works !!
+   ----
+   Screen Scale options
+   ----
+   Paste shortcut works
+      copy copies line, not selection.
+      Why is it like this? Because iOS keyboard API doesn't allow nintype
+      to see what's in the selection, for some reason
+   ----
+   30 nov 2016

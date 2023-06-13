@@ -1,0 +1,21 @@
+vertlib colormath
+
+uniform float vertorthorainbow_colorshift;
+uniform vec4 vertorthorainbow_leftbleed;
+uniform vec4 vertorthorainbow_rightbleed;
+
+vertpipe vec4 mmpos, vec4 vertcolor, order 99
+   float lehuerot = (mmpos.x + mmpos.y + (vertorthorainbow_colorshift * 4.0 * 62.831)) / 40.0;
+   
+   vertcolor = colormath_huerot(vertcolor, lehuerot);
+   
+   vec4 origspun = vertcolor;
+   
+   vertcolor.r = max(vertcolor.r, origspun.g * vertorthorainbow_rightbleed.r);
+   vertcolor.g = max(vertcolor.g, origspun.b * vertorthorainbow_rightbleed.g);
+   vertcolor.b = max(vertcolor.b, origspun.r * vertorthorainbow_rightbleed.b);
+   
+   vertcolor.r = max(vertcolor.r, origspun.b * vertorthorainbow_leftbleed.r);
+   vertcolor.g = max(vertcolor.g, origspun.r * vertorthorainbow_leftbleed.g);
+   vertcolor.b = max(vertcolor.b, origspun.g * vertorthorainbow_leftbleed.b);
+      

@@ -1,0 +1,20 @@
+uniform vec3 fks_holderpos;
+uniform float fks_activity;
+
+vertpipe vec4 vertcolor, vec4 mmpos, order 67
+   
+   vec2 diff = mmpos.xy - fks_holderpos.xy;
+   float distance = length(diff);
+   
+   float incompleteness = (max(min(distance, 400.0) - (pow(fks_activity, 1.0) * 400.0), 0.0) / 400.0);
+   float spinfac = incompleteness / (1.0 + distance);
+   
+   
+   vec2 newdiff = diff * (1.0 - (incompleteness * 0.1));
+   
+   mmpos.xy = fks_holderpos.xy + newdiff;
+   
+   mmpos.y = mmpos.y + spinfac * 120.0;
+   vertcolor.w *= pow(1.0 - incompleteness, 1.6);
+   
+   

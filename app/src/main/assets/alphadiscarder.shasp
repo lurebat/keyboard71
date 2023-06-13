@@ -1,0 +1,4 @@
+fragpipe vec4 finalcolor, order 888
+   #flagreq !no_alphatest
+      if(finalcolor.w < 0.01)
+         discard;

@@ -1,0 +1,4 @@
+fraglib grayscale
+
+fragpipe vec4 finalcolor, order 20
+   finalcolor.xyz = grayscale_conversion(finalcolor.xyz);

@@ -1,0 +1,52 @@
+worthtotal 110
+
+row:
+   :dontsplit
+   "leftcursorer" @ 11 nobacker altpic "small24_dragindi.png"
+   one @ 29 namify one
+   two @ 30 namify two
+   three @ 29 namify choicer 
+   "rightcursorer" @ 11 nobacker altpic "keyboard_dragright.png"
+row:
+   'q >>
+   'w >>
+   'e >>
+   'r >>
+   't >>
+   'y >>
+   'u >>
+   'i >>
+   'o >>
+   'p >>
+   "<" namify backspace cannoborder altpic "keyboard_backspace.png"
+row:
+   'a >>
+   's >>
+   'd >>
+   'f >>
+   'g >>
+   'h >>
+   'j >>
+   'k >>
+   'l >> nexttoapos
+   '' @ 5 >> nobacker
+   "ret" @ 10
+   :aposShiftXworth -5
+row:
+   "^" @ 10 >> namify caps genchara z cannoborder altpic "keyboard_shift.png"
+   'z >>
+   'x >>
+   'c >>
+   'v >>
+   'b >>
+   'n >>
+   'm >>
+   ', altchar '!
+   '. altchar '?
+   "^" @ 10 cannoborder altpic "keyboard_shift.png"
+row:
+   "123" @ 15 summon num altpic "keyboard_123.png"
+   '  @ 10 namify langer
+   '  @ 60 namify space
+   "maindot" @ 10 namify maindot cannoborder
+   "ret" @ 15 namify ret altpic "keyboard_enter.png"

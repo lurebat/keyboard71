@@ -1,0 +1,6 @@
+fragpipe vec4 finalcolor, order 80
+   int xpos = int(gl_FragCoord.x);
+   int ypos = int(gl_FragCoord.y);
+   if(xpos % 8 == 0 || ypos % 8 == 0){
+      finalcolor.w = 0.0;
+   }

@@ -1,0 +1,4 @@
+uniform float texcoordshifter_xshift;
+
+vertpipe order 2
+   _texcoordV.x = _texcoord.x + texcoordshifter_xshift;

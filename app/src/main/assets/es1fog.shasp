@@ -1,0 +1,15 @@
+uniform float es1fog_near;
+uniform float es1fog_far;
+uniform vec4 es1fog_color;
+uniform vec3 es1fog_center;
+
+varying float fog_factor;
+
+vertpipe vec4 mmpos, order 60
+   float distance = distance(mmpos.xyz, es1fog_center);
+   fog_factor = clamp((distance - es1fog_near) / (es1fog_far - es1fog_near), 0.0, 1.0);
+
+fragpipe vec4 finalcolor, order 95
+   float origalpha = finalcolor.w;
+   finalcolor = (finalcolor * (1.0 - fog_factor)) + (es1fog_color * fog_factor);
+   finalcolor.w = min(origalpha, finalcolor.w);

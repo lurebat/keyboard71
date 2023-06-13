@@ -1,0 +1,3 @@
+fragpipe vec4 finalcolor, order 666
+   if(finalcolor.w < 0.01)
+      discard;

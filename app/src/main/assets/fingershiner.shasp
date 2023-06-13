@@ -1,0 +1,40 @@
+import floatinterpolate
+
+uniform vec2 fingershiner_fingpos1;
+uniform float fingershiner_factor1;
+
+uniform vec2 fingershiner_fingpos2;
+uniform float fingershiner_factor2;
+
+uniform float fingershiner_idealdist;
+uniform float fingershiner_ringdist;
+uniform float fingershiner_pow;
+
+vertpipe vec4 vertcolor, vec4 vertpos, order 44
+   vec2 diff1 = vertpos.xy - fingershiner_fingpos1;
+   float distance1 = length(diff1);
+   vec2 norm1 = diff1 / max(distance1, 1.0);
+   float dot1 = dot(norm1, vec2(0.707, 0.707));
+   float fromideal1 = max(abs(distance1 - fingershiner_idealdist), 0.05);
+   float factor1 = pow(max(1.0 - (fromideal1 / fingershiner_ringdist), 0.0), fingershiner_pow);
+   // vertcolor.a *= floatinterpolate(fingershiner_factor1, 1.0f, factor1);
+   
+   vec2 diff2 = vertpos.xy - fingershiner_fingpos2;
+   float distance2 = length(diff2);
+   vec2 norm2 = diff2 / max(distance2, 1.0);
+   float dot2 = dot(norm2, vec2(0.707, 0.707));
+   float fromideal2 = max(abs(distance2 - fingershiner_idealdist), 0.05);
+   float factor2 = pow(max(1.0 - (fromideal2 / fingershiner_ringdist), 0.0), fingershiner_pow);
+   
+   // vertcolor.a *= floatinterpolate(fingershiner_factor2, 1.0f, factor2);
+   float dotavg = dot1;
+   
+   vertcolor.a *= max(fingershiner_factor2 * factor2 * abs(dot2), fingershiner_factor1 * factor1 * abs(dot1));
+   //vertcolor.r = vertcolor.g = vertcolor.b = 1.0;
+   vertcolor.g = vertcolor.b = 0.25;
+   vertcolor.r = 1.0;
+   if(dotavg > 0.0){
+      vertcolor.a *= 0.34;
+   } else {
+      vertcolor.a *= 0.15;
+   }

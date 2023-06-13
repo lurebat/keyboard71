@@ -1,0 +1,28 @@
+uniform vec3 mars_lightdir;
+uniform vec3 mars_lookdir;
+
+varying vec3 vertshine;
+
+fragvar vec3 fragshine;
+flag fragshine;
+
+vertpipe order 55
+   #flagreq vertnormal
+      vec3 normed = normalize(mvnormal);
+      //float dotted = dot(normed, vec3(0.57735, 0.57735, -0.57735));
+      float dotted = dot(normed, mars_lightdir) * -1.0;
+      float theval = 0.5 + normed.y * 0.4;
+      
+      vec3 reflectvec = reflect(mars_lightdir, normed);
+      float spec_dotted = max(dot(mars_lookdir, reflectvec) * -1.0, 0.0);
+      
+      // vertcolor.rgb = vertcolor.rgb + the one below
+      vertshine =(vec3(0.6,0.6,0.6) * (pow(spec_dotted, 9.2))) + (vec3(0.5,0.5,0.5) * (pow(max(dotted, 0.0), 0.6)));
+      
+fragpipe order 16
+   #flagreq !shadowmapmaking
+      fragshine = vertshine;
+   
+fragpipe order 500
+   #flagreq !shadowmapmaking
+      finalcolor.rgb = finalcolor.rgb + fragshine;

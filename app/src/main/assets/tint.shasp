@@ -1,0 +1,8 @@
+uniform float tintfactor;
+uniform vec4 tintcolor;
+uniform float tint_alphafactor;
+
+fragpipe vec4 finalcolor, order 90
+   float oldalpha = finalcolor.w;
+   finalcolor = (finalcolor * (1.0 - tintfactor)) + (tintcolor * tintfactor);
+   finalcolor.w = min(oldalpha, finalcolor.w) * tint_alphafactor;

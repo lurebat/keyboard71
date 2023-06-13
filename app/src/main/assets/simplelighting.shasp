@@ -1,0 +1,10 @@
+varying vec3 normaldir;
+
+vertpipe order 75, vec3 mvnormal
+   normaldir = normalize(mvnormal);
+   
+fragpipe order 50, vec4 finalcolor
+   float lighting = max(dot(normaldir, vec3(0,1,0)), 0.0);
+   finalcolor.x *= 1 + lighting * 3;
+   finalcolor.y *= 1 + lighting * 3;
+   finalcolor.z *= 1 + lighting * 3;

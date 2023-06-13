@@ -1,0 +1,6 @@
+uniform float vertmidshrinker_factor;
+
+vertpipe vec4 vertcolor, vec4 vertpos, order 44
+   
+   vertpos.xyz = vertpos.xyz * (1.0 - vertmidshrinker_factor) + (_vertmid.xyz * vertmidshrinker_factor);
+   

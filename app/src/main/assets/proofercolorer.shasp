@@ -1,0 +1,10 @@
+uniform vec4 proofercolorer_forecolor;
+uniform vec4 proofercolorer_backcolor;
+
+fraglib floatinterpolate
+
+fragpipe vec4 finalcolor, order 40
+   finalcolor.x = floatinterpolate(min(finalcolor.x * 4.0, 1.0), proofercolorer_backcolor.x, proofercolorer_forecolor.x);
+   finalcolor.y = floatinterpolate(min(finalcolor.y * 4.0, 1.0), proofercolorer_backcolor.y, proofercolorer_forecolor.y);
+   finalcolor.z = floatinterpolate(min(finalcolor.z * 4.0, 1.0), proofercolorer_backcolor.z, proofercolorer_forecolor.z);
+   finalcolor.w = floatinterpolate(min(finalcolor.x * 4.0, 1.0), proofercolorer_backcolor.w, proofercolorer_forecolor.w) * finalcolor.w;

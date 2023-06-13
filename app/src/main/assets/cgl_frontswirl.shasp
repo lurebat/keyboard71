@@ -1,0 +1,30 @@
+uniform float frontswirl_rotamount;
+uniform vec2 frontswirl_center;
+uniform vec2 frontswirl_direction;
+
+import vec2cross
+
+vertpipe vec4 mmpos, order 69
+   vec2 rel = mmpos.xz - frontswirl_center;
+   
+   vec2 conju = vec2(frontswirl_direction.x, -frontswirl_direction.y);
+   
+   vec2 afterconju = vec2cross(rel, conju);
+   
+   float multer = 1;
+   if(afterconju.y < 0)
+      multer = -1;
+   
+   float rellen = length(rel);
+   
+   float sideness = 1.0 - (dot(rel, frontswirl_direction) / rellen);
+   
+   float amount = min(rellen / 15.0, 1.0) * sideness * multer;
+   
+   vec2 rotator = vec2(cos(frontswirl_rotamount * amount), sin(frontswirl_rotamount * amount));
+   
+   // rel = vec2(rel.x * rotator.x - rel.y * rotator.y, rel.x * rotator.y + rel.y * rotator.x);
+   rel = vec2cross(rel, rotator);
+   
+   mmpos.xz = frontswirl_center + rel;
+   

@@ -1,0 +1,7 @@
+fraglib edgar
+
+fragpipe +vec4 origcolor, vec4 finalcolor, order 1
+   origcolor = finalcolor;
+
+fragpipe vec4 origcolor, vec4 finalcolor, order 3
+   finalcolor = edgar(origcolor, _texcoordV, _r_tex1);

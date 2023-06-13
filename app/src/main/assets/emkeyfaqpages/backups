@@ -1,0 +1,7 @@
+>> Backups!
+
+Backups currently work by exporting to textboxes, and then scanning from these textboxes by tapping on one of the words.
+
+This has a few advantages, the biggest being that it doesn't require open access, and that I don't have to implement any cloud service for it.
+
+Cloud backup is still being worked on, and is experimental.

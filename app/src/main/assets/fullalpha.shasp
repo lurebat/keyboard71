@@ -1,0 +1,2 @@
+fragpipe vec4 finalcolor, order 999
+   finalcolor.w = 1.0;

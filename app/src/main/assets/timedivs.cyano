@@ -1,0 +1,17 @@
+monthly:
+   days: 30
+weekly:
+   days: 7
+daily:
+   days: 1
+six-hourly:
+   hours: 6
+hourly:
+   hours: 1
+fifteenminutes:
+   minutes: 15
+threeminute:
+   minutes: 3
+oneminute:
+   minutes: 1
+// lol, one minute..

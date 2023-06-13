@@ -1,0 +1,37 @@
+issystem
+
+row:
+   "one" @ 33
+   "two" @ 34
+   "three" @ 33
+row:
+   "l-" @ 20
+   'r !!
+   'e !!
+   's !!
+   'i !!
+   'z !!
+   'e !!
+   "l+" @ 20
+row:
+   "s-" @ 20
+   'u !!
+   't !!
+   'i !!
+   'l !!
+   'e !!
+   "s+" @ 20
+row:
+   "b+" @ 20
+   "h+" @ 20
+   'j !!
+   'a !!
+   "h-" @ 20
+   "b-" @ 20
+row:
+   :dontsplit
+   "fin" @ 15 summon main
+   "resizerpreset" @ 20 summon main label sets
+   "" @ 30
+   "resizeropt" @ 20 summon main label opts
+   "fin" @ 15 summon main

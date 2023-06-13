@@ -1,0 +1,40 @@
+import floatinterpolate
+import rotmatrix.rlsl
+
+uniform float cgl_modeldebris_currenttime;
+
+attribute float debrispower;
+attribute float debristime;
+attribute float debrissize;
+attribute float shrinkfac;
+attribute vec3 rotaxis;
+attribute vec3 posshift;
+attribute vec3 veloc;
+
+vertpipe vec4 vertpos, vec4 vertcolor, order 44
+   
+   float reltime = max(cgl_modeldebris_currenttime - debristime, 0.0);
+   
+   float actualpower = debrispower - reltime;
+   
+   if(actualpower < 0.01){
+      vertcolor.a = 0.0;
+      gl_PointSize = 0.0;
+   } else {
+      
+      vec3 shiftedcenter = vertpos.xyz + (veloc * pow(reltime, 1.0) * 6.0);
+      // vec3 shiftedcenter = vertpos.xyz;
+      mat4 rottermatrix = createRotationMatrix(rotaxis, 3.01 * pow(reltime, 1.0));
+      vec4 shifted4 = vec4(posshift, 1.0);
+      vec4 relshift = rottermatrix * shifted4;
+      
+      float zeroedpower = clamp(actualpower, 0.0, 1.0);
+      float outfac = mix(1.0, zeroedpower, shrinkfac);
+      // vec4 relshift = shifted4;
+      vertpos.xyz = shiftedcenter + (relshift.xyz * outfac);
+      // cool
+      
+      vertcolor.a = vertcolor.a * actualpower;
+      gl_PointSize = debrissize;
+      
+   }

@@ -1,0 +1,4 @@
+uniform float afader3_fadeness;
+
+fragpipe vec4 finalcolor, order 889
+   finalcolor.w = finalcolor.w * afader3_fadeness;

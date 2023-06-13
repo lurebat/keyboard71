@@ -1,0 +1,30 @@
+issystem
+backafteranyrelease
+topbarish
+
+row:
+   :dontsplit
+   "" @ 10 nobacker noaltchooser nohoverer
+   "wordins:qu'|autospace noafter" @ 40 label "qu'"
+   "wordins:m'|autospace noafter" @ 40 label "m'"
+   "" @ 10 nobacker noaltchooser nohoverer
+row:
+   :dontsplit
+   "wordins:d'|autospace noafter" @ 25 label "d'" expandbot
+   "wordins:t'|autospace noafter" @ 25 label "t'" expandbot
+   "wordins:j'|autospace noafter" @ 25 label "j'" expandbot
+   "wordins:l'|autospace noafter" @ 25 label "l'" expandbot
+row:
+   :dontsplit
+row:
+   :dontsplit
+   '+ @ 20
+   "shrt:shorts_A" @ 20 altpic "journbadges_0059.png"
+   "shrt:shorts_B" @ 20 altpic "journbadges_0060.png"
+   "shrt:shorts_C" @ 20 altpic "journbadges_0061.png"
+   "shrt:shorts_D" @ 20 altpic "journbadges_0062.png"
+row:
+   :dontsplit
+   "act:topbaropts" @ 15 markbotleft altpic "small64_gear.png"
+   '  @ 70 namify space
+   "ret" @ 15 namify ret altpic "keyboard_enter.png" markbotright

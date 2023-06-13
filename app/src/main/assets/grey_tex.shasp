@@ -1,0 +1,8 @@
+fraglib grayscale
+
+flag tex_override
+
+fragpipe order 2
+   vec4 texcolor = (texture2D(_r_tex1, _texcoordV));
+   texcolor.xyz = grayscale_conversion(texcolor.xyz);
+   texture_color = texcolor;

@@ -1,0 +1,15 @@
+appname> nintype
+////mode: iphone
+//mode: iphone5
+//mode: iPhone6
+//mode: iPhone6width
+mode: iPhone6pluswidth
+//mode: iPadwidth
+//mode: nexus4
+//mode: ipad
+//mode: ipadretina
+splashpage> Default.png
+appstoreid> 796959534
+rsscaling: 1.0
+products:
+   > 

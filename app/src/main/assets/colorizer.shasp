@@ -1,0 +1,31 @@
+uniform float colorizerratio;
+uniform float colorizer_curvepower;
+uniform float colorizer_brightpower;
+uniform float colorizer_shades;
+uniform vec4 colorizer_dark;
+uniform vec4 colorizer_mid;
+uniform vec4 colorizer_light;
+
+fraglib grayscale_brightness
+
+fragpipe vec4 finalcolor, order 19
+   float brightness = grayscale_brightness(finalcolor.xyz);
+   
+   brightness = pow(brightness, colorizer_brightpower);
+   
+   brightness = ceil((brightness * colorizer_shades) - 0.5) / colorizer_shades;
+   
+   vec4 colorizedcolor;
+   
+   if(brightness < 0.5){
+      // dark interpolate
+      float ratio = pow(brightness * 2.0, colorizer_curvepower);
+      colorizedcolor.xyzw = colorizer_dark.xyzw * (1.0 - ratio) + colorizer_mid.xyzw * (ratio);
+      
+   } else {
+      float ratio = pow((brightness - 0.5) * 2.0, 1.0 / colorizer_curvepower);
+      colorizedcolor.xyzw = colorizer_light.xyzw * (ratio) + colorizer_mid.xyzw * (1.0 - ratio);
+   }
+   
+   finalcolor.xyzw = (finalcolor.xyzw * (1.0 - colorizerratio)) + (colorizedcolor * colorizerratio);
+

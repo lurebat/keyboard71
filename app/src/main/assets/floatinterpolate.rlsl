@@ -1,0 +1,3 @@
+float floatinterpolate(float factor, float a, float b){
+   return a * (1.0 - factor) + b * (factor);
+}

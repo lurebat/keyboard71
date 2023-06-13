@@ -1,0 +1,21 @@
+uniform float mars_screenheight;
+uniform vec4 mars_shadowcol_high;
+uniform vec4 mars_shadowcol_low;
+
+varying float mars_shadowval;
+fraglib floatinterpolate
+
+vertpipe vec4 mmpos, order 70
+   mmpos.x += mmpos.y * -1.0;
+   mmpos.z += mmpos.y * 1.0;
+   mmpos.y = 0.0;
+
+vertpipe vec4 vmpos, order 103
+   mars_shadowval = (vmpos.y / (mars_screenheight * 0.5)) + 0.5;
+
+fragpipe vec4 finalcolor, order 80
+   float leval = floatinterpolate(mars_shadowval, 0.5, 0.9);
+   //float leval = floatinterpolate(mars_shadowval, 0.0, 0.99);
+   finalcolor.x = floatinterpolate(mars_shadowval, mars_shadowcol_low.x, mars_shadowcol_high.x);
+   finalcolor.y = floatinterpolate(mars_shadowval, mars_shadowcol_low.y, mars_shadowcol_high.y);
+   finalcolor.z = floatinterpolate(mars_shadowval, mars_shadowcol_low.z, mars_shadowcol_high.z);

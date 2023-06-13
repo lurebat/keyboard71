@@ -1,0 +1,6 @@
+import colormath
+
+uniform float huerot
+
+fragpipe vec4 finalcolor, order 150
+   finalcolor = colormath_huerot(finalcolor, huerot);

@@ -1,0 +1,20 @@
+uniform int x_dithercount;
+uniform int y_dithercount;
+
+fraglib finecolormath
+
+fragpipe vec4 finalcolor, order 40
+   int picpos_x = int(gl_FragCoord.x);
+   int picpos_y = int(gl_FragCoord.y);
+   
+   int x_num = int(mod(float(picpos_x), float(x_dithercount)));
+   int y_num = int(mod(float(picpos_y), float(y_dithercount)));
+   
+   int number = y_num * x_dithercount + x_num;
+   
+   int dither_total = x_dithercount * y_dithercount;
+   
+   finalcolor.x = finecolor_convert(finalcolor.x, number, dither_total);
+   finalcolor.y = finecolor_convert(finalcolor.y, number, dither_total);
+   finalcolor.z = finecolor_convert(finalcolor.z, number, dither_total);
+   

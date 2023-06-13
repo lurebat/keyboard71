@@ -1,0 +1,38 @@
+import floatinterpolate
+
+uniform vec2 grid_finalforcemid;
+uniform float grid_forceval;
+uniform float grid_indivcolwidth;
+uniform float grid_indivrowheight;
+uniform float grid_xshiftfac_processed;
+uniform float grid_yshiftfac_processed;
+
+vertpipe vec4 vertpos, order 45
+   vec2 frommid = vertpos.xy - grid_finalforcemid;
+   
+   vec2 balanceddiff = vec2(frommid.x / (grid_indivcolwidth * 0.5), frommid.y / (grid_indivrowheight * 0.5));
+   float balancedunitdist = length(balanceddiff);
+   float maxmanhattan = max(abs(balanceddiff.x), abs(balanceddiff.y));
+   
+   if(balancedunitdist > 0.01){
+      
+      
+      float zoomfac = balancedunitdist * grid_forceval * 0.5;
+      
+      float blastfac = pow(1.41421 / balancedunitdist, 0.67) * grid_forceval;
+      if(blastfac > 3.0)
+         blastfac = 3.0;
+         
+      float polator = min(pow(max(maxmanhattan - 1.0, 0.0) / 0.4, 0.67), 1.0);
+      
+      float thefac = floatinterpolate(polator, zoomfac, blastfac);
+      
+      vec2 normalizedbalanced = balanceddiff * (1.0 / balancedunitdist);
+      vec2 theshift = normalizedbalanced * thefac;
+      theshift.x *= grid_xshiftfac_processed;
+      theshift.y *= grid_yshiftfac_processed;
+      
+      vertpos.x += theshift.x;
+      vertpos.y += theshift.y;
+      
+   }

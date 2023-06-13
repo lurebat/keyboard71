@@ -1,0 +1,35 @@
+uniform sampler2D _r_shadowmap;
+fraglib depthpack
+
+uniform mat4 shadowmap_biased_pmvm;
+//uniform mat4 shadowmap_pm;
+//uniform mat4 shadowmap_vm;
+
+varying vec4 shadowmap_coord;
+// hmm, we have to see what we can do first, with marsiso huh?
+
+vertpipe order 150
+   //shadowmap_coord = biasMatrix * shadowmap_pm * shadowmap_vm * mmpos;
+   shadowmap_coord = shadowmap_biased_pmvm * mmpos;
+   //shadowmap_coord = pmpos;
+
+fragpipe vec4 finalcolor, order 400
+   
+   float visibility = 1.0;
+   float biase = 0.0004;
+   
+   vec4 texlookup = texture2D(_r_shadowmap, shadowmap_coord.xy);
+   float depthdata = unpack_depth(texlookup);
+   
+   if(depthdata <= shadowmap_coord.z - biase){
+      visibility = 0.7;
+      #flagreq fragshine
+         //fragshine = vec3(0.0,0.0,0.0);
+         fragshine.x *= 0.2;
+         fragshine.y *= 0.2;
+         fragshine.z *= 0.2;
+   }
+   
+   finalcolor.r = finalcolor.r * visibility;
+   finalcolor.g = finalcolor.g * visibility;
+   finalcolor.b = finalcolor.b * visibility;

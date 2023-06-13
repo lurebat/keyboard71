@@ -1,0 +1,8 @@
+uniform float verttintfactor;
+uniform vec4 verttintcolor;
+uniform float verttint_alphafactor;
+
+vertpipe vec4 vertcolor, order 20
+   float oldalpha = vertcolor.w;
+   vertcolor = (vertcolor * (1.0 - verttintfactor)) + (verttintcolor * verttintfactor);
+   vertcolor.w = min(oldalpha, vertcolor.w) * verttint_alphafactor;

@@ -1,0 +1,43 @@
+extrarows 2
+issystem
+nospacealphareturn
+
+row:
+   :dontsplit
+   !u 163 @ 20 userenderer
+   '% @ 20
+   '/ @ 20
+   '* @ 20
+   '$ @ 20
+row:
+   :dontsplit
+   !u 8364 @ 20 userenderer
+   '7 @ 20
+   '8 @ 20
+   '9 @ 20
+   '- @ 20
+row:
+   :dontsplit
+   'x @ 20
+   '4 @ 20
+   '5 @ 20
+   '6 @ 20
+   '+ @ 20
+row:
+   :dontsplit
+   '= @ 20
+   '1 @ 20
+   '2 @ 20
+   '3 @ 20
+   '# @ 20
+row:
+   :dontsplit
+   '  @ 20
+   ', @ 20
+   '0 @ 20
+   '. @ 20
+   "<" @ 20 namify backspace cannoborder altpic "keyboard_backspace.png"
+row:
+   "abc" @ 15 summon main altpic "keyboard_abc.png"
+   '  @ 70 >>
+   "ret" @ 15 namify ret altpic "keyboard_enter.png"

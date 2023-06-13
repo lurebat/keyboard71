@@ -1,0 +1,9 @@
+fraglib colormath
+
+varying float fraghuerot;
+
+vertpipe vec4 mmpos, order 60
+   fraghuerot = mmpos.x * 1.9;
+   
+fragpipe vec4 finalcolor, order 80
+   finalcolor = colormath_huerot(finalcolor, fraghuerot);

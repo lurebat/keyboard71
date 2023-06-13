@@ -1,0 +1,18 @@
+-------------------------------------
+NBIPack
+-------------------------------------
+Language : korean
+chain_imdb_minimum : 40
+chain_assumed_average_score : 0.01
+typo_minfreq : 10
+Generation Date : 10:22 Sun, Aug 24 2014
+-------------------------------------
+chain count : 653
+word count : 35078
+words are compact mode
+-------------------------------------
+corpus word count : 60968
+corpus char count : 180778
+-------------------------------------
+Thanks to Seohyun Park for some personal corpus data
+-------------------------------------

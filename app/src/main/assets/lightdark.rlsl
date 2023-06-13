@@ -1,0 +1,17 @@
+@import grayscale_brightness.rlsl
+
+vec4 lightdark_conversion(vec4 finalcolor){
+   
+   float brightness = grayscale_brightness(finalcolor.xyz);
+   
+   if(brightness > 0.5){
+      
+      return vec4(1.0,1.0,1.0, (brightness - 0.5) * 2.0 * finalcolor.w);
+      
+   } else {
+   
+      return vec4(0.0,0.0,0.0, (0.5 - brightness) * 2.0 * finalcolor.w);
+      
+   }
+   
+}

@@ -1,0 +1,22 @@
+issystem
+hasrechooser
+
+row:
+   :dontsplit
+   "leftcursorer" nobacker altpic "keyboard_dragdown.png"
+   one @ 27 namify one
+   two @ 26 namify two
+   three @ 27 namify choicer 
+   "rightcursorer" nobacker altpic "keyboard_dragright.png"
+row:
+   "slidetern:slider" @ 100 nobacker label " "
+row:
+   "slidetern:slider" @ 100 nobacker label " " altpic "nintype_slide2change.png"
+row:
+   "^" @ 15 namify caps altpic "keyboard_shift.png"
+   "slidetern:slider" @ 70 nobacker label " "
+   "<" @ 15
+row:
+   "slidetern:backselleft" @ 15 label "<"
+   '  @ 70 namify space
+   "slidetern:backseldown" @ 15 label ">>"

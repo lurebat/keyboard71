@@ -1,0 +1,45 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uitemplates:
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   invisi: newmenu
+      gusto: plainbordergrey
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: iconser
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: textbit
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   invisi: wholething
+      gusto: invisi
+      rowsize: 1
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: topbit
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+         invisi: topleftchoicecontainer
+            rowsize: 1
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+         invisi: stagebit
+            rowsize: 1
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            invisi: descriptioncons
+            cypage: stagecypage
+            invisi: stagemarkup
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            invisi: filtercons
+               gusto: button4
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            invisi: topchoicecontainer
+               rowsize: 1
+         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+         invisi: toprightchoicecontainer
+            rowsize: 1
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: passcodebit
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: optioncontainer
+         rowsize: 1
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+      invisi: bottomchoicecons
+         rowsize: 1
+      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

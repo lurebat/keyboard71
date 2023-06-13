@@ -1,0 +1,15 @@
+varying vec2 _texcoordV;
+uniform sampler2D _r_tex1;
+
+uniform float pattexer_xdiv;
+uniform float pattexer_ydiv;
+uniform float pattexer_xshift;
+uniform float pattexer_yshift;
+uniform float pattexer_yshear;
+
+vertpipe order 60, vec4 mmpos
+   _texcoordV.x = ((pattexer_xshift + mmpos.x + (pattexer_yshift + mmpos.y) * pattexer_yshear) / pattexer_xdiv);
+   _texcoordV.y = ((pattexer_yshift + mmpos.y) / pattexer_ydiv);
+   
+fragpipe order 2
+   finalcolor = finalcolor * texture2D(_r_tex1, _texcoordV);

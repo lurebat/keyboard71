@@ -1,0 +1,12 @@
+uniform float emojislider_topline;
+uniform float emojislider_botline;
+uniform float emojislider_shiftedness;
+uniform float emojislider_alphaness;
+
+vertpipe vec4 vertcolor, vec4 vertpos, order 49
+   if(vertpos.y > emojislider_topline && vertpos.y < emojislider_botline){
+      
+      vertpos.x += emojislider_shiftedness * 120.0;
+      vertcolor.a *= (1.0 - abs(emojislider_shiftedness)) * emojislider_alphaness;
+      
+   }

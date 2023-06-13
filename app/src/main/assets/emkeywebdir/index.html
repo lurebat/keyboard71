@@ -1,0 +1,280 @@
+<html>
+<head>
+   
+   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+   @@jormhead
+     stdjorm
+     humane (bigbox)
+
+     index.js
+     main.css
+   
+     contextmenu
+     jqterm
+     spectrum
+     
+     include stdapple.partml
+     
+   @@/
+
+</head>
+<body>
+
+   <div id="wholething" class="fullscrenbaby">
+
+      <div id="statusbarcontainers" class="statusbarcontainer">
+         <div id="statusbar" class="statusbar">
+            connecting..
+         </div>
+         
+         <div id="statusbar2" class="statusbar statusbar2" order="secondary">
+            &#x2630; CONTROL PANEL
+         </div>
+         
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+   
+      <div karlet id="loginkarl" class="rollcall midscreen">
+         
+         <div>
+            for security purposes, enter the key displayed in your nintype. you wo't be able to use this otherwise.
+         </div>
+         
+         <input id="loginpassword">
+         </input>
+         
+         <a class="bossbutton" onclick="performLogin()">Login!</a>
+         
+         <div>
+            Make sure to FINISH & RESTART on nintype after you finish using servermode.
+            <br>
+            Also, only use this mode on your home network, never on insecure wifi.
+            <br>
+            Also, plug in your phone to the power socket, and never let the screen fade!
+            
+         </div>
+   
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="introkarl" class="rollcall midscreen">
+         
+         <div>
+            Welcome to SERVERMODE. Click on the menu area above to go to different parts of SERVERMODE.
+         </div>
+   
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+   
+      <div karlet id="consolekarl" class="rollcall midscreen">
+         
+         <div id="leconsole">
+         </div>
+   
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="relaykarl" class="rollcall midscreen">
+         
+         <div><h1>Typing Relay</h1></div>
+         
+         <div>
+            You can use your desktop keyboard at the textbox to type on behalf of nintype.
+            Just use the textbox below.
+         </div>
+         
+         <input id="typebox">
+         </input>
+   
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="importkarl" class="rollcall midscreen">
+         
+         <div><h1>Importation Boxelette</h1></div>
+         
+         <div>
+            Paste things like themes, settings exports and the like here. Nintype will then process it
+         </div>
+         
+         <textarea id="importbox" cols="80" rows="30" style="height:350px;">
+         </textarea>
+         
+         <br>
+         <a class="bossbutton" onclick="performImportation()">Import!</a>
+         <a class="bossbutton" onclick="clearImportationBox()">Clear!</a>
+   
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="exportkarl" class="rollcall midscreen">
+         
+         <div><h1>Exportation Device</h1></div>
+         
+         <div>
+            Exported things will appear here, instead of appearing on textboxes they can now appear here instead.
+         </div>
+         
+         <textarea id="exportbox" cols="80" rows="30" style="height:350px;">
+         </textarea>
+         
+         <br>
+         <a class="bossbutton" onclick="requestExport('words')">words backup</a>
+         <a class="bossbutton" onclick="requestExport('settings')">settings export</a>
+         <a class="bossbutton" onclick="requestExport('shortcuts')">shortcuts</a>
+   
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="consoleimport" class="rollcall midscreen">
+         
+         <div><h1>Console Import Box</h1></div>
+         
+         <textarea id="consoleimportbox" cols="80" rows="10" style="height:350px">
+         </textarea>
+         
+         <br>
+         Sometimes the console will ask you to put things here (wordlists, etc).
+         <br>
+         <a class="bossbutton" onclick="karbase.activate('consolekarl')">back to console</a>
+   
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="consoleexport" class="rollcall midscreen">
+         
+         <div><h1>Console Export Box</h1></div>
+         <br>
+         <div id="consoleexporttitle"> </div>
+         
+         <textarea id="consoleexportbox" cols="80" rows="10" style="height:350px">
+         </textarea>
+         
+         <br>
+         Sometimes the console will output things (like word lists) here.
+         <br>
+         <a class="bossbutton" onclick="karbase.activate('consolekarl')">back to console</a>
+   
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="optionskarl" class="rollcall midscreen">
+         
+         <div><h1>Options</h1></div>
+         
+         <div>
+            Coming soon. You know, I haven't done html5/javascript for a long, long time, so please be patient.
+            
+            On the other hand, somehow the copious amounts of c++ develoment I've done made modern javascript feel familiar. Must be the lambdas
+         </div>
+
+      </div>
+
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="themekarl" class="rollcall midscreen">
+         
+         <br><br>
+         
+         <div><h1>Themes</h1></div>
+         
+         <textarea id="themebox" cols="80" rows="30" style="height:350px;">
+         </textarea>
+         
+         <br>
+         <a class="bossbutton" onclick="getCurrentTheme()">Grab current theme from nintype</a>
+         <a class="bossbutton" onclick="applyTheme()">Apply to nintype</a>
+         
+         <br>
+         So originally the plan was to make it so that you have color pickers and fancy elements. But you know what? They take too much time, and this works as is.
+         Color format is all in hex. There's plenty of color pickers available for that.
+         
+         <br>
+         Other descriptions coming here soon. And maybe I'll improve this bit, but there's other things on nintype
+         I should probably work on first, including the actual improvements to the theme system itself.
+         
+         <br>
+         So, eventually I'll add descriptions on what each item does, and maybe when you focus on a line of theme description
+         it will have a popup showing what an item does, but that seems like it'll be a while before I get to it
+
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="wordlistkarl" class="rollcall midscreen">
+         
+         <br><br>
+         
+         <div><h1>Wordlist Import</h1></div>
+         
+         <br>
+         <input id="wordlistname" placeholder="Name of Wordlist">
+         </input>
+         <br>
+         <br>
+         <textarea id="wordlistbox" cols="80" rows="30" style="height:250px;" placeholder="Put your wordlist here. See below for descriptions">
+         </textarea>
+         
+         <br>
+         <a class="bossbutton" onclick="importWordlist()">Import This Wordlist!</a>
+         
+         <br>
+         So a wordlist is just a file with words, separated by lines. If you capitalize the word, it'll be capitalized by default.
+         If you put the word in all-caps, it'll all-caps by default. If it has a weird capitalization, like iPhone, it'll default to that (this doesn't work yet).
+
+
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+      <div karlet id="logskarl" class="rollcall midscreen">
+         
+         <div><h1>Logs</h1></div>
+         
+         <div>
+            Here be the logs. They don't refresh automatically, click the buttons to make the logs appear.<br>
+            <small>if nintype takes 5 seconds to pop up, come here, see the kview log, and send it to us!
+         </div>
+         
+         <div id="logtextbox" style='height:400px;background-color:black;overflow:scroll;width:100%;font-family: "Courier New", monospace; text-align: left;'>Log goes here </div>
+         
+         <!--
+         <textarea id="logtextbox" cols="80" rows="30" style="height:350px;">
+         </textarea>
+         -->
+         
+         <br>
+         <a class="bossbutton" onclick="requestLog('kview')">kview</a>
+         <a class="bossbutton" onclick="requestLog('kviewmem')">kviewmem</a>
+         <a class="bossbutton" onclick="requestLog('stdout')">stdout</a>
+         <a class="bossbutton" onclick="requestLog('predlog')">predlog</a>
+         <!-- <a class="bossbutton" onclick="requestLog('keyboardapi')">keyboard API</a> -->
+         <a class="bossbutton" onclick="requestLog('system')">system</a>
+         <a class="bossbutton" onclick="requestLog('wordlearning')">word learning</a>
+         <a class="bossbutton" onclick="requestLog('wildguesslog')">wildguess</a>
+         <a class="bossbutton" onclick="requestLog('autospacelog')">autospace</a>
+         <a class="bossbutton" onclick="requestLog('crashlog')">crash</a>
+         <a class="bossbutton" onclick="requestLog('memterminationlog')">memory terminations</a>
+         <a class="bossbutton" onclick="requestLog('cloudsync')">cloudsync</a>
+         <a class="bossbutton" onclick="requestLog('testlog')">testlog</a>
+
+         <br>
+
+      </div>
+      
+      <!--- ::::::::::::::::::::::::::::::::::::::::::::::::: -->
+      
+   </div>
+
+</body>
+</html>

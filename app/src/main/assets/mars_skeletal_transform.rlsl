@@ -1,0 +1,24 @@
+vec4 mars_skeletal_process(vec4 origpos, float thejointnum, float thegroupnum){
+   
+   int actual_jointnum = int(thejointnum);
+   int actual_groupnum = int(thegroupnum);
+   
+   mat4 thematrix = mat4(1.0);
+   if(actual_jointnum >= 0 && actual_jointnum < 40){
+   
+      if(actual_groupnum == 0){
+         thematrix = mars_skeletalproxy_lower_transformer * mars_skeletalproxy_lower_matrices[actual_jointnum];
+      } else {
+         thematrix = mars_skeletalproxy_upper_transformer * mars_skeletalproxy_upper_matrices[actual_jointnum];
+      }
+      
+   }
+   
+   vec4 inbodypos = thematrix * origpos;
+   if(actual_groupnum == 1){
+      inbodypos.xyz += upperbody_shift;
+   }
+   
+   return mars_skeletalproxy_globaltransmat * inbodypos;
+   
+}

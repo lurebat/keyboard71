@@ -1,0 +1,4 @@
+// RLSL Prelude!
+@linux #version 130
+precision mediump float;
+@import math.rlsl

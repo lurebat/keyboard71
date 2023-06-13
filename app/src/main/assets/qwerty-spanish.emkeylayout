@@ -1,0 +1,47 @@
+renderchars
+
+row:
+   :dontsplit
+   "leftcursorer" nobacker altpic "small24_dragindi.png"
+   one @ 27 namify one
+   two @ 26 namify two
+   three @ 27 namify choicer 
+   "rightcursorer" nobacker altpic "keyboard_dragright.png"
+row:
+   'q >>
+   'w >>
+   'e >>
+   'r >>
+   't >>
+   'y >>
+   'u >>
+   'i >>
+   'o >>
+   'p >>
+row:
+   'a >>
+   's >>
+   'd >>
+   'f >>
+   'g >>
+   'h >>
+   'j >>
+   'k >>
+   'l >>
+   !u241 >>
+row:
+   "^" @ 15 >> namify caps genchara z cannoborder altpic "keyboard_shift.png"
+   'z >>
+   'x >>
+   'c >>
+   'v >>
+   'b >>
+   'n >>
+   'm >>
+   "<" @ 15 namify backspace cannoborder altpic "keyboard_backspace.png"
+row:
+   "123" @ 15 summon num altpic "keyboard_123.png"
+   '  @ 10 namify langer
+   '  @ 50 namify space
+   "maindot" @ 10 namify maindot cannoborder
+   "ret" @ 15 namify ret altpic "keyboard_enter.png"

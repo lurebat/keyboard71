@@ -1,0 +1,15 @@
+>> Themes!
+
+There's a bunch of themes available for nintype. You can also edit your own, but right now it's a little hard to use.
+
+>> Light vs Dark
+
+iOS has two different keyboard 'styles' : dark and light.
+
+e.g Spotlight search uses dark, and messages uses light.
+
+Nintype can have separate themes for each of these two 'styles', and when you select the theme to use - it says up the top which you're actually setting the theme for (light keyboard or dark keyboard)
+
+>> The Future
+
+I'll make it better soon, and improve the theme engine, but I'm le tired (Dec, 2015).

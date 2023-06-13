@@ -1,0 +1,28 @@
+varying float fragditherline;
+
+vertpipe vec4 pmpos, order 153
+   fragditherline = (pmpos.x + pmpos.y) / 0.01;
+   
+fragpipe vec4 finalcolor, order 80
+   float luminos = 0.001 + (finalcolor.x * 0.333 + finalcolor.y * 0.333 + finalcolor.z * 0.333) * 0.999;
+   
+   float divisor = 7.0;
+   
+   float multed = floor(luminos * divisor);
+   float divided = multed / divisor;
+   float leftover = luminos - divided;
+   
+   float basewardmult = divided / luminos;
+   float upwardsmult = (divided + (1.0 / divisor)) / luminos;
+   
+   float moddo = 1.0;
+   
+   if(mod(fragditherline, moddo) > (leftover * divisor)){
+      finalcolor.x = finalcolor.x * basewardmult;
+      finalcolor.y = finalcolor.y * basewardmult;
+      finalcolor.z = finalcolor.z * basewardmult;
+   } else {
+      finalcolor.x = finalcolor.x * upwardsmult;
+      finalcolor.y = finalcolor.y * upwardsmult;
+      finalcolor.z = finalcolor.z * upwardsmult;
+   }

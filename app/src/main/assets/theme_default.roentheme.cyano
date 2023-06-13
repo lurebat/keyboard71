@@ -1,0 +1,350 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+linedpattern:
+   pattern> pat_diagonals.png
+   patcolor: 16 16 16 255
+   plusblend: 1
+linedpattern2:
+   extends: linedpattern
+   pattern> pat_diagonals2.png
+linedpattern3:
+   extends: linedpattern
+   pattern> pat_diagonals3.png
+linedpattern4:
+   extends: linedpattern
+   pattern> pat_diagonals4.png
+warningpattern:
+   pattern> pat_warningstripe.png
+   patterndx: 0.03
+   patcolor: 40 40 40 255
+   plusblend: 1
+   patternfirst
+dotpattern:
+   //pattern> pat_warningstripe.png
+   pattern> pat_dither2.png
+   patcolor: 40 40 40 255
+ditherpattern:
+   pattern> pat_dither.png
+   patcolor: 40 40 40 255
+   plusblend: 1
+   patternfirst
+forewarningpattern:
+   pattern> pat_warningstripe.png
+   patterndx: 0.1
+   patcolor: 40 40 40 255
+   plusblend: 1
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+border0:
+   border: 0
+border1:
+   border: 1
+border2:
+   border: 2
+border4:
+   border: 4
+border5:
+   border: 5
+border6:
+   border: 6
+border8:
+   border: 8
+border10:
+   border: 10
+border12:
+   border: 12
+border14:
+   border: 14
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+patborder4:
+   patborder: 4
+patborder6:
+   patborder: 6
+patborder8:
+   patborder: 8
+patborder10:
+   patborder: 10
+patborder12:
+   patborder: 12
+patborder14:
+   patborder: 14
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+button:
+   fore: 255 255 255 255
+   font> verdana12
+   border: 5
+   back: 76 76 76 102
+   backpush: 204 153 76 102
+   //back: 255 255 255 255
+   //backpush: 204 153 76 255
+   backername> smallxpdarkbox.png
+   //backername> deco16_lessshiny.png
+   patborder: 5
+button2:
+   extends: button
+   border: 6
+   patborder: 6
+   back: 255 255 255 255
+   backpush: 204 153 76 255
+   backername> deco16_lessshiny.png
+button3:
+   extends: button2
+   border: 8
+   patborder: 8
+   backername> deco22_lessshinybutton.png
+button4:
+   extends: button3
+   border: 12
+   patborder: 12
+   backername> deco_buttonlessshiny.png
+button5:
+   extends: button3
+   border: 12
+   patborder: 12
+   backername> deco_darkshinybutton.png
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+oldbuttonred:
+   extends: button3
+   border: 10
+   patborder: 10
+   back: 140 90 30 255
+   backpush: 255 0 0 255
+   backername> mac6_button.png
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+default:
+   fore: 178 178 178 255
+   font> verdana12
+   border: 4
+   back: 178 178 178 102
+   backpush: 178 178 178 102
+   backername> deco22_darkthickborder.png
+invisi:
+   fore: 178 178 178 255
+   font> verdana12
+   border: 0
+   invisi: 1
+light:
+   fore: 178 178 178 255
+   font> verdana12
+   border: 5
+   back: 76 76 76 51
+   backpush: 178 178 76 102
+   backername> smallflatbox.png
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+pixelated:
+   fore: 178 178 178 255
+   font> verdana12
+   border: 4
+   back: 178 178 178 102
+   backpush: 178 178 178 102
+   backername> pixborder12.png
+pixelatedopaque:
+   extends: pixelated
+   back: 255 255 255 255
+   backpush: 255 0 0 255
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+blackblock:
+   fore: 127 127 127 255
+   font> verdana12
+   border: 5
+   back: 0 0 0 255
+   backpush: 0 0 0 255
+   backername> white16x16.png
+   backpushname> white16x16.png
+   simplebox
+redblock:
+   extends: blackblock
+   back: 127 0 0 255
+   backpush: 127 127 0 255
+alphablock:
+   extends: blackblock
+   back: 0 0 0 170
+greyblock:
+   extends: blackblock
+   back: 20 20 20 255
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+brightblock:
+   fore: 0 0 0 255
+   font> verdana12
+   border: 12
+   back: 30 90 170 255
+   backpush: 30 90 170 255
+   backername> white12on16.png
+   backpushname> white4on16.png
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+blackround:
+   fore: 127 127 127 255
+   font> verdana12
+   border: 5
+   back: 0 0 0 255
+   backpush: 50 10 0 255
+   backername> boxer24_roundall.png
+darkgreyround:
+   extends: blackround
+   back: 18 18 18 120
+opaquegreyround:
+   extends: blackround
+   back: 50 50 50 255
+blackroundfaint:
+   extends: blackround
+   back: 0 0 0 120
+   backpush: 255 0 0 255
+blueround:
+   extends: blackround
+   back: 30 70 196 120
+darkcyanround:
+   fore: 255 255 255 255
+   font> verdana12
+   border: 5
+   back: 2 90 150 255
+   backpush: 10 100 190 255
+   backername> boxer24_roundall.png
+brownround:
+   fore: 255 255 255 255
+   font> verdana12
+   border: 5
+   back: 120 100 70 255
+   backpush: 140 80 30 255
+   backername> boxer24_roundall.png
+redround:
+   fore: 255 255 255 255
+   font> verdana12
+   border: 5
+   back: 170 80 33 255
+   backpush: 255 180 50 255
+   backername> boxer24_roundall.png
+whiteround:
+   border: 5
+   back: 255 255 255 255
+   backpush: 255 180 50 255
+   backername> boxer24_roundall.png
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+altern1:
+   fore: 127 127 127 255
+   font> verdana12
+   border: 5
+   back: 0 0 0 178
+   backpush: 127 127 0 178
+   backername> smallxpdarkbox.png
+greenaltern:
+   extends: altern1
+   back: 0 127 0 178
+   backpush: 127 127 0 178
+greyaltern:
+   extends: altern1
+   back: 76 76 76 178
+   backpush: 127 127 0 178
+bluealtern:
+   extends: altern1
+   back: 0 0 127 178
+   backpush: 127 127 0 178
+opaquealtern:
+   extends: altern1
+   back: 0 0 0 255
+   backpush: 127 127 0 255
+redaltern:
+   extends: altern1
+   back: 90 0 0 255
+   backpush: 90 90 0 255
+yellowaltern:
+   extends: altern1
+   back: 178 178 0 178
+   backpush: 127 127 0 178
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+greynice:
+   border: 7
+   patborder: 7
+   back: 255 255 255 255
+   backpush: 100 100 100 255
+   backername> nb0001.png
+darknice:
+   back: 160 160 160 255
+   backpush: 66 66 66 255
+   backername> nb0001.png
+bluenice:
+   extends: greynice
+   backername> nb0004.png
+limenice:
+   extends: greynice
+   backername> nb0008.png
+skynice:
+   extends: greynice
+   backername> nb0007.png
+yellownice:
+   extends: greynice
+   backername> nb0009.png
+alphanice:
+   extends: greynice
+   backername> nb0010.png
+   backpush: 255 255 255 255
+   backpushname> nb0007.png
+dalphanice:
+   extends: greynice
+   backername> nb0005.png
+   backpush: 255 255 255 255
+   backpushname> nb0007.png
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+greynicer:
+   border: 7
+   patborder: 7
+   back: 255 255 255 255
+   backpush: 100 100 100 255
+   backername> nrb0001.png
+darknicer:
+   back: 160 160 160 255
+   backpush: 66 66 66 255
+   backername> nrb0001.png
+darkernicer:
+   back: 100 100 100 255
+   backpush: 66 66 66 255
+   backername> nrb0001.png
+bluenicer:
+   extends: greynicer
+   backername> nrb0004.png
+limenicer:
+   extends: greynicer
+   backername> nrb0008.png
+skynicer:
+   extends: greynicer
+   backername> nrb0007.png
+yellownicer:
+   extends: greynicer
+   backername> nrb0009.png
+alphanicer:
+   extends: greynicer
+   backername> nrb0010.png
+   backpush: 255 255 255 255
+   backpushname> nrb0007.png
+dalphanicer:
+   extends: greynicer
+   backername> nrb0005.png
+   backpush: 255 255 255 255
+   backpushname> nrb0007.png
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+plainborder:
+   back: 255 255 255 255
+   backpush: 255 0 0 255
+   backername> deco22_darkthickborder.png
+   border: 9
+   patborder: 9
+plainbordergrey:
+   extends: plainborder
+   back: 90 90 90 255
+   backpush: 255 0 0 255
+plainborderfaint:
+   extends: plainborder
+   back: 255 255 255 40
+   backpush: 255 0 0 255
+   border: 3
+   patborder: 3
+plainbordergreyfaint:
+   extends: plainborder
+   back: 120 120 120 40
+   backpush: 255 0 0 255
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+opaqueborderless:
+   back: 0 0 0 255
+   backpush: 0 0 0 255
+   backername> deco22_darkthickborder.png
+   border: 0
+   patborder: 0
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1,0 +1,7 @@
+uniform float grayscaleness;
+
+fraglib grayscale
+
+fragpipe vec4 finalcolor, order 19
+   finalcolor.xyz = (grayscale_conversion(finalcolor.xyz) * grayscaleness) + 
+                     (finalcolor.xyz * (1.0 - grayscaleness));

@@ -1,0 +1,26 @@
+vertlib transposer
+
+vertpipe vec4 vmpos, order 101
+   mat4 modelview = _r_vm * _r_mm;
+   
+   /*
+   mat4 billboarded = mat4(
+            1.0, 0.0, 0.0, modelview[3][0],
+            0.0, 1.0, 0.0, modelview[3][1],
+            0.0, 0.0, 1.0, modelview[3][2],
+            modelview[0][3], modelview[1][3], modelview[2][3], modelview[3][3]
+            );
+   
+   */
+   
+   mat4 inverted = modelview;
+   inverted = mat4_transpose(modelview);
+   inverted[3][0] = 0;
+   inverted[3][1] = 0;
+   inverted[3][2] = 0;
+   
+   vec3 frommid = vertpos.xyz - _vertmid;
+   
+   vec3 transformed = (inverted * vec4(frommid, 1.0)).xyz;
+   
+   vmpos = modelview * vec4(_vertmid + transformed, 1.0);

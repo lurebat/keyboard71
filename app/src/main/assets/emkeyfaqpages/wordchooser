@@ -1,0 +1,23 @@
+>> The Word Chooser
+
+Tap on the topbar: open word chooser.
+
+Press-hold on a word: change its capitalization.
+
+Slide left to edit word scores.
+
+Words have weights. Words with higher weights are more likely to be chosen through autocorrect.
+
+>> Icon meanings
+
+{small64_lock.png @ 0.25} This word's weight is locked.
+{wheelstar_zero.png @ 0.5} Really, really low word score. Probably never chosen
+{wheelstar32_0002.png @ 0.5} really low word score. Unlikely to be chosen
+{wheelstar32_0003.png @ 0.5} low word score. Unlikely to be chosen.
+{wheelstar32_0006.png @ 0.5} medium word score
+{wheelstar32_0008.png @ 0.5} high word score
+{wheelstar32_0010.png @ 0.5} super-high word score
+{small64_clock.png @ 0.5} word is being learned, right now. Not on the permanent dictionary yet.
+{journbadges_0138.png @ 0.5} word is exiled - autocorrect won't suggest this
+{journbadges_0140.png @ 0.5} word is banned - nintype will avoid this word, even if you peck it normally.
+{small64_x.png @ 0.5} word is not in this language - probably is in another language.

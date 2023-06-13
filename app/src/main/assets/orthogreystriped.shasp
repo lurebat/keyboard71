@@ -1,0 +1,9 @@
+varying float fraghuerot;
+
+vertpipe vec4 mmpos, order 60
+   fraghuerot = (mmpos.x + mmpos.y * 0.3) / 60.0;
+   
+fragpipe vec4 finalcolor, order 80
+   float lecol = (floor((mod(fraghuerot, 1.0)) * 3.0) / 3.0);
+   float finalcol = 0.1 + lecol * 0.2;
+   finalcolor.xyz = vec3(finalcol, finalcol, finalcol);

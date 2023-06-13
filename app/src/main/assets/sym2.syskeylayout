@@ -1,0 +1,29 @@
+extrarows 1
+issystem
+
+row:
+   "s" @ 20
+   "l33t" @ 26
+   "menu" @ 27
+   "clip" @ 27
+row:
+   "s" @ 20
+   "copy" @ 26
+   "learn" @ 27
+   "auto" @ 27
+row:
+   "a" @ 20 summon sym1
+   "pste" @ 26
+   "date" @ 27
+   "" @ 27
+row:
+   "a" @ 20 summon sym1
+   "" @ 20
+   "<L" @ 20
+   "<S" @ 20
+   "<" @ 20
+row:
+   "r" @ 20 summon main altpic "keyboard_abc.png"
+   '  @ 40
+   ":)" @ 20
+   "ret" @ 20

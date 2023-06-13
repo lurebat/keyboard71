@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="427" android:versionName="69.0007" android:compileSdkVersion="23" android:compileSdkVersionCodename="6.0-2438415" package="com.lurebat.keyboard71" platformBuildVersionCode="23" platformBuildVersionName="6.0-2438415">
+    <uses-sdk android:minSdkVersion="18"/>
+    <application android:label="Keyboard 71" android:icon="@drawable/nintype_zenkey">
+        <activity android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:name="com.jormy.nin.NINActivity" android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <service android:name="com.jormy.nin.SoftKeyboard" android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod"/>
+            </intent-filter>
+            <meta-data android:name="android.view.im" android:resource="@xml/method"/>
+        </service>
+    </application>
+    <uses-feature android:glEsVersion="0x20000"/>
+    <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="true"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+</manifest>

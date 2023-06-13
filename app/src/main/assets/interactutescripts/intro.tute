@@ -1,0 +1,85 @@
+text: Welcome to nintype! Try follow the fingers!
+
+task:
+   autophrase: howdy
+   cascade
+   
+task:
+   autophrase: hello
+   cascade
+   
+task:
+   autophrase: nicely
+   cascade
+   
+task:
+   autophrase: [wa|ht]what
+   cascade
+   
+task:
+   autophrase: [a|th]that
+   cascade
+
+text: easy, isn't it?
+
+task:
+   autophrase: typing
+   cascade
+
+task:
+   autophrase: japan
+   cascade
+   
+task:
+   autophrase: believe
+   cascade
+   
+task:
+   autophrase: create
+   cascade
+   
+task:
+   autophrase: at
+   cascade
+   
+task:
+   autophrase: art
+   cascade
+   
+task:
+   autophrase: [e|thn] then
+   cascade
+
+
+task:
+   autophrase: soon
+   cascade
+
+task:
+   autophrase: you'll
+   cascade 1
+   
+task:
+   autophrase: it's
+   cascade 1
+
+task:
+   autophrase: cycle
+   cascade 1
+   
+task:
+   autophrase: seriously
+   cascade 1
+   
+task:
+   autophrase: [e|nintyp] nintype
+   cascade 1
+   
+task:
+   autophrase: awesome
+   cascade 1
+
+
+text: You're probably ready to use nintype now. Don't forget to ask around at reddit.com/r/nintype if you're confused.
+text: p.s you can try the old tutorial from the help menu. Happy typing!
+text: p.p.s press-hold the spacebar to activate the menu. But if you have force touch, don't press it too hard.

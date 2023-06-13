@@ -1,0 +1,13 @@
+>> Everything is blurry?
+
+Yeah, sometimes nintype turns off retina mode if it detected too many memory terminations in a quick succession.
+
+Unfortunately, nintype can only run using very small amounts of memory, due to the way iOS third party keyboards are designed.
+
+I really can't do much about it, I've already optimized nintype to the moon and back. Most of the memory usage comes from dictionary (which has been reduced, largely), fonts, buffers for text, and mostly, the OpenGL video buffer.
+
+The OpenGL video buffer is what probably uses most memory, and by disabling retina, it reduces the buffer usage to 25% of what it was.
+
+Which is why retina is disabled.
+
+Go to options to restore everything to what it was back then, by the way.

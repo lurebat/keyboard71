@@ -1,0 +1,60 @@
+extrarows 2
+issystem
+bos_oain
+
+row:
+   '[
+   ']
+   '{
+   '}
+   '#
+   '%
+   '^
+   '*
+   '+
+   '=
+row:
+   !u 163
+   !u 8364
+   '_
+   '\
+   '|
+   '~
+   '<
+   '>
+   '`
+   '?
+row:
+   '1
+   '2
+   '3
+   '4
+   '5
+   '6
+   '7
+   '8
+   '9
+   '0
+row:
+   '-
+   '/
+   ':
+   ';
+   '(
+   ')
+   '$
+   '&
+   '@
+   '"
+row:
+   "e" @ 15 summon sym1
+   '. @ 14
+   ', @ 14
+   '? @ 14
+   '! @ 14
+   '' @ 14
+   "<" @ 15
+row:
+   "abc" @ 15 summon main altpic "keyboard_abc.png"
+   '  @ 70 namify space
+   "ret" @ 15 namify ret altpic "keyboard_enter.png"

@@ -1,0 +1,33 @@
+[ma25]NinType credits!
+
+[ma25]General Development:
+[qs25]
+Yose Widjaja (yose@jormy.com)
+Boris Bosconovitch (boris@jormy.com)
+Charles Babbage
+Ada Lovelace
+Gottfried Leibniz
+Blaise Pascal
+Albert Einstein
+Isaac Newton
+Socrates
+Aristotle
+Genghis Khan
+Miyamoto Musashi
+Kong Ming
+Gilgamesh
+Nebuchadnezzar II
+Mitochondrial Eve
+Thor
+Loki
+Odin
+Minerva
+Zeus
+
+Thanks to Jack Haal for the new logo. It makes for a nice change
+
+Also BIG thanks to Peter Steinberger's PSPDFTextView, because his UITextView replacement class made the whole long text editing possible. Mainly because iOS 7 UITextView is ridiculously and unbelievably buggy.
+Still had to modify it to quite the extent to make it work in the end though.
+
+misc:
+Typewriter ding sound - NHumphrey @ freesound

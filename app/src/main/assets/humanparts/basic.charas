@@ -1,0 +1,33 @@
+type:chara
+
+samurai:
+   col fff
+   +stupidhat
+   +policearmor_front
+   +policearmor_back
+   +belt
+   +holsteredsword_left
+   +holsteredsword_right
+samurainoswords:
+   col fff
+   +stupidhat
+   +policearmor_front
+   +policearmor_back
+   +belt
+cop:
+   col fff
+   +policearmor_front
+   +policearmor_back
+   +belt
+   +bowlcut
+ninja:
+   col f90
+   +holsteredsword_backleft
+   +holsteredsword_backright
+devil:
+   col f00
+   +bonewings_right
+   +bonewings_left
+   +devilhorns
+testhat:
+   +testhat

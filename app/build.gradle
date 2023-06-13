@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId 'com.lurebat.keyboard71'
+        minSdkVersion 18
+        targetSdkVersion 18
+        versionCode 427
+        versionName "70"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+        lintOptions {
+            abortOnError false
+        }
+
+    defaultConfig {
+        ndk {
+            abiFilters "armeabi"
+        }
+    }
+}
+
+dependencies {
+    // some dependencies
+}

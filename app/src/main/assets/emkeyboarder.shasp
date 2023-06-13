@@ -1,0 +1,11 @@
+uniform float ekb_topy;
+uniform float ekb_boty;
+uniform float ekb_midx;
+
+vertpipe vec4 mmpos, order 51
+   float sideshiftfac = pow(max(ekb_topy - mmpos.y, 0.0) / (ekb_boty - ekb_topy), 2.5);
+   float sideshiftness = (mmpos.x - ekb_midx) / ekb_midx;
+   mmpos.x += (sideshiftfac * sideshiftness * 50.0);
+   mmpos.y -= sideshiftfac * 50.0;
+   
+   vertcolor.w *= 1.0 - sideshiftfac;

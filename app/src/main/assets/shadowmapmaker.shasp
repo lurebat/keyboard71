@@ -1,0 +1,6 @@
+fraglib depthpack
+flag shadowmapmaking
+
+fragpipe vec4 finalcolor, order 999
+   finalcolor = pack_depth(gl_FragCoord.z);
+   //finalcolor.x = finalcolor.y = finalcolor.z = gl_FragCoord.z;

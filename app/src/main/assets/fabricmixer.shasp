@@ -1,0 +1,19 @@
+varying vec2 fm_texcoord;
+uniform sampler2D _r_tex2;
+
+uniform float fm_xdiv;
+uniform float fm_ydiv;
+uniform float fm_xshift;
+uniform float fm_yshift;
+uniform float fm_multfac;
+uniform float fm_addfac;
+
+vertpipe order 60, vec4 mmpos
+   fm_texcoord.x = ((fm_xshift + mmpos.x) / fm_xdiv);
+   fm_texcoord.y = ((fm_yshift + mmpos.y) / fm_ydiv);
+   
+fragpipe order 3
+   vec3 fabricval = texture2D(_r_tex2, fm_texcoord).xyz;
+   float opposite = (1.0 - fm_multfac) * 0.5;
+   fabricval = fabricval * fm_multfac + vec3(opposite, opposite, opposite);
+   finalcolor.xyz = (finalcolor.xyz * fabricval) * 2.0 + fabricval * fm_addfac;

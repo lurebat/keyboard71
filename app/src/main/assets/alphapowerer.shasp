@@ -1,0 +1,5 @@
+uniform float alphapowerer_power;
+uniform float alphapowerer_mult;
+
+fragpipe vec4 finalcolor, order 889
+   finalcolor.w = pow(finalcolor.w, alphapowerer_power) * alphapowerer_mult;

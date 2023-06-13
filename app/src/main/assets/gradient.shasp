@@ -1,0 +1,10 @@
+uniform vec4 gradient_startcol;
+uniform vec4 gradient_endcol;
+uniform float gradient_ystart;
+uniform float gradient_yend;
+
+vertpipe vec4 vertcolor, vec4 vertpos, order 44
+   float factor = (vertpos.y - gradient_ystart) / (gradient_yend - gradient_ystart);
+   vertcolor.x = (gradient_startcol.x * (1.0 - factor)) + (gradient_endcol.x * factor);
+   vertcolor.y = (gradient_startcol.y * (1.0 - factor)) + (gradient_endcol.y * factor);
+   vertcolor.z = (gradient_startcol.z * (1.0 - factor)) + (gradient_endcol.z * factor);

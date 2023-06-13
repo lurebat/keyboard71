@@ -1,0 +1,35 @@
+issystem
+isqbr
+backafteranyrelease
+hasrechooser
+
+row:
+   :dontsplit
+   "leftcursorer" nobacker altpic "keyboard_dragdown.png"
+   one @ 27 namify one
+   two @ 26 namify two
+   three @ 27 namify choicer 
+   "rightcursorer" nobacker altpic "keyboard_dragright.png"
+row:
+   !u129304 @ 20
+   '( @ 20
+   ') @ 20
+   '* @ 20
+   "hadd:.com" @ 20 label ".com"
+row:
+   !u128405 @ 20
+   '& @ 20
+   '% @ 20
+   '/ @ 20
+   '' @ 20
+row:
+   ': @ 20
+   '$ @ 20
+   '- @ 20
+   '# @ 20
+   '" @ 20
+row:
+   "wordins:'s"  @ 22 label "'s"
+   "wordins:'ll"  @ 23 label "'ll"
+   '@ @ 25
+   "" @ 30 nobacker noaltchooser nohoverer

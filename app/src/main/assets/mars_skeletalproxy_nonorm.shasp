@@ -1,0 +1,21 @@
+import floatinterpolate
+import rotmatrix.rlsl
+
+uniform mat4 mars_skeletalproxy_globaltransmat;
+
+uniform mat4 mars_skeletalproxy_upper_transformer;
+uniform mat4 mars_skeletalproxy_lower_transformer;
+
+uniform mat4 mars_skeletalproxy_lower_matrices[40];
+uniform mat4 mars_skeletalproxy_upper_matrices[40];
+
+uniform vec3 upperbody_shift;
+
+attribute float jointnum;
+attribute float groupnum;
+
+vertlib mars_skeletal_transform
+
+vertpipe vec4 vertpos, order -30
+   
+   vertpos = mars_skeletal_process(vertpos, jointnum, groupnum);

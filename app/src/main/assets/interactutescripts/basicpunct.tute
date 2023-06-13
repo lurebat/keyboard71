@@ -1,0 +1,59 @@
+text: In this short tutorial we'll show you the most useful shortcuts for punctuation and navigation
+
+task:
+   Now, try slide upwards
+   target: question mark
+   char: ?
+   script: ?2m-m!
+   from the enter key!
+task:
+   Now, try slide downwards
+   target: exclamation mark
+   char: !
+   script: >%2n-n!
+   from the backspace enter key!
+task:
+   And more slide downs
+   target: a comma!
+   char: ,
+   script: notext %2v-v!
+   for your convenience!
+task:
+   Also a way to add quotation marks
+   target: quotation mark!!
+   char: "
+   script: notext *2m-v!
+   for all you writers out there!
+task:
+   And in between, we have the
+   target: period key!
+   char: .
+   script: notext %2n-n!
+   for quickly ending sentences!
+task:
+   Now try the sliding backspace
+   target: slide backspace!
+   wantedaction: IA_SlideBackspace;
+   script: notext 2\<-x!
+   You can slide back to the right too!
+   
+task:
+   Now sliding on the spacebar
+   target: slide spacebar!
+   wantedaction: IA_BackselSlide;
+   script: $2n-c! 1c-n!
+   to move your cursor quickly!
+
+task:
+   Also, quick hashtag!
+   target: HASH TAG!!
+   char: #
+   script: notext *2m-b-m!
+   for all you hip social media users!
+   
+task:
+   Also, a quick way to do slash!
+   target: slash
+   char: /
+   script: *2k-m-b!
+   convenient, isn't it?

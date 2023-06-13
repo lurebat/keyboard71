@@ -1,0 +1,45 @@
+:autospace
+
+text: Autospace in nintype will add space automatically, so you don't need to tap the spacebar button
+
+text: It works by timing. Just pause a little bit between words, instead of tapping the spacebar.
+
+task:
+   let's start simple
+   make sure you give it time
+   autophrase: in my car
+
+task:
+   try this one
+   it's not that hard
+   autophrase: how are you
+
+task:
+   try this one
+   it's not that hard
+   autophrase: too soon mate
+
+text: What if you need to peck-type a new word? Just do it, but make sure you type in a rhythmic pattern.
+
+text: But not too slow that nintype thinks you want a space.
+
+task:
+   Try it, rhythmic timed pecks!
+   Use the same timing if possible
+   :madeupword_target
+
+text: Did you see that? Autospace won't insert spaces if it thinks you're peck-typing.
+
+text: Peck-typing like that gets triggered when you type things in a rhythmic pattern. Useful for new words.
+
+text: One last thing. If you press-hold the spacebar button, you can adjust the autospace timing.
+
+text: This may be useful if you're not used to typing super quickly. For your information, the best nintypist in the world (yours truly) uses 130ms pause timing.
+
+text: Having said that most people will probably be better off with 170ms or 180ms autospace pause timing
+
+text: That's all there is to it with autospace. All you need is just practice, and eventually you'll be able to type fast.
+
+text: You can type fast with manual spacing, but autospace brings it to yet another level. The author of this app (yours truly) can often reach 130wpm+ while typing with autospace.
+
+text: Seriously, it's worth the effort of trying it out. Not having to press space saves your finger effort, and it just feels so nice.

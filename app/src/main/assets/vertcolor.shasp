@@ -1,0 +1,4 @@
+attrib vec4 _color;
+vertpipe vec4 vertcolor, order 1
+   #flagreq !vertcolor_override
+      vertcolor = _color;

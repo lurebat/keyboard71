@@ -1,0 +1,21 @@
+import floatinterpolate
+
+uniform vec2 jigglepusher_fingpos1;
+uniform vec2 jigglepusher_fingdir1;
+uniform float jigglepusher_factor1;
+
+uniform float jigglepusher_idealdist;
+uniform float jigglepusher_ringdist;
+uniform float jigglepusher_pow;
+
+vertpipe vec4 mmpos, order 99
+   vec2 diff1 = mmpos.xy - jigglepusher_fingpos1;
+   float distance1 = length(diff1);
+   float fromideal1 = max(abs(distance1 - jigglepusher_idealdist), 0.05);
+   float factor1 = pow(max(1.0 - (fromideal1 / jigglepusher_ringdist), 0.01), jigglepusher_pow);
+   
+   if(distance1 > 0.05){
+      vec2 normalizedmove1 = diff1 / distance1;
+      mmpos.x += factor1 * (jigglepusher_fingdir1.x * 0.1 + normalizedmove1.x * -2.0) * jigglepusher_factor1;
+      mmpos.y += factor1 * (jigglepusher_fingdir1.y * 0.1 + normalizedmove1.y * -2.0) * jigglepusher_factor1;
+   }

@@ -1,0 +1,28 @@
+import floatinterpolate
+import rotmatrix.rlsl
+
+uniform float cgl_debris_currenttime;
+
+attribute float debrispower;
+attribute float debristime;
+attribute float debrissize;
+attribute vec3 veloc;
+
+vertpipe vec4 vertpos, vec4 vertcolor, order 44
+   
+   
+   float reltime = cgl_debris_currenttime - debristime;
+   
+   float actualpower = debrispower - reltime;
+   
+   if(actualpower < 0.01){
+      vertcolor.a = 0.0;
+      gl_PointSize = 0.0;
+   } else {
+      
+      vertpos.xyz = vertpos.xyz + (veloc * pow(reltime, 0.6) * 23.0);
+      
+      vertcolor.a = vertcolor.a * actualpower;
+      gl_PointSize = debrissize;
+      
+   }

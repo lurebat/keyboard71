@@ -1,0 +1,31 @@
+vec2 gridshiftlocator(float forceval, float indivcolwidth, float indivrowheight,
+                       float xshiftfac, float yshiftfac, vec2 forcemid, vec2 thepos){
+                       
+   vec2 frommid = thepos - finalforcemid;
+   
+   vec2 balanceddiff = vec2(frommid.x / (indivcolwidth * 0.5), frommid.y / (indivrowheight * 0.5));
+   float balancedunitdist = length(balanceddiff);
+   float maxmanhattan = max(abs(balanceddiff.x), abs(balanceddiff.y));
+   
+   if(balancedunitdist > 0.01){
+      
+      
+      float zoomfac = balancedunitdist * forceval * 0.5;
+      
+      float blastfac = pow(1.41421 / balancedunitdist, 0.67) * forceval;
+      if(blastfac > 3.0)
+         blastfac = 3.0;
+         
+      float polator = min(pow(max(maxmanhattan - 1.0, 0.0) / 0.4, 0.67), 1.0);
+      
+      float thefac = floatinterpolate(polator, zoomfac, blastfac);
+      
+      vec2 normalizedbalanced = balanceddiff * (1.0 / balancedunitdist);
+      vec2 theshift = normalizedbalanced * thefac;
+      theshift.x *= xshiftfac;
+      theshift.y *= yshiftfac;
+      
+      return thepos + theshift;
+      
+   }
+}

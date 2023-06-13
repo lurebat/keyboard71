@@ -1,0 +1,29 @@
+issystem
+backafteranyrelease
+topbarish
+
+row:
+   :dontsplit
+   "" @ 10 nobacker noaltchooser nohoverer
+   "shrt:ohmswitch" @ 27 altpic "keyboard_hinter_smallauto.png"
+   "shrt:shorts_normal" @ 26 altpic "small64_pin.png"
+   "shrt:emojiboard" @ 27 altpic "journbadges_0035.png"
+   "" @ 10 nobacker noaltchooser nohoverer
+row:
+   :dontsplit
+   "wordins:'d" @ 25 label "'d" expandbot
+   "wordins:-|noafter" @ 25 label "-" expandbot
+   "wordins:'|noafter" @ 25 label "'" expandbot
+   "wordins:'s" @ 25 label "'s" expandbot
+row:
+   :dontsplit
+row:
+   :dontsplit
+   "wordins:-ish" @ 33 label "-ish"
+   "wordins:non-|autospace noafter" @ 34 label "non-"
+   "wordins:esque" @ 33 label "esque"
+row:
+   :dontsplit
+   "act:topbaropts" @ 15 markbotleft altpic "small64_gear.png"
+   '  @ 70 namify space
+   "ret" @ 15 namify ret altpic "keyboard_enter.png" markbotright

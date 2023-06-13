@@ -1,0 +1,12 @@
+uniform vec3 circlediscarder_midpos;
+uniform float circlediscarder_maxdist;
+
+varying float circlediscarder_distancer;
+
+vertpipe vec4 mmpos, order 60
+   circlediscarder_distancer = length(mmpos.xyz - circlediscarder_midpos) / circlediscarder_maxdist;
+
+fragpipe vec4 finalcolor, order 90
+   if(circlediscarder_distancer > 1.0){
+      finalcolor.w = 0.0;
+   }

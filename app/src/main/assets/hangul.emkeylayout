@@ -1,0 +1,44 @@
+row:
+   :dontsplit
+   "leftcursorer" nobacker altpic "small24_dragindi.png"
+   one @ 27 namify one
+   two @ 26 namify two
+   three @ 27 namify choicer 
+   "rightcursorer" nobacker altpic "keyboard_dragright.png"
+row:
+   !u4359 >> userenderer
+   !u4364 >> userenderer
+   !u4355 >> userenderer
+   !u4352 >> userenderer
+   !u4361 >> userenderer
+   !u4461 >> userenderer
+   !u4455 >> userenderer
+   !u4451 >> userenderer
+   !u4450 >> userenderer
+   !u4454 >> userenderer
+row:
+   !u4358 >> userenderer
+   !u4354 >> userenderer
+   !u4363 >> userenderer
+   !u4357 >> userenderer
+   !u4370 >> userenderer
+   !u4457 >> userenderer
+   !u4453 >> userenderer
+   !u4449 >> userenderer
+   !u4469 >> userenderer
+row:
+   "^" @ 15 >> namify caps genchara !u4367 cannoborder altpic "keyboard_shift.png"
+   !u4367 >> userenderer
+   !u4368 >> userenderer
+   !u4366 >> userenderer
+   !u4369 >> userenderer
+   !u4466 >> userenderer
+   !u4462 >> userenderer
+   !u4467 >> userenderer
+   "<" @ 15 namify backspace cannoborder altpic "keyboard_backspace.png"
+row:
+   "123" @ 15 summon num altpic "keyboard_123.png"
+   '  @ 10 namify langer
+   '  @ 50 namify space
+   "maindot" @ 10 namify maindot cannoborder
+   "ret" @ 15 namify ret altpic "keyboard_enter.png"

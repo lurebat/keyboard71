@@ -1,0 +1,20 @@
+uniform vec2 fingerglower_fingpos1;
+uniform float fingerglower_factor1;
+
+uniform vec2 fingerglower_fingpos2;
+uniform float fingerglower_factor2;
+
+uniform float fingerglower_idealdist;
+uniform float fingerglower_ringdist;
+uniform float fingerglower_pow;
+
+vertpipe vec4 vertcolor, vec4 vertpos, order 44
+   float distance1 = length(vertpos.xy - fingerglower_fingpos1);
+   float fromideal1 = max(abs(distance1 - fingerglower_idealdist), 0.05);
+   float factor1 = pow(max(1.0 - (fromideal1 / fingerglower_ringdist), 0.0), fingerglower_pow);
+   
+   float distance2 = length(vertpos.xy - fingerglower_fingpos2);
+   float fromideal2 = max(abs(distance2 - fingerglower_idealdist), 0.05);
+   float factor2 = pow(max(1.0 - (fromideal2 / fingerglower_ringdist), 0.0), fingerglower_pow);
+   
+   vertcolor.a *= max(fingerglower_factor2 * factor2, fingerglower_factor1 * factor1);
