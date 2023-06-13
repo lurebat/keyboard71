@@ -100,203 +100,6 @@ public class SoftKeyboard extends InputMethodService {
         }
     }
 
-    public static void signalWordDestruction(String leword, String lestring) {
-        worddestructionbuffer.add(new WordDestructionInfo(leword, lestring));
-    }
-
-    public static void performBackReplacement(int rawBackIndex, int originalUnicodeLen, String replacement, InputConnection ic) {
-        // If there is a candidate - the index refers to before it
-        var candidateLength = currentCandidateEnd - currentCandidateStart;
-        var startPoint = currentSelectionStart;
-        if (candidateLength > 0) {
-            rawBackIndex += candidateLength;
-        }
-        fillText(ic, rawBackIndex + originalUnicodeLen, true);
-        byte[] bytes = textBeforeCursor.toString().getBytes(StandardCharsets.UTF_8);
-        var startOfOriginalWordOffset = new String(bytes, bytes.length - rawBackIndex, rawBackIndex).length();
-        int endOfOriginalWordOffset;
-        for (endOfOriginalWordOffset = startOfOriginalWordOffset; endOfOriginalWordOffset > 0; endOfOriginalWordOffset--) {
-            var currentChar = textBeforeCursor.charAt(textBeforeCursor.length() - endOfOriginalWordOffset);
-            if (Character.isAlphabetic(currentChar) || Character.isDigit(currentChar) || currentChar == '_' || currentChar == '-') {
-                continue;
-            }
-            break;
-        }
-        var originalWordLength = startOfOriginalWordOffset - endOfOriginalWordOffset;
-
-        boolean wordOverriding = startOfOriginalWordOffset < originalWordLength;
-
-        int replaceStartPoint = startPoint - startOfOriginalWordOffset;
-        if (replaceStartPoint < 0) {
-            return;
-        }
-
-        // Delete the original text
-        ic.setSelection(replaceStartPoint, replaceStartPoint);
-        ic.setComposingRegion(replaceStartPoint, replaceStartPoint);
-        ic.deleteSurroundingText(0, originalWordLength);
-
-        // Insert the replacement text
-        ic.commitText(replacement, 1);
-
-        var positionShift = replacement.length() - originalWordLength;
-        changeSelection(ic, currentSelectionStart + positionShift, currentSelectionEnd + positionShift, currentCandidateStart + positionShift, currentCandidateEnd + positionShift, null);
-
-        ic.setComposingRegion(currentCandidateStart, currentCandidateEnd);
-        ic.setSelection(currentSelectionStart, currentSelectionEnd);
-        if (wordOverriding) {
-            signalCursorCandidacyResult(ic, "backrepl");
-        }
-    }
-
-    public static void performCursorMovement(int xmove, int ymove, boolean selectionMode, InputConnection ic) {
-        int later2;
-        int laterpoint;
-        if (xmove < 0) {
-            CharSequence charseq = ic.getTextBeforeCursor(120, 0);
-            if (charseq != null) {
-                String thestr = charseq.toString();
-                int usedcurpos = currentSelectionStart;
-                int i = currentCandidateEnd;
-                if (i == currentSelectionStart) {
-                    usedcurpos = currentCandidateStart;
-                    int thedifference = i - currentCandidateStart;
-                    if (thedifference > 0) {
-                        thestr = thestr.substring(0, thestr.length() - thedifference);
-                    }
-                }
-                long result = NINLib.processSoftKeyboardCursorMovementLeft(thestr);
-                int earlier = (int) (result >> 32);
-                int later = (int) ((-1) & result);
-                int earlpoint2 = usedcurpos - earlier;
-                int laterpoint2 = usedcurpos - later;
-                if (earlpoint2 < 0) {
-                    earlpoint2 = 0;
-                }
-                if (laterpoint2 < 0) {
-                    laterpoint2 = 0;
-                }
-                ic.setComposingRegion(earlpoint2, laterpoint2);
-                ic.setSelection(earlpoint2, earlpoint2);
-                changeSelection(ic, earlpoint2, earlpoint2, earlpoint2, laterpoint2, "cursordrag");
-                return;
-            }
-            System.out.println("jormoust :: No charsequence!");
-        } else if (xmove > 0) {
-            CharSequence charseq2 = ic.getTextAfterCursor(120, 0);
-            if (charseq2 != null) {
-                String thestr2 = charseq2.toString();
-                if (currentCandidateEnd != currentCandidateStart) {
-                    laterpoint = currentCandidateEnd;
-                    later2 = laterpoint;
-                } else {
-                    int usedcurpos2 = currentSelectionStart;
-                    long result2 = NINLib.processSoftKeyboardCursorMovementRight(thestr2);
-                    int earlier2 = (int) (result2 >> 32);
-                    int later22 = (int) ((-1) & result2);
-                    int earlpoint = usedcurpos2 + earlier2;
-                    int i2 = usedcurpos2 + later22;
-                    later2 = earlpoint;
-                    laterpoint = i2;
-                }
-                if (later2 < 0) {
-                    later2 = 0;
-                }
-                if (laterpoint < 0) {
-                    laterpoint = 0;
-                }
-                ic.setComposingRegion(later2, laterpoint);
-                ic.setSelection(laterpoint, laterpoint);
-
-                changeSelection(ic, laterpoint, laterpoint, later2, laterpoint, "cursordrag");
-                return;
-            }
-            System.out.println("jormoust :: No charsequence!");
-        }
-    }
-
-    public static void signalCursorCandidacyResult(InputConnection ic, String themode) {
-        int i;
-        if (ic == null) {
-            textboxeventsbuffer.add(new TextboxEvent(TextboxEventType.RESET, null, null, null));
-            return;
-        }
-        int i2 = currentSelectionStart;
-        if (i2 == currentSelectionEnd) {
-            int i3 = currentCandidateStart;
-            int i4 = currentCandidateEnd;
-            boolean nullcandidate = i3 == i4 && i3 == -1;
-            if (i3 == 0 && i4 == 0) {
-                nullcandidate = true;
-            }
-            if (i3 == i4) {
-                nullcandidate = true;
-            }
-            if (i3 != i2 && i4 != i2 && !nullcandidate) {
-                Utils.prin("softkeyboard going haywire!! : " + currentCandidateStart + " -> " + currentCandidateEnd + " :: " + currentSelectionStart);
-                return;
-            }
-            boolean nocand = nullcandidate;
-            CharSequence pretext_seq = ic.getTextBeforeCursor(200, 0);
-            CharSequence posttext_seq = ic.getTextAfterCursor(200, 0);
-            String pretext = pretext_seq == null ? "" : pretext_seq.toString();
-            String posttext = posttext_seq != null ? posttext_seq.toString() : "";
-            String curword = null;
-            int i5 = currentCandidateEnd;
-            int i6 = currentCandidateStart;
-            int canlength = i5 - i6;
-            if (nocand) {
-                canlength = 0;
-            }
-            if (nocand || i6 == (i = currentSelectionStart)) {
-                int lentouse = canlength;
-                if (lentouse > posttext.length()) {
-                    lentouse = posttext.length();
-                }
-                curword = posttext.substring(0, lentouse);
-                posttext = posttext.substring(lentouse);
-            } else if (i5 == i) {
-                int lentouse2 = canlength;
-                if (lentouse2 > pretext.length()) {
-                    lentouse2 = pretext.length();
-                }
-                curword = pretext.substring(pretext.length() - lentouse2);
-                pretext = pretext.substring(0, pretext.length() - lentouse2);
-            }
-            TextboxEvent inf = new TextboxEvent(TextboxEventType.SELECTION, curword, pretext, posttext);
-            inf.codemode = themode;
-            textboxeventsbuffer.add(inf);
-        }
-    }
-
-    public static void relayDelayedEvents() {
-        while (true) {
-            TextboxEvent torel = textboxeventsbuffer.poll();
-            if (torel != null) {
-                Log.i("NIN", "relaying delayed event " + torel);
-            }
-            if (torel == null) {
-                break;
-            } else if (torel.type == TextboxEventType.RESET) {
-                NINLib.onExternalSelChange();
-            } else if (torel.type == TextboxEventType.SELECTION) {
-                NINLib.onTextSelection(torel.arg1, torel.mainarg, torel.arg2, torel.codemode);
-            } else if (torel.type == TextboxEventType.APPFIELDCHANGE) {
-                NINLib.onChangeAppOrTextbox(torel.mainarg, torel.arg1, torel.arg2);
-            } else if (torel.type == TextboxEventType.FIELDTYPECLASSCHANGE) {
-                NINLib.onEditorChangeTypeClass(torel.mainarg, torel.arg1);
-            }
-        }
-        while (true) {
-            WordDestructionInfo desu = worddestructionbuffer.poll();
-            if (desu != null) {
-                NINLib.onWordDestruction(desu.destructedword, desu.destructedstring);
-            } else {
-                return;
-            }
-        }
-    }
-
     public static void performSetSelection(int selectStart, int selectEnd, boolean fromStart, boolean dontSignal, InputConnection ic) {
         setSelectionHelper(selectStart, selectEnd, fromStart, ic);
         if (!dontSignal) {
@@ -415,6 +218,225 @@ public class SoftKeyboard extends InputMethodService {
         }
     }
 
+    public static void performBackReplacement(int rawBackIndex, int originalUnicodeLen, String replacement, InputConnection ic) {
+        // If there is a candidate - the index refers to before it
+        var candidateLength = currentCandidateEnd - currentCandidateStart;
+        fillText(ic, rawBackIndex + originalUnicodeLen + candidateLength, true);
+        byte[] bytes = textBeforeCursor.toString().getBytes(StandardCharsets.UTF_8);
+
+        var startPoint = currentSelectionStart;
+        if (candidateLength > 0) {
+            int start = textBeforeCursor.length() - currentCandidateStart;
+            if (start < 0) {
+                start = 0;
+            }
+            int end = start + candidateLength;
+            if (end > textBeforeCursor.length()) {
+                end = textBeforeCursor.length();
+            }
+            var candidate = textBeforeCursor.subSequence(start, end).toString().getBytes(StandardCharsets.UTF_8);
+            rawBackIndex += candidate.length;
+        }
+        if (bytes.length < rawBackIndex) {
+            rawBackIndex = bytes.length;
+        }
+        var startOfOriginalWordOffset = new String(bytes, bytes.length - rawBackIndex, rawBackIndex).length();
+        int endOfOriginalWordOffset;
+        for (endOfOriginalWordOffset = startOfOriginalWordOffset; endOfOriginalWordOffset > 0; endOfOriginalWordOffset--) {
+            var currentChar = textBeforeCursor.charAt(textBeforeCursor.length() - endOfOriginalWordOffset);
+            if (Character.isWhitespace(currentChar)
+                    || currentChar == '.'
+                    || currentChar == ','
+                    || currentChar == ';'
+                    || currentChar == ':'
+                    || currentChar == '!'
+                    || currentChar == '?'
+                    || currentChar == '"'
+            ) {
+                break;
+            }
+        }
+        var originalWordLength = startOfOriginalWordOffset - endOfOriginalWordOffset;
+
+        boolean wordOverriding = startOfOriginalWordOffset < originalWordLength;
+
+        int replaceStartPoint = startPoint - startOfOriginalWordOffset;
+        if (replaceStartPoint < 0) {
+            return;
+        }
+
+        // Delete the original text
+        ic.setSelection(replaceStartPoint, replaceStartPoint);
+        ic.setComposingRegion(replaceStartPoint, replaceStartPoint);
+        ic.deleteSurroundingText(0, originalWordLength);
+
+        // Insert the replacement text
+        ic.commitText(replacement, 1);
+
+        var positionShift = replacement.length() - originalWordLength;
+        changeSelection(ic, currentSelectionStart + positionShift, currentSelectionEnd + positionShift, currentCandidateStart + positionShift, currentCandidateEnd + positionShift, null);
+
+        ic.setComposingRegion(currentCandidateStart, currentCandidateEnd);
+        ic.setSelection(currentSelectionStart, currentSelectionEnd);
+        if (wordOverriding) {
+            signalCursorCandidacyResult(ic, "backrepl");
+        }
+    }
+
+    public static void performCursorMovement(int xmove, int ymove, boolean selectionMode, InputConnection ic) {
+        int later2;
+        int laterpoint;
+        if (xmove < 0) {
+            CharSequence charseq = ic.getTextBeforeCursor(120, 0);
+            if (charseq != null) {
+                String thestr = charseq.toString();
+                int usedcurpos = currentSelectionStart;
+                int i = currentCandidateEnd;
+                if (i == currentSelectionStart) {
+                    usedcurpos = currentCandidateStart;
+                    int thedifference = i - currentCandidateStart;
+                    if (thedifference > 0) {
+                        thestr = thestr.substring(0, thestr.length() - thedifference);
+                    }
+                }
+                long result = NINLib.processSoftKeyboardCursorMovementLeft(thestr);
+                int earlier = (int) (result >> 32);
+                int later = (int) ((-1) & result);
+                int earlpoint2 = usedcurpos - earlier;
+                int laterpoint2 = usedcurpos - later;
+                if (earlpoint2 < 0) {
+                    earlpoint2 = 0;
+                }
+                if (laterpoint2 < 0) {
+                    laterpoint2 = 0;
+                }
+                ic.setComposingRegion(earlpoint2, laterpoint2);
+                ic.setSelection(earlpoint2, earlpoint2);
+                changeSelection(ic, earlpoint2, earlpoint2, earlpoint2, laterpoint2, "cursordrag");
+                return;
+            }
+            System.out.println("jormoust :: No charsequence!");
+        } else if (xmove > 0) {
+            CharSequence charseq2 = ic.getTextAfterCursor(120, 0);
+            if (charseq2 != null) {
+                String thestr2 = charseq2.toString();
+                if (currentCandidateEnd != currentCandidateStart) {
+                    laterpoint = currentCandidateEnd;
+                    later2 = laterpoint;
+                } else {
+                    int usedcurpos2 = currentSelectionStart;
+                    long result2 = NINLib.processSoftKeyboardCursorMovementRight(thestr2);
+                    int earlier2 = (int) (result2 >> 32);
+                    int later22 = (int) ((-1) & result2);
+                    int earlpoint = usedcurpos2 + earlier2;
+                    int i2 = usedcurpos2 + later22;
+                    later2 = earlpoint;
+                    laterpoint = i2;
+                }
+                if (later2 < 0) {
+                    later2 = 0;
+                }
+                if (laterpoint < 0) {
+                    laterpoint = 0;
+                }
+                ic.setComposingRegion(later2, laterpoint);
+                ic.setSelection(laterpoint, laterpoint);
+
+                changeSelection(ic, laterpoint, laterpoint, later2, laterpoint, "cursordrag");
+                return;
+            }
+            System.out.println("jormoust :: No charsequence!");
+        }
+    }
+
+
+    public static void signalWordDestruction(String leword, String lestring) {
+        worddestructionbuffer.add(new WordDestructionInfo(leword, lestring));
+    }
+    public static void signalCursorCandidacyResult(InputConnection ic, String themode) {
+        int i;
+        if (ic == null) {
+            textboxeventsbuffer.add(new TextboxEvent(TextboxEventType.RESET, null, null, null));
+            return;
+        }
+        int i2 = currentSelectionStart;
+        if (i2 == currentSelectionEnd) {
+            int i3 = currentCandidateStart;
+            int i4 = currentCandidateEnd;
+            boolean nullcandidate = i3 == i4 && i3 == -1;
+            if (i3 == 0 && i4 == 0) {
+                nullcandidate = true;
+            }
+            if (i3 == i4) {
+                nullcandidate = true;
+            }
+            if (i3 != i2 && i4 != i2 && !nullcandidate) {
+                Utils.prin("softkeyboard going haywire!! : " + currentCandidateStart + " -> " + currentCandidateEnd + " :: " + currentSelectionStart);
+                return;
+            }
+            boolean nocand = nullcandidate;
+            CharSequence pretext_seq = ic.getTextBeforeCursor(200, 0);
+            CharSequence posttext_seq = ic.getTextAfterCursor(200, 0);
+            String pretext = pretext_seq == null ? "" : pretext_seq.toString();
+            String posttext = posttext_seq != null ? posttext_seq.toString() : "";
+            String curword = null;
+            int i5 = currentCandidateEnd;
+            int i6 = currentCandidateStart;
+            int canlength = i5 - i6;
+            if (nocand) {
+                canlength = 0;
+            }
+            if (nocand || i6 == (i = currentSelectionStart)) {
+                int lentouse = canlength;
+                if (lentouse > posttext.length()) {
+                    lentouse = posttext.length();
+                }
+                curword = posttext.substring(0, lentouse);
+                posttext = posttext.substring(lentouse);
+            } else if (i5 == i) {
+                int lentouse2 = canlength;
+                if (lentouse2 > pretext.length()) {
+                    lentouse2 = pretext.length();
+                }
+                curword = pretext.substring(pretext.length() - lentouse2);
+                pretext = pretext.substring(0, pretext.length() - lentouse2);
+            }
+            TextboxEvent inf = new TextboxEvent(TextboxEventType.SELECTION, curword, pretext, posttext);
+            inf.codemode = themode;
+            textboxeventsbuffer.add(inf);
+        }
+    }
+
+    public static void relayDelayedEvents() {
+        while (true) {
+            TextboxEvent torel = textboxeventsbuffer.poll();
+            if (torel != null) {
+                Log.i("NIN", "relaying delayed event " + torel);
+            }
+            if (torel == null) {
+                break;
+            } else if (torel.type == TextboxEventType.RESET) {
+                NINLib.onExternalSelChange();
+            } else if (torel.type == TextboxEventType.SELECTION) {
+                NINLib.onTextSelection(torel.arg1, torel.mainarg, torel.arg2, torel.codemode);
+            } else if (torel.type == TextboxEventType.APPFIELDCHANGE) {
+                NINLib.onChangeAppOrTextbox(torel.mainarg, torel.arg1, torel.arg2);
+            } else if (torel.type == TextboxEventType.FIELDTYPECLASSCHANGE) {
+                NINLib.onEditorChangeTypeClass(torel.mainarg, torel.arg1);
+            }
+        }
+        while (true) {
+            WordDestructionInfo desu = worddestructionbuffer.poll();
+            if (desu != null) {
+                NINLib.onWordDestruction(desu.destructedword, desu.destructedstring);
+            } else {
+                return;
+            }
+        }
+    }
+
+
+
     public static void performMUCommand(String cmd, String a1, String a2, String a3, InputConnection ic) {
         if (cmd.equals("retypebksp")) {
             ic.setComposingText("", 0);
@@ -454,11 +476,13 @@ public class SoftKeyboard extends InputMethodService {
             start = Math.max(0, currentSelectionStart - (seq.length() - index));
             end = currentSelectionEnd;
         }
+        start = Math.max(0, start);
+        end = Math.max(0, end);
 
-        changeSelection(ic, start, start, start, start, null);
         ic.setComposingRegion(start, start);
         ic.setSelection(start, start);
         ic.deleteSurroundingText(0, end - start);
+        changeSelection(ic, start, start, start, start, "external");
 
     }
 
