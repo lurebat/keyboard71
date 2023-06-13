@@ -17,7 +17,6 @@ import javax.microedition.khronos.opengles.GL10;
 /* JADX INFO: Access modifiers changed from: package-private */
 /* loaded from: classes.dex */
 public class NINView extends EXSurfaceView {
-    private static final boolean DEBUG = false;
     static ContextFactory globalcontextfactory;
     public static NINView globalview;
     public static ConcurrentLinkedQueue<RelayTouchInfo> moventqueue;

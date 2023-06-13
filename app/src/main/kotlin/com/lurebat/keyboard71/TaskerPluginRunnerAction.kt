@@ -78,7 +78,7 @@ class ActionRunner : TaskerPluginRunnerActionNoOutput<ActionInput>() {
         when (input.regular.opType) {
             "TextOp" -> {
                 SoftKeyboard.doTextOp(
-                    TextOp(
+                    TextOp.parse(
                         input.regular.textOperation.type!![0],
                         input.regular.textOperation.int1,
                         input.regular.textOperation.int2,

@@ -1,9 +1,9 @@
 package com.jormy.nin
 
 class TextboxEvent @JvmOverloads constructor(
-    @JvmField val type: TextboxEventType,
-    @JvmField val mainarg: String? = null,
-    @JvmField val arg1: String? = null,
-    @JvmField val arg2: String? = null,
-    @JvmField val codemode: String? = null
+    val type: TextboxEventType,
+    val mainarg: String? = null,
+    val arg1: String? = null,
+    val arg2: String? = null,
+    val codemode: String? = null
 )
