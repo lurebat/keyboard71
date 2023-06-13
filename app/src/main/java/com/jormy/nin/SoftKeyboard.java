@@ -3,6 +3,7 @@ package com.jormy.nin;
 import android.content.Context;
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -65,30 +66,37 @@ public class SoftKeyboard extends InputMethodService {
     private static void changeSelection(InputConnection ic, int selStart, int selEnd, int candidatesStart, int candidatesEnd, @Nullable String signal) {
 
         var selectionEndMovement = selEnd - currentSelectionEnd;
-        // adjust currentSelectionForwards and currentSelectionBackwards based on the new selection
-        if (selectionEndMovement > 0) {
-            if (selectionEndMovement > textAfterCursor.length()) {
-                textAfterCursor = "";
-                textBeforeCursor = "";
+        if (selEnd < 0) {
+            textAfterCursor = "";
+            textBeforeCursor = "";
+        }
+        else {
+            // adjust currentSelectionForwards and currentSelectionBackwards based on the new selection
+            if (selectionEndMovement > 0) {
+                if (selEnd > textAfterCursor.length()) {
+                    textAfterCursor = "";
+                    textBeforeCursor = "";
+                }
+                else {
+                    var start = textAfterCursor.subSequence(0, selEnd);
+                    textAfterCursor = textAfterCursor.subSequence(selEnd, textAfterCursor.length());
+                    textBeforeCursor = textBeforeCursor + start.toString();
+                }
             }
-            else {
-                var start = textAfterCursor.subSequence(0, selectionEndMovement);
-                textAfterCursor = textAfterCursor.subSequence(selectionEndMovement, textAfterCursor.length());
-                textBeforeCursor = start.toString() + textBeforeCursor;
+            else if (selectionEndMovement < 0) {
+                if (selEnd > textBeforeCursor.length()) {
+                    textAfterCursor = "";
+                    textBeforeCursor = "";
+                }
+                else {
+                    var start = textBeforeCursor.subSequence(selEnd, textBeforeCursor.length());
+                    textBeforeCursor = textBeforeCursor.subSequence(0, selEnd);
+                    textAfterCursor = start + textAfterCursor.toString();
+
+                }
             }
         }
-        else if (selectionEndMovement < 0) {
-            if (-selectionEndMovement > textBeforeCursor.length()) {
-                textAfterCursor = "";
-                textBeforeCursor = "";
-            }
-            else {
-                var start = textBeforeCursor.subSequence(0, -selectionEndMovement);
-                var end = textBeforeCursor.subSequence(-selectionEndMovement, textBeforeCursor.length());
-                textBeforeCursor = start;
-                textAfterCursor = end.toString() + textAfterCursor;
-            }
-        }
+
 
         currentSelectionStart = selStart;
         currentSelectionEnd = selEnd;
@@ -131,7 +139,7 @@ public class SoftKeyboard extends InputMethodService {
             }
         }
 
-        fillText(ic, 50, null);
+        fillText(ic, 50, false);
 
         var newStart = (selectStart == 0) ? 0 : Math.max(0, baseStart + getUnicodeMovementForIndex(ic, selectStart));
         var newEnd = (selectEnd == 0) ? 0 : Math.max(0, baseEnd + getUnicodeMovementForIndex(ic, selectEnd));
@@ -140,15 +148,23 @@ public class SoftKeyboard extends InputMethodService {
 
     }
 
-    private static int getUnicodeMovementForIndex(InputConnection ic, int count) {
-        var factor = 2;
-        int abs = Math.abs(count);
-        int amount = (abs * factor);
+    private static int getUnicodeSumMovement(CharSequence currentChars) {
+
+        BreakIterator iterator = BreakIterator.getCharacterInstance();
+        iterator.setText(currentChars.toString());
+
+        var total = -1;
+        for (var current = iterator.first(); current != BreakIterator.DONE; current = iterator.next()) {
+            total++;
+        }
+
+        return Math.max(0, total);
+    }
+
+
+    private static int getUnicodeMovementForIndex(CharSequence currentChars, int count) {
         boolean isBackwards = count < 0;
-
-        fillText(ic, amount, isBackwards);
-
-        CharSequence currentChars = isBackwards ? textBeforeCursor : textAfterCursor;
+        int abs = Math.abs(count);
 
         BreakIterator iterator = BreakIterator.getCharacterInstance();
 
@@ -156,62 +172,49 @@ public class SoftKeyboard extends InputMethodService {
 
         var finalVar = 0;
         int i = 0;
+        int _none = isBackwards ? iterator.last() : iterator.first();
 
-        while (true) {
-            int _none = isBackwards ? iterator.last() : iterator.first();
-            for (; i < abs; i++) {
-                var result = 0;
-                if (isBackwards) {
-                    result = iterator.previous();
-                } else {
-                    result = iterator.next();
-                }
-
-                if (result == BreakIterator.DONE ) {
-                    break;
-                }
-                finalVar = count > 0 ? result : currentChars.length() - result;
-            }
-            if ((i + 1) < abs) {
-                if (currentChars.length() < amount) {
-                    break;
-                }
-
-                amount *= 2;
-
-                fillText(ic, amount, isBackwards);
-                currentChars = isBackwards ? textBeforeCursor : textAfterCursor;
-                if (currentChars == null) {
-                    return 0;
-                }
-
-                if (currentChars.length() < amount) {
-                    break;
-                }
-
-                iterator.setText(currentChars.subSequence(finalVar, currentChars.length()).toString());
+        for (; i < abs; i++) {
+            var result = 0;
+            if (isBackwards) {
+                result = iterator.previous();
             } else {
-                break;
+                result = iterator.next();
             }
+            if (result == BreakIterator.DONE ) {
+                result = isBackwards ? 0 : currentChars.length();
+            }
+
+            finalVar = isBackwards ? result - currentChars.length() : result;
         }
 
-        return isBackwards ? -finalVar : finalVar;
+        return finalVar;
     }
 
-    private static CharSequence fillText(InputConnection ic, int amount, Boolean isBackwards) {
-        if (textAfterCursor.length() < amount && (isBackwards == null || isBackwards.equals(false))) {
+    private static int getUnicodeMovementForIndex(InputConnection ic, int count) {
+        var factor = 10;
+        int abs = Math.abs(count);
+        boolean isBackwards = count < 0;
+
+        int amount = (abs * factor);
+
+        CharSequence currentChars = fillText(ic, amount, isBackwards);
+        return getUnicodeMovementForIndex(currentChars, count);
+
+    }
+
+    private static CharSequence fillText(InputConnection ic, int amount, boolean isBackwards) {
+        if (textAfterCursor.length() < amount) {
             var temp = ic.getTextAfterCursor(amount, 0);
             textAfterCursor = temp == null ? "" : temp.toString();
         }
 
-        if (textBeforeCursor.length() < amount && (isBackwards == null || isBackwards.equals(true))) {
+        if (textBeforeCursor.length() < amount) {
             var temp = ic.getTextBeforeCursor(amount, 0);
             textBeforeCursor = temp == null ? "" : temp.toString();
         }
 
-        if (isBackwards == null) {
-            return null;
-        } else if (isBackwards.equals(true)) {
+         if (isBackwards) {
             return textBeforeCursor;
         } else {
             return textAfterCursor;
@@ -219,48 +222,55 @@ public class SoftKeyboard extends InputMethodService {
     }
 
     public static void performBackReplacement(int rawBackIndex, int originalUnicodeLen, String replacement, InputConnection ic) {
-        // If there is a candidate - the index refers to before it
+
         var candidateLength = currentCandidateEnd - currentCandidateStart;
-        fillText(ic, rawBackIndex + originalUnicodeLen + candidateLength, true);
-        byte[] bytes = textBeforeCursor.toString().getBytes(StandardCharsets.UTF_8);
+
+        if (candidateLength == 0 && currentSelectionStart == -1 && currentSelectionEnd == -1) {
+            return;
+        }
+
+        fillText(ic, rawBackIndex + originalUnicodeLen + candidateLength ,false);
+        String totalText = textBeforeCursor.toString() + textAfterCursor.toString();
+        int afterBytes = textAfterCursor.toString().getBytes(StandardCharsets.UTF_8).length;
+        byte[] bytes = totalText.getBytes(StandardCharsets.UTF_8);
 
         var startPoint = currentSelectionStart;
         if (candidateLength > 0) {
             int start = textBeforeCursor.length() - currentCandidateStart;
-            if (start < 0) {
-                start = 0;
-            }
             int end = start + candidateLength;
-            if (end > textBeforeCursor.length()) {
-                end = textBeforeCursor.length();
+            if (end > bytes.length) {
+                end = bytes.length;
             }
-            var candidate = textBeforeCursor.subSequence(start, end).toString().getBytes(StandardCharsets.UTF_8);
+
+            var candidate = totalText.substring(start, end).getBytes(StandardCharsets.UTF_8);
             rawBackIndex += candidate.length;
         }
         if (bytes.length < rawBackIndex) {
             rawBackIndex = bytes.length;
         }
-        var startOfOriginalWordOffset = new String(bytes, bytes.length - rawBackIndex, rawBackIndex).length();
-        int endOfOriginalWordOffset;
-        for (endOfOriginalWordOffset = startOfOriginalWordOffset; endOfOriginalWordOffset > 0; endOfOriginalWordOffset--) {
-            var currentChar = textBeforeCursor.charAt(textBeforeCursor.length() - endOfOriginalWordOffset);
-            if (Character.isWhitespace(currentChar)
-                    || currentChar == '.'
-                    || currentChar == ','
-                    || currentChar == ';'
-                    || currentChar == ':'
-                    || currentChar == '!'
-                    || currentChar == '?'
-                    || currentChar == '"'
-            ) {
-                break;
-            }
+        var startOfOriginalWordOffset = new String(bytes, bytes.length - rawBackIndex - afterBytes, rawBackIndex).length();
+        var startIndex = totalText.length() - textAfterCursor.length() - startOfOriginalWordOffset;
+
+        if (startIndex < 0) {
+            startIndex = 0;
         }
-        var originalWordLength = startOfOriginalWordOffset - endOfOriginalWordOffset;
+
+        var breakIterator = BreakIterator.getWordInstance();
+        breakIterator.setText(totalText);
+        var index = breakIterator.following(startIndex);
+        Log.d("NIN", "totalText - " + totalText + " - startIndex: " + startIndex + ", index: " + index + ", startOfOriginalWordOffset: " + startOfOriginalWordOffset);
+        if (index == -1) {
+            index = totalText.length();
+        }
+
+        var originalWordLength = index - startIndex;
+
+        int replaceStartPoint = startPoint - startOfOriginalWordOffset;
 
         boolean wordOverriding = startOfOriginalWordOffset < originalWordLength;
 
-        int replaceStartPoint = startPoint - startOfOriginalWordOffset;
+        Log.d("NIN", "1 - start: " + currentCandidateStart + ", end: " + currentCandidateEnd + ", selection start: " + currentSelectionStart + ", selection end: " + currentSelectionEnd + " replaceStartPoint: " + replaceStartPoint + ", startOfOriginalWordOffset: " + startOfOriginalWordOffset + ", originalWordLength: " + originalWordLength + ", wordOverriding: " + wordOverriding + ", textBeforeCursor: " + textBeforeCursor + ", textAfterCursor: " + textAfterCursor);
+
         if (replaceStartPoint < 0) {
             return;
         }
@@ -273,12 +283,14 @@ public class SoftKeyboard extends InputMethodService {
         // Insert the replacement text
         ic.commitText(replacement, 1);
 
-        var positionShift = replacement.length() - originalWordLength;
+
+        var positionShift = getUnicodeSumMovement(replacement) - originalWordLength;
         changeSelection(ic, currentSelectionStart + positionShift, currentSelectionEnd + positionShift, currentCandidateStart + positionShift, currentCandidateEnd + positionShift, null);
 
         ic.setComposingRegion(currentCandidateStart, currentCandidateEnd);
         ic.setSelection(currentSelectionStart, currentSelectionEnd);
         if (wordOverriding) {
+            Log.d("NIN", "2  start: " + currentCandidateStart + ", end: " + currentCandidateEnd + ", selection start: " + currentSelectionStart + ", selection end: " + currentSelectionEnd + " replaceStartPoint: " + replaceStartPoint + ", startOfOriginalWordOffset: " + startOfOriginalWordOffset + ", originalWordLength: " + originalWordLength + ", wordOverriding: " + wordOverriding + ", textBeforeCursor: " + textBeforeCursor + ", textAfterCursor: " + textAfterCursor);
             signalCursorCandidacyResult(ic, "backrepl");
         }
     }
@@ -353,65 +365,51 @@ public class SoftKeyboard extends InputMethodService {
     public static void signalWordDestruction(String leword, String lestring) {
         worddestructionbuffer.add(new WordDestructionInfo(leword, lestring));
     }
-    public static void signalCursorCandidacyResult(InputConnection ic, String themode) {
-        int i;
+
+    public static void signalCursorCandidacyResult(InputConnection ic, String mode) {
         if (ic == null) {
             textboxeventsbuffer.add(new TextboxEvent(TextboxEventType.RESET, null, null, null));
             return;
         }
-        int i2 = currentSelectionStart;
-        if (i2 == currentSelectionEnd) {
-            int i3 = currentCandidateStart;
-            int i4 = currentCandidateEnd;
-            boolean nullcandidate = i3 == i4 && i3 == -1;
-            if (i3 == 0 && i4 == 0) {
-                nullcandidate = true;
-            }
-            if (i3 == i4) {
-                nullcandidate = true;
-            }
-            if (i3 != i2 && i4 != i2 && !nullcandidate) {
-                Utils.prin("softkeyboard going haywire!! : " + currentCandidateStart + " -> " + currentCandidateEnd + " :: " + currentSelectionStart);
-                return;
-            }
-            boolean nocand = nullcandidate;
-            CharSequence pretext_seq = ic.getTextBeforeCursor(200, 0);
-            CharSequence posttext_seq = ic.getTextAfterCursor(200, 0);
-            String pretext = pretext_seq == null ? "" : pretext_seq.toString();
-            String posttext = posttext_seq != null ? posttext_seq.toString() : "";
-            String curword = null;
-            int i5 = currentCandidateEnd;
-            int i6 = currentCandidateStart;
-            int canlength = i5 - i6;
-            if (nocand) {
-                canlength = 0;
-            }
-            if (nocand || i6 == (i = currentSelectionStart)) {
-                int lentouse = canlength;
-                if (lentouse > posttext.length()) {
-                    lentouse = posttext.length();
-                }
-                curword = posttext.substring(0, lentouse);
-                posttext = posttext.substring(lentouse);
-            } else if (i5 == i) {
-                int lentouse2 = canlength;
-                if (lentouse2 > pretext.length()) {
-                    lentouse2 = pretext.length();
-                }
-                curword = pretext.substring(pretext.length() - lentouse2);
-                pretext = pretext.substring(0, pretext.length() - lentouse2);
-            }
-            TextboxEvent inf = new TextboxEvent(TextboxEventType.SELECTION, curword, pretext, posttext);
-            inf.codemode = themode;
-            textboxeventsbuffer.add(inf);
+
+        boolean hasSelection = currentSelectionStart != currentSelectionEnd;
+        if (hasSelection) {
+            return;
         }
+        int candidateLength = currentCandidateEnd - currentCandidateStart;
+
+        boolean nullCandidate = candidateLength == 0;
+
+        if (currentCandidateStart != currentSelectionStart && currentCandidateEnd != currentSelectionStart && !nullCandidate) {
+            Utils.prin("softkeyboard going haywire!! : " + currentCandidateStart + " -> " + currentCandidateEnd + " :: " + currentSelectionStart);
+            return;
+        }
+
+        fillText(ic, 200, false);
+        String curword = null;
+
+        String pretext = textBeforeCursor.toString();
+        String posttext = textAfterCursor.toString();
+
+        if (nullCandidate || currentCandidateStart == currentSelectionStart) {
+            int length = Math.min(textAfterCursor.length(), candidateLength);
+            posttext = posttext.substring(length);
+        } else if (currentCandidateEnd == currentSelectionStart) {
+            int length = Math.min(textBeforeCursor.length(), candidateLength);
+            curword = pretext.substring(pretext.length() - length);
+            pretext = pretext.substring(0, pretext.length() - length);
+        }
+
+        TextboxEvent inf = new TextboxEvent(TextboxEventType.SELECTION, curword, pretext, posttext);
+        inf.codemode = mode;
+        textboxeventsbuffer.add(inf);
     }
 
     public static void relayDelayedEvents() {
         while (true) {
             TextboxEvent torel = textboxeventsbuffer.poll();
             if (torel != null) {
-                Log.i("NIN", "relaying delayed event " + torel);
+                Log.d("NIN", "relaying delayed event " + torel);
             }
             if (torel == null) {
                 break;
@@ -716,7 +714,18 @@ public class SoftKeyboard extends InputMethodService {
         }
         TextboxEvent inf = new TextboxEvent(TextboxEventType.APPFIELDCHANGE, attribute.packageName, attribute.fieldName, typemode);
         textboxeventsbuffer.add(inf);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            textAfterCursor = attribute.getInitialTextAfterCursor(1000, 0);
+            textBeforeCursor = attribute.getInitialTextBeforeCursor(1000, 0);
+            if (textAfterCursor == null) {
+                textAfterCursor = "";
+            }
+            if (textBeforeCursor == null) {
+                textBeforeCursor = "";
+            }
+        }
         signalCursorCandidacyResult(globalsoftkeyboard.getCurrentInputConnection(), "startInputView");
+
     }
 
     @Override // android.inputmethodservice.InputMethodService
