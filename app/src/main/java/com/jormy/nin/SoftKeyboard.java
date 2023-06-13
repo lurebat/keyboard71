@@ -13,6 +13,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodSubtype;
 import com.jormy.Sistm;
+import com.lurebat.keyboard71.TaskerPluginEventKt;
+
 import java.io.PrintStream;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -403,6 +405,7 @@ public class SoftKeyboard extends InputMethodService {
                                 keyDownUp(ic, 66);
                             }
                         } else {
+                            TaskerPluginEventKt.triggerBasicTaskerEvent(globalcontext, theop.strarg);
                             ic.commitText(theop.strarg, 1);
                         }
                     } else if (theop.type == 'e') {
