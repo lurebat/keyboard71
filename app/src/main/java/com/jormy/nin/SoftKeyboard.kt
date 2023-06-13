@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
+import com.jormy.nin.KotlinUtils.changeIf
 import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onEditorChangeTypeClass
 import com.jormy.nin.NINLib.onExternalSelChange
@@ -27,6 +28,8 @@ import java.nio.charset.StandardCharsets
 import java.text.BreakIterator
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 /* loaded from: classes.dex */
 class SoftKeyboard : InputMethodService() {
@@ -73,10 +76,16 @@ class SoftKeyboard : InputMethodService() {
     override fun onCreateInputView(): View {
         globalcontext = this
 
-        return theopenglview?.let {
-            (it.parent as ViewGroup).removeView(it)
-            it
-        } ?: NINView(this)
+        val view = theopenglview
+        if (view == null) {
+            theopenglview = NINView(this).apply {
+                setZOrderOnTop(true)
+            }
+        } else {
+            (view.parent as ViewGroup?)?.removeView(view)
+        }
+
+        return theopenglview!!
     }
 
     override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
@@ -91,11 +100,10 @@ class SoftKeyboard : InputMethodService() {
                 if (variation == 128) {
                     typemode = "passwd"
                 }
-                val i = attribute.inputType and 65536
             }
         }
         val inf = TextboxEvent(
-            TextboxEventType.APPFIELDCHANGE,
+            TextboxEventType.APP_FIELD_CHANGE,
             attribute.packageName,
             attribute.fieldName,
             typemode
@@ -158,6 +166,17 @@ class SoftKeyboard : InputMethodService() {
             candidatesEnd: Int,
             signal: String?
         ) {
+            adjustCursorText(selEnd)
+            currentSelectionStart = selStart
+            currentSelectionEnd = selEnd
+            currentCandidateStart = candidatesStart
+            currentCandidateEnd = candidatesEnd
+            if (signal != null) {
+                signalCursorCandidacyResult(ic, signal)
+            }
+        }
+
+        private fun adjustCursorText(selEnd: Int) {
             val selectionEndMovement = selEnd - currentSelectionEnd
             if (selEnd < 0) {
                 textAfterCursor = ""
@@ -186,24 +205,17 @@ class SoftKeyboard : InputMethodService() {
                     }
                 }
             }
-            currentSelectionStart = selStart
-            currentSelectionEnd = selEnd
-            currentCandidateStart = candidatesStart
-            currentCandidateEnd = candidatesEnd
-            if (signal != null) {
-                signalCursorCandidacyResult(ic, signal)
-            }
         }
 
-        fun performSetSelection(
+        private fun performSetSelection(
             selectStart: Int,
             selectEnd: Int,
             fromStart: Boolean,
-            dontSignal: Boolean,
+            signal: Boolean,
             ic: InputConnection
         ) {
             setSelectionHelper(selectStart, selectEnd, fromStart, ic)
-            if (!dontSignal) {
+            if (signal) {
                 signalCursorCandidacyResult(ic, "setselle")
             }
         }
@@ -236,11 +248,11 @@ class SoftKeyboard : InputMethodService() {
                 }
             }
             fillText(ic, 50, false)
-            val newStart = if (selectStart == 0) 0 else Math.max(
+            val newStart = if (selectStart == 0) 0 else max(
                 0,
                 baseStart + getUnicodeMovementForIndex(ic, selectStart)
             )
-            val newEnd = if (selectEnd == 0) 0 else Math.max(
+            val newEnd = if (selectEnd == 0) 0 else max(
                 0,
                 baseEnd + getUnicodeMovementForIndex(ic, selectEnd)
             )
@@ -248,26 +260,14 @@ class SoftKeyboard : InputMethodService() {
             ic.setSelection(newEnd, newEnd)
         }
 
-        private fun getUnicodeSumMovement(currentChars: CharSequence?): Int {
-            val iterator = BreakIterator.getCharacterInstance()
-            iterator.setText(currentChars.toString())
-            var total = -1
-            var current = iterator.first()
-            while (current != BreakIterator.DONE) {
-                total++
-                current = iterator.next()
-            }
-            return Math.max(0, total)
-        }
-
         private fun getUnicodeMovementForIndex(currentChars: CharSequence?, count: Int): Int {
             val isBackwards = count < 0
-            val abs = Math.abs(count)
+            val abs = abs(count)
             val iterator = BreakIterator.getCharacterInstance()
             iterator.setText(currentChars.toString())
             var finalVar = 0
             var i = 0
-            val _none = if (isBackwards) iterator.last() else iterator.first()
+            if (isBackwards) iterator.last() else iterator.first()
             while (i < abs) {
                 var result = 0
                 result = if (isBackwards) {
@@ -286,7 +286,7 @@ class SoftKeyboard : InputMethodService() {
 
         private fun getUnicodeMovementForIndex(ic: InputConnection, count: Int): Int {
             val factor = 10
-            val abs = Math.abs(count)
+            val abs = abs(count)
             val isBackwards = count < 0
             val amount = abs * factor
             val currentChars = fillText(ic, amount, isBackwards)
@@ -315,12 +315,13 @@ class SoftKeyboard : InputMethodService() {
 
         fun performBackReplacement(
             rawBackIndex: Int,
-            originalUnicodeLen: Int,
+            original: String,
             replacement: String?,
             ic: InputConnection
         ) {
             var startOfOriginalWordOffsetBytes = rawBackIndex
             val candidateLength = currentCandidateEnd - currentCandidateStart
+            val originalUnicodeLen = original.length
 
             fillText(ic, abs(currentSelectionEnd) + originalUnicodeLen, false)
             val totalText = textBeforeCursor.toString() + textAfterCursor.toString()
@@ -468,10 +469,10 @@ class SoftKeyboard : InputMethodService() {
             var pretext = textBeforeCursor.toString()
             var posttext = textAfterCursor.toString()
             if (nullCandidate || currentCandidateStart == currentSelectionStart) {
-                val length = Math.min(textAfterCursor!!.length, candidateLength)
+                val length = min(textAfterCursor!!.length, candidateLength)
                 posttext = posttext.substring(length)
             } else if (currentCandidateEnd == currentSelectionStart) {
-                val length = Math.min(textBeforeCursor!!.length, candidateLength)
+                val length = min(textBeforeCursor!!.length, candidateLength)
                 curword = pretext.substring(pretext.length - length)
                 pretext = pretext.substring(0, pretext.length - length)
             }
@@ -492,9 +493,9 @@ class SoftKeyboard : InputMethodService() {
                     onExternalSelChange()
                 } else if (torel.type === TextboxEventType.SELECTION) {
                     onTextSelection(torel.arg1, torel.mainarg, torel.arg2, torel.codemode)
-                } else if (torel.type === TextboxEventType.APPFIELDCHANGE) {
+                } else if (torel.type === TextboxEventType.APP_FIELD_CHANGE) {
                     onChangeAppOrTextbox(torel.mainarg, torel.arg1, torel.arg2)
-                } else if (torel.type === TextboxEventType.FIELDTYPECLASSCHANGE) {
+                } else if (torel.type === TextboxEventType.FIELD_TYPE_CLASS_CHANGE) {
                     onEditorChangeTypeClass(torel.mainarg, torel.arg1)
                 }
             }
@@ -527,8 +528,8 @@ class SoftKeyboard : InputMethodService() {
         fun performBackspacing(mode: String?, singleCharacterMode: Boolean, ic: InputConnection) {
             val hasCandidate = currentCandidateEnd != currentCandidateStart
             val hasSelection = currentSelectionStart != currentSelectionEnd
-            var start: Int
-            var end: Int
+            val start: Int
+            val end: Int
             if (hasSelection) {
                 start = currentSelectionStart
                 end = currentSelectionEnd
@@ -566,150 +567,164 @@ class SoftKeyboard : InputMethodService() {
         }
 
         fun processTextOps() {
-            var ic: InputConnection?
-            val origbatchcount = textopbuffer!!.size
-            if (origbatchcount != 0) {
-                if (globalsoftkeyboard!!.currentInputConnection.also {
-                        ic = it
-                    } != null) {
-                    ic!!.beginBatchEdit()
-                    for (i in 0 until origbatchcount) {
-                        val theop = textopbuffer!!.poll() ?: break
-                        val thenext = textopbuffer!!.peek()
-                        var skipit = false
-                        // only if debug level
-                        //Log.d("NIN", theop.toString() + " ---- " + (thenext?.toString() ?: "null"))
-                        if (thenext != null && (thenext.type == 's' || thenext.type == 'l') && theop.type == 'l') {
-                            skipit = true
-                        }
-                        if (!skipit && ic != null) {
-                            if (theop.type == 's') {
-                                if (theop.strarg == "\n") {
-                                    var action = 1
-                                    if (globalsoftkeyboard!!.currentInputEditorInfo.imeOptions and 1073741824 == 0) {
-                                        action =
-                                            globalsoftkeyboard!!.currentInputEditorInfo.imeOptions and 255
-                                    }
-                                    if (action != 1) {
-                                        ic!!.performEditorAction(action)
-                                    } else {
-                                        keyDownUp(ic!!, 66, 0, 0, KeyEvent.FLAG_SOFT_KEYBOARD)
-                                    }
-                                } else {
-                                    if (theop.strarg!!.startsWith("<{") && theop.strarg.endsWith("}>")) {
-                                        val taskerstring =
-                                            theop.strarg.substring(2, theop.strarg.length - 2)
-                                        try {
-                                            handleSpecialText(ic!!, theop, taskerstring)
-                                        } catch (e: Exception) {
-                                            Log.e(
-                                                "NIN",
-                                                "Error handling special text: " + e.message
-                                            )
-                                            ic!!.commitText(theop.strarg, 1)
-                                        }
-                                    } else {
-                                        ic!!.commitText(theop.strarg, 1)
-                                    }
-                                }
-                            } else if (theop.type == 'e') {
-                                performSetSelection(
-                                    theop.intarg1,
-                                    theop.intarg2,
-                                    theop.boolarg,
-                                    theop.boolarg2,
-                                    ic!!
-                                )
-                            } else if (theop.type == 'r') {
-                                performBackReplacement(
-                                    theop.intarg1,
-                                    theop.intarg2,
-                                    theop.strarg,
-                                    ic!!
-                                )
-                            } else if (theop.type == 'l') {
-                                ic!!.setComposingText(theop.strarg, 1)
-                            } else if (theop.type == '<') {
-                                performBackspacing(theop.strarg, theop.boolarg, ic!!)
-                            } else if (theop.type == 'b') {
-                                performBackspacing(theop.strarg, theop.boolarg, ic!!)
-                            } else if (theop.type != 'u') {
-                                if (theop.type == '!') {
-                                    signalCursorCandidacyResult(ic, "requestsel")
-                                } else if (theop.type == 'C') {
-                                    performMUCommand(
-                                        theop.strarg,
-                                        theop.a1,
-                                        theop.a2,
-                                        theop.a2,
-                                        ic!!
-                                    )
-                                } else if (theop.type == 'm') {
-                                    performCursorMovement(
-                                        theop.intarg1,
-                                        theop.intarg2,
-                                        theop.boolarg,
-                                        ic!!
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    updatesel_byroenflag = true
-                    updatesel_byroen_lasttimemilli = System.currentTimeMillis()
-                    ic!!.endBatchEdit()
+            val buffer = textopbuffer ?: return
+            val bufferSize = buffer.size
+            if (bufferSize == 0) return
+
+            val ic = globalsoftkeyboard?.currentInputConnection ?: return
+
+            ic.beginBatchEdit()
+
+            try {
+                for (i in 0 until bufferSize) {
+                    val op = textopbuffer!!.poll() ?: break
+                    val next = textopbuffer!!.peek()
+                    processOperation(op, next, ic)
                 }
+            } finally {
+                updatesel_byroenflag = true
+                updatesel_byroen_lasttimemilli = System.currentTimeMillis()
+                ic.endBatchEdit()
             }
         }
 
-        private fun handleSpecialText(ic: InputConnection, theop: TextOp, taskerstring: String) {
-            if (taskerstring.startsWith("k")) {
-                val substring = taskerstring.substring(1)
-                val parts =
-                    substring.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                var keycode = 0
-                keycode = if (parts.size < 1) {
-                    substring.toInt()
+        private fun processOperation(
+            op: TextOp,
+            next: TextOp?,
+            ic: InputConnection
+        ) {
+            when (op) {
+                is TextOp.MarkLiquid -> {
+                    if (next !is TextOp.MarkLiquid && next !is TextOp.Solidify) {
+                        ic.setComposingText(op.newString, 1)
+                    }
+                }
+
+                is TextOp.Solidify -> {
+                    when {
+                        op.newString == "bleb" -> {
+                            NINLib.getUnicodeFrontIndex("wow", 1)
+                        }
+                        op.newString == "\n" -> {
+                            var action = 1
+                            if (globalsoftkeyboard!!.currentInputEditorInfo.imeOptions and 1073741824 == 0) {
+                                action =
+                                    globalsoftkeyboard!!.currentInputEditorInfo.imeOptions and 255
+                            }
+                            if (action != 1) {
+                                ic.performEditorAction(action)
+                            } else {
+                                keyDownUp(ic, 66, 0, 0, KeyEvent.FLAG_SOFT_KEYBOARD)
+                            }
+                        }
+
+                        op.newString.startsWith("<{") && op.newString.endsWith("}>") -> {
+                            try {
+                                handleSpecialText(ic, op.newString)
+                            } catch (e: Exception) {
+                                Log.e(
+                                    "NIN",
+                                    "Error handling special text: " + e.message
+                                )
+                                ic.commitText(op.newString, 1)
+                            }
+                        }
+
+                        else -> {
+                            ic.commitText(op.newString, 1)
+                        }
+                    }
+                }
+
+                is TextOp.SetSelection -> performSetSelection(
+                    op.start,
+                    op.end,
+                    op.fromStart,
+                    op.signal,
+                    ic
+                )
+
+                is TextOp.BackspaceReplacement -> performBackReplacement(
+                    op.backIndexFromCursorBytes,
+                    op.oldString,
+                    op.newString,
+                    ic
+                )
+
+                is TextOp.SimpleBackspace -> performBackspacing(
+                    null,
+                    op.singleCharacterMode,
+                    ic
+                )
+
+                is TextOp.BackspaceModed -> performBackspacing(
+                    op.mode,
+                    true,
+                    ic
+                )
+
+                is TextOp.DragCursorUp -> {}
+                is TextOp.RequestSelection -> signalCursorCandidacyResult(
+                    ic,
+                    "requestsel"
+                )
+
+                is TextOp.MuCommand -> performMUCommand(
+                    op.command,
+                    op.arg1,
+                    op.arg2,
+                    op.arg3,
+                    ic
+                )
+
+                is TextOp.DragCursorMove -> performCursorMovement(
+                    op.xMovement,
+                    op.xMovement,
+                    op.selectionMode,
+                    ic
+                )
+            }
+        }
+
+        private fun handleSpecialText(ic: InputConnection, str: String) {
+            val inner = str.substring(2, str.length - 2)
+            if (inner.isEmpty()) {
+                return
+            }
+
+            val first = inner[0]
+            val rest = inner.substring(1).trim()
+            val parts = rest.let {
+                val temp = it.split("\\|".toRegex()).toTypedArray()
+                if (temp.isEmpty()) {
+                    arrayOf(it)
                 } else {
-                    parts[0].toInt()
+                    temp
                 }
-                var modifiers = 0
-                if (parts.size > 1) {
-                    modifiers = parts[1].toInt()
+            }
+
+
+            when (first) {
+                'k' -> {
+                    val code = WordHelper.parseKeyCode(parts[0])
+                    val modifiers = if (parts.size > 1) WordHelper.parseModifiers(parts[1]) else 0
+                    val repeat = if (parts.size > 2) parts[2].toInt() else 0
+                    val flags = if (parts.size > 3) parts[3].toInt() else KeyEvent.FLAG_SOFT_KEYBOARD
+                    keyDownUp(ic, code, modifiers, repeat, flags)
                 }
-                var repeat = 0
-                if (parts.size > 2) {
-                    repeat = parts[2].toInt()
-                }
-                var flags = KeyEvent.FLAG_SOFT_KEYBOARD
-                if (parts.size > 2) {
-                    flags = parts[2].toInt()
-                }
-                keyDownUp(ic, keycode, modifiers, repeat, flags)
-            } else if (taskerstring.startsWith("c")) {
-                val substring = taskerstring.substring(1)
-                val parts =
-                    substring.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                var code = 0
-                code = if (parts.size < 1) {
-                    substring.toInt()
-                } else {
-                    parts[0].toInt()
-                }
-                ic.performContextMenuAction(
-                    when (code) {
-                        0 -> R.id.cut
-                        1 -> R.id.copy
-                        2 -> R.id.paste
-                        3 -> R.id.selectAll
-                        4 -> R.id.startSelectingText
-                        5 -> R.id.stopSelectingText
-                        6 -> R.id.switchInputMethod
-                        else -> code
+                'c' -> ic.performContextMenuAction(
+                    when (parts[0].uppercase()) {
+                        "0", "CUT" -> R.id.cut
+                        "1", "COPY" -> R.id.copy
+                        "2", "PASTE" -> R.id.paste
+                        "3", "SELECT_ALL" -> R.id.selectAll
+                        "4", "START_SELECT" -> R.id.startSelectingText
+                        "5", "STOP_SELECT" -> R.id.stopSelectingText
+                        "6", "SWITCH_KEYBOARD" -> R.id.switchInputMethod
+                        else -> parts[0].toInt()
                     }
                 )
-            } else if (taskerstring.startsWith("t")) {
-                globalcontext!!.triggerBasicTaskerEvent(theop.strarg!!)
+                't' -> globalcontext!!.triggerBasicTaskerEvent(rest)
             }
             changeSelection(
                 ic,
@@ -723,64 +738,62 @@ class SoftKeyboard : InputMethodService() {
 
         @Api
         @JvmStatic
-        fun callMUCommand(cmd: String?, a1: String?, a2: String?, a3: String?) {
-            val topush = TextOp('C', 0, 0, false, false, cmd, a1, a2, a3)
-            doTextOp(topush)
+        fun callMUCommand(command: String, arg1: String?, arg2: String?, arg3: String?) {
+            doTextOp(TextOp.MuCommand(command, arg1, arg2, arg3))
         }
 
         @Api
         @JvmStatic
         fun callRequestSel() {
-            doTextOp(TextOp('!'))
+            doTextOp(TextOp.RequestSelection())
         }
 
         @Api
         @JvmStatic
-        fun callSetSel(startpoint: Int, endpoint: Int, fromstart: Boolean, dontsignal: Boolean) {
-            doTextOp(TextOp('e', startpoint, endpoint, fromstart, dontsignal))
+        fun callSetSel(start: Int, end: Int, fromStart: Boolean, dontSignal: Boolean) {
+            doTextOp(TextOp.SetSelection(start, end, fromStart, !dontSignal))
         }
 
         @Api
         @JvmStatic
-        fun callDragCursorUp(releasedir: Int) {
-            doTextOp(TextOp('u', releasedir))
+        fun callDragCursorUp(releasedDirection: Int) {
+            doTextOp(TextOp.DragCursorUp(releasedDirection))
         }
 
         @Api
         @JvmStatic
-        fun callDragCursorMove(xmove: Int, ymove: Int, selmode: Boolean) {
-            doTextOp(TextOp('m', xmove, ymove, selmode))
+        fun callDragCursorMove(xMovement: Int, yMovement: Int, selectionMode: Boolean) {
+            doTextOp(TextOp.DragCursorMove(xMovement, yMovement, selectionMode))
         }
 
         @Api
         @JvmStatic
-        fun callSimpleBackspace(simplecharmode: Boolean) {
-            doTextOp(TextOp('<', simplecharmode))
+        fun callSimpleBackspace(singleCharacterMode: Boolean) {
+            doTextOp(TextOp.SimpleBackspace(singleCharacterMode))
         }
 
         @Api
         @JvmStatic
-        fun callBackReplacement(rawbackindex: Int, oldstr: String, lestr: String?) {
-            doTextOp(TextOp('r', rawbackindex, oldstr.length, true, false, lestr))
+        fun callBackReplacement(backIndexFromCursorBytes: Int, oldString: String, newString: String) {
+            doTextOp(TextOp.BackspaceReplacement(backIndexFromCursorBytes, oldString, newString))
         }
 
         @Api
         @JvmStatic
-        fun callBackspaceModed(lestr: String?) {
-            doTextOp(TextOp('b', lestr))
+        fun callBackspaceModed(string: String) {
+            doTextOp(TextOp.BackspaceModed(string))
         }
 
         @Api
         @JvmStatic
-        fun callMarkLiquid(lestr: String?) {
-            doTextOp(TextOp('l', lestr))
+        fun callMarkLiquid(string: String) {
+            doTextOp(TextOp.MarkLiquid(string))
         }
 
         @Api
         @JvmStatic
-        fun callSolidify(lestr: String?) {
-            val op = TextOp('s', lestr)
-            doTextOp(op)
+        fun callSolidify(string: String) {
+            doTextOp(TextOp.Solidify(string))
         }
 
         fun doTextOp(op: TextOp) {
@@ -831,15 +844,14 @@ class SoftKeyboard : InputMethodService() {
 
 
 object WordHelper {
-    fun wordLen(text: String, start: Int): Int {
-        val iterator = android.icu.text.BreakIterator.getWordInstance()
-        iterator.setText(text)
-        return try {
-            iterator.following(start).let { if (it == BreakIterator.DONE) text.length else it }
-        } catch (e: Exception) {
-            Log.e("WordHelper", "wordBreakForwards", e)
-            text.length
-        } - start
+
+    val keyCodesMap = KeyEvent::class.java.fields.asSequence().filter { it.name.startsWith("KEYCODE_") }.associateTo(mutableMapOf()) { Pair(it.name.substring(8), it.getInt(null)) }
+    val modifiersMap = KeyEvent::class.java.fields.asSequence().filter { it.name.startsWith("META_")  && it.name.endsWith("_ON")}.associateTo(mutableMapOf()) { Pair(it.name.substring(5, it.name.indexOf("_ON")), it.getInt(null)) }
+
+    fun parseKeyCode(keyCode: String): Int = keyCodesMap[keyCode.uppercase()] ?: keyCode.toInt()
+    fun parseModifiers(modifiers: String): Int {
+        if (modifiers.all { it.isDigit() }) return modifiers.toInt()
+        return modifiers.split("|").map { it.trim() }.map { modifiersMap[it.uppercase()] ?: it.toInt() }.reduce { acc, i -> acc or i }
     }
 
     fun lastWordBreak(text: String): Int {
@@ -847,7 +859,7 @@ object WordHelper {
         iterator.setText(text)
         return try {
             iterator.last()
-            iterator.previous().let { if (it == BreakIterator.DONE) 0 else it }
+            iterator.previous().changeIf(BreakIterator.DONE, 0)
         } catch (e: Exception) {
             Log.e("WordHelper", "wordBreakForwards", e)
             0
