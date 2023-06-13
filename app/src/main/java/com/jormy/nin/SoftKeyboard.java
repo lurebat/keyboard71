@@ -17,7 +17,6 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import androidx.annotation.Nullable;
 
-import com.jormy.Sistm;
 import com.lurebat.keyboard71.TaskerPluginEventKt;
 
 import java.io.PrintStream;
@@ -684,7 +683,6 @@ public class SoftKeyboard extends InputMethodService {
     @Override // android.inputmethodservice.InputMethodService
     public View onCreateInputView() {
         globalcontext = this;
-        Sistm.assignAppContext(this);
         NINView nINView = theopenglview;
         if (nINView == null) {
             theopenglview = new NINView(this);
