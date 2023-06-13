@@ -538,7 +538,7 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             while (true) {
                 try {
                     Thread.sleep(500L);
-                    boolean cur_locked = Utils.androidScreenLocked();
+                    boolean cur_locked = Utils.isScreenLocked();
                     if (cur_locked != utils_lockedstat) {
                         utils_lockedstat = cur_locked;
                         if (cur_locked) {
