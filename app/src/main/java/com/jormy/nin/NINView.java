@@ -1,13 +1,20 @@
 package com.jormy.nin;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+
+import androidx.annotation.NonNull;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -32,6 +39,8 @@ public class NINView extends EXSurfaceView {
     public static float desired_scaling = 1.0f;
     public static float last_desired_portrait = 640.0f;
     public static int heighttestcounta = 0;
+    private Pref pref;
+    private GestureDetector gestureDetector;
 
     public NINView(Context context) {
         super(context);
@@ -54,6 +63,18 @@ public class NINView extends EXSurfaceView {
     }
 
     private void init(boolean translucent, int depth, int stencil) {
+        pref = new Pref(this.getContext());
+
+        gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public void onLongPress(@NonNull MotionEvent e) {
+                super.onLongPress(e);
+                if (pref.hapticFeedbackBlocking()) {
+                    NINView.this.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                }
+            }
+        });
+
         moventqueue = new ConcurrentLinkedQueue<>();
         NINLib.syncTiming(System.currentTimeMillis());
         if (translucent) {
@@ -321,10 +342,21 @@ public class NINView extends EXSurfaceView {
 
     @Override // android.view.View
     public boolean onTouchEvent(MotionEvent event) {
-        int actionid = event.getActionMasked();
-        int pointercount = event.getPointerCount();
-        for (int i = 0; i < pointercount; i++) {
-            if ((actionid != 6 && actionid != 5) || i == event.getActionIndex()) {
+        gestureDetector.onTouchEvent(event);
+
+        int actionId = event.getActionMasked();
+        int pointerCount = event.getPointerCount();
+
+        for (int i = 0; i < pointerCount; i++) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && pref.hapticFeedbackBlocking() ) {
+                switch (actionId) {
+                    case MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
+                        this.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                    }
+                }
+            }
+
+            if ((actionId != MotionEvent.ACTION_POINTER_UP && actionId != MotionEvent.ACTION_POINTER_DOWN) || i == event.getActionIndex()) {
                 moventqueue.add(new RelayTouchInfo(
                         event.getPointerId(i),
                         event.getX(i) / this.x_viewscaling,
@@ -332,7 +364,7 @@ public class NINView extends EXSurfaceView {
                         event.getPressure(i),
                         event.getSize(i),
                         System.currentTimeMillis(),
-                        actionToJormyAction(actionid)
+                        actionToJormyAction(actionId)
                 ));
             }
         }
