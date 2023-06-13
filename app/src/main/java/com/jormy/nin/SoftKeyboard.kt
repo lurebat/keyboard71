@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING")
+
 package com.jormy.nin
 
 import android.R
@@ -27,6 +29,7 @@ import com.lurebat.keyboard71.triggerBasicTaskerEvent
 import java.nio.charset.StandardCharsets
 import java.text.BreakIterator
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.abs
 
 /* loaded from: classes.dex */
 class SoftKeyboard : InputMethodService() {
@@ -65,25 +68,18 @@ class SoftKeyboard : InputMethodService() {
     }
 
     internal class PerformTextOpsTask : Runnable {
-        // java.lang.Runnable
         override fun run() {
-            val softKeyboard = globalsoftkeyboard
             processTextOps()
         }
     }
 
-    // android.inputmethodservice.InputMethodService
     override fun onCreateInputView(): View {
         globalcontext = this
-        val nINView = theopenglview
-        if (nINView == null) {
-            theopenglview = NINView(this)
-        } else {
-            val thepar = nINView.parent as ViewGroup
-            thepar?.removeView(theopenglview)
-        }
-        println("jormoust ---- ONCREATEINPUTVIEW!!!")
-        return theopenglview!!
+
+        return theopenglview?.let {
+            (it.parent as ViewGroup).removeView(it)
+            it
+        } ?: NINView(this)
     }
 
     override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
@@ -338,19 +334,19 @@ class SoftKeyboard : InputMethodService() {
             ic: InputConnection,
             amount: Int,
             isBackwards: Boolean
-        ): CharSequence? {
+        ): CharSequence {
             if (textAfterCursor!!.length < amount) {
-                val temp = ic.getTextAfterCursor(amount, 0)
+                val temp = ic.getTextAfterCursor(amount * 2, 0)
                 textAfterCursor = temp?.toString() ?: ""
             }
             if (textBeforeCursor!!.length < amount) {
-                val temp = ic.getTextBeforeCursor(amount, 0)
+                val temp = ic.getTextBeforeCursor(amount * 2, 0)
                 textBeforeCursor = temp?.toString() ?: ""
             }
             return if (isBackwards) {
-                textBeforeCursor
+                textBeforeCursor!!
             } else {
-                textAfterCursor
+                textAfterCursor!!
             }
         }
 
@@ -360,63 +356,38 @@ class SoftKeyboard : InputMethodService() {
             replacement: String?,
             ic: InputConnection
         ) {
-            var rawBackIndex = rawBackIndex
+            var startOfOriginalWordOffsetBytes = rawBackIndex
             val candidateLength = currentCandidateEnd - currentCandidateStart
-            if (candidateLength == 0 && currentSelectionStart == -1 && currentSelectionEnd == -1) {
-                return
-            }
-            fillText(ic, rawBackIndex + originalUnicodeLen + candidateLength, false)
+
+            fillText(ic, abs(currentSelectionEnd) + originalUnicodeLen, false)
             val totalText = textBeforeCursor.toString() + textAfterCursor.toString()
-            val afterBytes = textAfterCursor.toString().toByteArray(StandardCharsets.UTF_8).size
+            val cursorIndexBytes =
+                if (currentSelectionEnd > 0) currentSelectionEnd else textBeforeCursor.toString()
+                    .toByteArray(StandardCharsets.UTF_8).size
+
             val bytes = totalText.toByteArray(StandardCharsets.UTF_8)
-            val startPoint = currentSelectionStart
-            if (candidateLength > 0) {
-                val start = textBeforeCursor!!.length - currentCandidateStart
-                var end = start + candidateLength
-                if (end > bytes.size) {
-                    end = bytes.size
-                }
-                val candidate = totalText.substring(start, end).toByteArray(StandardCharsets.UTF_8)
-                rawBackIndex += candidate.size
-            }
-            if (bytes.size < rawBackIndex) {
-                rawBackIndex = bytes.size
-            }
-            val startOfOriginalWordOffset =
-                String(bytes, bytes.size - rawBackIndex - afterBytes, rawBackIndex).length
-            var startIndex = totalText.length - textAfterCursor!!.length - startOfOriginalWordOffset
-            if (startIndex < 0) {
-                startIndex = 0
-            }
-            val breakIterator = BreakIterator.getWordInstance()
-            breakIterator.setText(totalText)
-            var index = breakIterator.following(startIndex)
-            Log.d(
-                "NIN",
-                "totalText - $totalText - startIndex: $startIndex, index: $index, startOfOriginalWordOffset: $startOfOriginalWordOffset"
-            )
-            if (index == -1) {
-                index = totalText.length
-            }
-            val originalWordLength = index - startIndex
-            val replaceStartPoint = startPoint - startOfOriginalWordOffset
-            val wordOverriding = startOfOriginalWordOffset < originalWordLength
-            Log.d(
-                "NIN",
-                "1 - start: " + currentCandidateStart + ", end: " + currentCandidateEnd + ", selection start: " + currentSelectionStart + ", selection end: " + currentSelectionEnd + " replaceStartPoint: " + replaceStartPoint + ", startOfOriginalWordOffset: " + startOfOriginalWordOffset + ", originalWordLength: " + originalWordLength + ", wordOverriding: " + wordOverriding + ", textBeforeCursor: " + textBeforeCursor + ", textAfterCursor: " + textAfterCursor
-            )
-            if (replaceStartPoint < 0) {
-                return
+
+            if (candidateLength > 0 && currentCandidateStart > 0) {
+                val candidate = totalText.substring(
+                    currentCandidateStart,
+                    currentCandidateStart + candidateLength
+                ).toByteArray(StandardCharsets.UTF_8)
+                startOfOriginalWordOffsetBytes += candidate.size
             }
 
+            val startIndex =
+                String(bytes, 0, cursorIndexBytes - startOfOriginalWordOffsetBytes).length
+
+            val wordOverriding = startIndex + originalUnicodeLen > (textBeforeCursor?.length ?: 0)
+
             // Delete the original text
-            ic.setSelection(replaceStartPoint, replaceStartPoint)
-            ic.setComposingRegion(replaceStartPoint, replaceStartPoint)
-            ic.deleteSurroundingText(0, originalWordLength)
+            ic.setSelection(startIndex, startIndex)
+            ic.setComposingRegion(startIndex, startIndex)
+            ic.deleteSurroundingText(0, originalUnicodeLen)
 
             // Insert the replacement text
             ic.commitText(replacement, 1)
-            val positionShift = getUnicodeSumMovement(replacement) - originalWordLength
+            val positionShift = (replacement ?: "").length - originalUnicodeLen
             changeSelection(
                 ic,
                 currentSelectionStart + positionShift,
@@ -428,10 +399,6 @@ class SoftKeyboard : InputMethodService() {
             ic.setComposingRegion(currentCandidateStart, currentCandidateEnd)
             ic.setSelection(currentSelectionStart, currentSelectionEnd)
             if (wordOverriding) {
-                Log.d(
-                    "NIN",
-                    "2  start: " + currentCandidateStart + ", end: " + currentCandidateEnd + ", selection start: " + currentSelectionStart + ", selection end: " + currentSelectionEnd + " replaceStartPoint: " + replaceStartPoint + ", startOfOriginalWordOffset: " + startOfOriginalWordOffset + ", originalWordLength: " + originalWordLength + ", wordOverriding: " + wordOverriding + ", textBeforeCursor: " + textBeforeCursor + ", textAfterCursor: " + textAfterCursor
-                )
                 signalCursorCandidacyResult(ic, "backrepl")
             }
         }
@@ -513,6 +480,8 @@ class SoftKeyboard : InputMethodService() {
             }
         }
 
+        @Api
+        @JvmStatic
         fun signalWordDestruction(leword: String?, lestring: String?) {
             worddestructionbuffer!!.add(WordDestructionInfo(leword!!, lestring!!))
         }
@@ -609,15 +578,20 @@ class SoftKeyboard : InputMethodService() {
                 end = currentSelectionEnd
             } else {
                 val seq = fillText(ic, 300, true)
-                val iterator =
-                    if (singleCharacterMode) BreakIterator.getCharacterInstance() else BreakIterator.getWordInstance()
-                iterator.setText(seq.toString())
-                iterator.last()
-                var index = iterator.previous()
-                if (index == BreakIterator.DONE) {
-                    index = 0
+                val index = if (singleCharacterMode) {
+                    val iterator = BreakIterator.getCharacterInstance()
+                    iterator.setText(seq.toString())
+                    iterator.last()
+                    var index = iterator.previous()
+                    if (index == BreakIterator.DONE) {
+                        index = 0
+                    }
+                    index
+                }  else {
+                    WordHelper.lastWord(seq.toString())
                 }
-                start = Math.max(0, currentSelectionStart - (seq!!.length - index))
+
+                start = (currentSelectionStart - (seq.length - index)).coerceAtLeast(0)
                 end = currentSelectionEnd
             }
             start = Math.max(0, start)
@@ -874,6 +848,32 @@ class SoftKeyboard : InputMethodService() {
                     flags
                 )
             )
+        }
+    }
+}
+
+
+object WordHelper {
+    fun wordLen(text: String, start: Int): Int {
+        val iterator = android.icu.text.BreakIterator.getWordInstance()
+        iterator.setText(text)
+        return try {
+            iterator.following(start).let { if (it == BreakIterator.DONE) text.length else it }
+        } catch (e: Exception) {
+            Log.e("WordHelper", "wordBreakForwards", e)
+            text.length
+        } - start
+    }
+
+    fun lastWord(text: String): Int {
+        val iterator = android.icu.text.BreakIterator.getWordInstance()
+        iterator.setText(text)
+        return try {
+            iterator.last()
+            iterator.previous().let { if (it == BreakIterator.DONE) 0 else it }
+        } catch (e: Exception) {
+            Log.e("WordHelper", "wordBreakForwards", e)
+            0
         }
     }
 }
