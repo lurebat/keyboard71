@@ -2,7 +2,7 @@ package com.jormy.nin;
 
 /* compiled from: SoftKeyboard.java */
 /* loaded from: classes.dex */
-enum TextboxEventType {
+public enum TextboxEventType {
     SELECTION,
     RESET,
     APPFIELDCHANGE,

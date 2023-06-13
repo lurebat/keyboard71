@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodSubtype;
+
 import com.jormy.Sistm;
 import com.lurebat.keyboard71.TaskerPluginEventKt;
 
@@ -234,6 +236,9 @@ public class SoftKeyboard extends InputMethodService {
     public static void relayDelayedEvents() {
         while (true) {
             TextboxEvent torel = textboxeventsbuffer.poll();
+            if (torel != null) {
+                Log.i("NIN", "relaying delayed event " + torel);
+            }
             if (torel == null) {
                 break;
             } else if (torel.type == TextboxEventType.RESET) {
@@ -389,14 +394,12 @@ public class SoftKeyboard extends InputMethodService {
             for (int i = 0; i < origbatchcount && (theop = textopbuffer.poll()) != null; i++) {
                 TextOp thenext = textopbuffer.peek();
                 boolean skipit = false;
+                Log.d("NIN", theop + " ---- " + (thenext == null ? "null" : thenext.toString()));
                 if (thenext != null && ((thenext.type == 's' || thenext.type == 'l') && theop.type == 'l')) {
                     skipit = true;
                 }
                 if (!skipit && ic != null) {
                     if (theop.type == 's') {
-                        if (theop.strarg.equals("<\n>")) {
-                            keyDownUp(ic, 66);
-                        }
                         if (theop.strarg.equals("\n")) {
                             int action = 1;
                             if ((globalsoftkeyboard.getCurrentInputEditorInfo().imeOptions & 1073741824) == 0) {
@@ -405,11 +408,42 @@ public class SoftKeyboard extends InputMethodService {
                             if (action != 1) {
                                 ic.performEditorAction(action);
                             } else {
-                                keyDownUp(ic, 66);
+                                keyDownUp(ic, 66, 0, 0, KeyEvent.FLAG_SOFT_KEYBOARD);
                             }
                         } else {
-                            TaskerPluginEventKt.triggerBasicTaskerEvent(globalcontext, theop.strarg);
-                            ic.commitText(theop.strarg, 1);
+                            if (theop.strarg.startsWith("<{") && theop.strarg.endsWith("}>")) {
+                                String taskerstring = theop.strarg.substring(2, theop.strarg.length() - 2);
+                                if (taskerstring.startsWith("k")) {
+                                    String substring = taskerstring.substring(1);
+                                    String[] parts = substring.split("\\|");
+                                    if (parts.length < 1) {
+                                        return;
+                                    }
+                                    int keycode = Integer.parseInt(parts[0]);
+
+                                    int modifiers = 0;
+                                    if (parts.length > 1) {
+                                        modifiers = Integer.parseInt(parts[1]);
+                                    }
+                                    int repeat = 0;
+                                    if (parts.length > 2) {
+                                        repeat = Integer.parseInt(parts[2]);
+                                    }
+
+                                    int flags = KeyEvent.FLAG_SOFT_KEYBOARD;
+                                    if (parts.length > 2) {
+                                        flags = Integer.parseInt(parts[2]);
+                                    }
+
+                                    keyDownUp(ic, keycode, modifiers, repeat, flags);
+                                }
+                                else {
+                                    TaskerPluginEventKt.triggerBasicTaskerEvent(globalcontext, theop.strarg);
+                                    ic.commitText(theop.strarg, 1);
+                                }
+                            } else {
+                                ic.commitText(theop.strarg, 1);
+                            }
                         }
                     } else if (theop.type == 'e') {
                         performSetSel(theop.intarg1, theop.intarg2, theop.boolarg, theop.boolarg2, ic);
@@ -456,53 +490,53 @@ public class SoftKeyboard extends InputMethodService {
         topush.a1 = a1;
         topush.a2 = a2;
         topush.a3 = a3;
-        textopbuffer.add(topush);
-        new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+        doTextOp(topush);
     }
 
     public static void callRequestSel() {
-        textopbuffer.add(new TextOp('!', 0, 0, false, false, null));
-        new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+        doTextOp(new TextOp('!', 0, 0, false, false, null));
     }
 
     public static void callSetSel(int startpoint, int endpoint, boolean fromstart, boolean dontsignal) {
-        textopbuffer.add(new TextOp('e', startpoint, endpoint, fromstart, dontsignal, null));
-        new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+        doTextOp(new TextOp('e', startpoint, endpoint, fromstart, dontsignal, null));
     }
 
     public static void callDragCursorUp(int releasedir) {
-        textopbuffer.add(new TextOp('u', releasedir, 0, false, false, null));
-        new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+        doTextOp(new TextOp('u', releasedir, 0, false, false, null));
     }
 
     public static void callDragCursorMove(int xmove, int ymove, boolean selmode) {
-        textopbuffer.add(new TextOp('m', xmove, ymove, selmode, false, null));
-        new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+        doTextOp(new TextOp('m', xmove, ymove, selmode, false, null));
     }
 
     public static void callSimpleBackspace(boolean simplecharmode) {
-        textopbuffer.add(new TextOp('<', 0, 0, simplecharmode, false, null));
-        new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+        doTextOp(new TextOp('<', 0, 0, simplecharmode, false, null));
     }
 
     public static void callBackReplacement(int rawbackindex, String oldstr, String lestr) {
-        textopbuffer.add(new TextOp('r', rawbackindex, oldstr.length(), true, false, lestr));
-        new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+        doTextOp(new TextOp('r', rawbackindex, oldstr.length(), true, false, lestr));
     }
 
     public static void callBackspaceModed(String lestr) {
-        textopbuffer.add(new TextOp('b', 0, 0, true, false, lestr));
-        new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+        doTextOp(new TextOp('b', 0, 0, true, false, lestr));
     }
 
     public static void callMarkLiquid(String lestr) {
-        textopbuffer.add(new TextOp('l', 0, 0, true, false, lestr));
-        new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+        doTextOp(new TextOp('l', 0, 0, true, false, lestr));
     }
 
     public static void callSolidify(String lestr) {
-        textopbuffer.add(new TextOp('s', 0, 0, true, false, lestr));
+        TextOp op = new TextOp('s', 0, 0, true, false, lestr);
+        doTextOp(op);
+    }
+
+    public static void doTextOp(TextOp op) {
+        textopbuffer.add(op);
         new Handler(Looper.getMainLooper()).post(new PerformTextOpsTask());
+    }
+
+    public static void doTextEvent(TextboxEvent event) {
+        textboxeventsbuffer.add(event);
     }
 
     @Override // android.inputmethodservice.InputMethodService
@@ -541,10 +575,6 @@ public class SoftKeyboard extends InputMethodService {
                     typemode = "passwd";
                 }
                 int i = attribute.inputType & 65536;
-                break;
-            case EXSurfaceView.DEBUG_LOG_GL_CALLS /* 2 */:
-            case 3:
-                typemode = "numbers";
                 break;
         }
         TextboxEvent inf = new TextboxEvent(TextboxEventType.APPFIELDCHANGE, attribute.packageName, attribute.fieldName, typemode);
@@ -587,9 +617,9 @@ public class SoftKeyboard extends InputMethodService {
         return true;
     }
 
-    static void keyDownUp(InputConnection ic, int keyEventCode) {
-        ic.sendKeyEvent(new KeyEvent(0, keyEventCode));
-        ic.sendKeyEvent(new KeyEvent(1, keyEventCode));
+    static void keyDownUp(InputConnection ic, int keyEventCode, int modifiers, int repeat, int flags) {
+        ic.sendKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, keyEventCode, repeat, modifiers, -1, 0, flags));
+        ic.sendKeyEvent(new KeyEvent(0, 0, KeyEvent.ACTION_UP, keyEventCode, repeat, modifiers, -1, 0, flags));
     }
 
     @Override // android.inputmethodservice.InputMethodService, android.view.KeyEvent.Callback

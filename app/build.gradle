@@ -1,9 +1,18 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-parcelize'
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('REMOVED_OLD_KEYSTORE_PATH')
+            storePassword 'REMOVED_OLD_KEYSTORE_PASSWORD'
+            keyAlias 'key'
+            keyPassword 'REMOVED_OLD_KEYSTORE_PASSWORD'
+        }
+    }
     defaultConfig {
         compileSdk 33
         applicationId 'com.lurebat.keyboard71'

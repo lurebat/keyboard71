@@ -11,4 +11,12 @@ class WordDestructionInfo {
         this.destructedword = theword;
         this.destructedstring = thestring;
     }
+
+    @Override
+    public String toString() {
+        return "WordDestructionInfo{" +
+                "destructedstring='" + destructedstring + '\'' +
+                ", destructedword='" + destructedword + '\'' +
+                '}';
+    }
 }
