@@ -325,16 +325,16 @@ public class NINView extends EXSurfaceView {
         int actionid = event.getActionMasked();
         int pointercount = event.getPointerCount();
         for (int i = 0; i < pointercount; i++) {
-            RelayTouchInfo topush = new RelayTouchInfo();
-            topush.touchid = event.getPointerId(i);
-            topush.xPos = event.getX(i) / this.x_viewscaling;
-            topush.yPos = event.getY(i) / this.y_viewscaling;
-            topush.pressureValue = event.getPressure(i);
-            topush.areaValue = event.getSize(i);
-            topush.timestamp_long = System.currentTimeMillis();
-            topush.jormactionid = actionToJormyAction(actionid);
             if ((actionid != 6 && actionid != 5) || i == event.getActionIndex()) {
-                moventqueue.add(topush);
+                moventqueue.add(new RelayTouchInfo(
+                        event.getPointerId(i),
+                        event.getX(i) / this.x_viewscaling,
+                        event.getY(i) / this.y_viewscaling,
+                        event.getPressure(i),
+                        event.getSize(i),
+                        System.currentTimeMillis(),
+                        actionToJormyAction(actionid)
+                ));
             }
         }
         globalview.requestRender();
