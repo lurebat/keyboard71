@@ -1,171 +1,160 @@
-package com.jormy.nin;
+package com.jormy.nin
 
-import android.app.KeyguardManager;
-import android.content.ActivityNotFoundException;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
-import android.media.SoundPool;
-import android.net.Uri;
-import android.os.Vibrator;
-import android.util.Log;
+import android.app.KeyguardManager
+import android.content.ActivityNotFoundException
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.content.res.AssetManager
+import android.media.SoundPool
+import android.net.Uri
+import android.os.Vibrator
+import android.util.Log
+import java.io.IOException
+import java.net.NetworkInterface
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+private const val DEFAULT_LEFT_VOLUME = 0.02f
 
-public class Utils {
-    private static AssetManager assetManager;
-    static SoundPool soundPool = null;
-    static Map<String, Integer> soundeffectMap = null;
+private const val DEFAULT_PITCH = 1.0f
 
-    Utils() {
+object Utils {
+    private val soundPool by lazy { SoundPool.Builder().setMaxStreams(10).build() }
+    private var soundEffectMap: MutableMap<String, Int> = HashMap()
+    private val assetManager by lazy { con().assets }
+
+    @Api
+    @JvmStatic
+    fun getIPAddressIPV4(): String {
+        val interfaces = NetworkInterface.getNetworkInterfaces()
+
+        val ip = interfaces
+            .asSequence()
+            .flatMap { it.inetAddresses.asSequence() }
+            .filter { !it.isLoopbackAddress }
+            .filter { it is java.net.Inet4Address }
+            .mapNotNull { it.hostAddress }
+            .firstOrNull()
+
+        if (ip == null) {
+            Log.e("NIN", "Cannot get IP address")
+            return ""
+        }
+
+        return ip
     }
 
     @Api
-    public static String getIPAddressIPV4() {
+    @JvmStatic
+    fun openNinPlayStoreLink() {
+        fun startIntent(u: String) = con().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(u)).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        })
+
         try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface intf : interfaces) {
-                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
-                for (InetAddress addr : addrs) {
-                    if (!addr.isLoopbackAddress()) {
-                        String sAddr = addr.getHostAddress();
-                        boolean isIPv4 = sAddr.indexOf(58) < 0;
-                        if (isIPv4) {
-                            return sAddr;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e("NIN", "Cannot get IP address", e);
+            startIntent("market://details?id=com.jormy.nin")
+        } catch (e: ActivityNotFoundException) {
+            startIntent("http://play.google.com/store/apps/details?id=com.jormy.nin")
         }
-        return "";
     }
 
     @Api
-    public static void openNinPlayStoreLink() {
+    @JvmStatic
+    fun vibrate(millisecs: Int) {
+        val v = con().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        v.vibrate(millisecs.toLong())
+    }
+
+    @JvmStatic
+    fun tracedims(desc: String, xdim: Float, ydim: Float) {
+        println("jormoust/jav:" + desc + " : " + xdim + " x " + ydim + " (" + ydim / xdim + " )")
+    }
+
+    @JvmStatic
+    fun prin(lestr: String) {
+        println("jormoust/jav:$lestr")
+    }
+
+    fun con(): Context {
+        return SoftKeyboard.globalcontext
+    }
+
+    @Api
+    @JvmStatic
+    fun homeDirectory(): String {
+        return con().filesDir.absolutePath
+    }
+
+    @Api
+    @JvmStatic
+    fun cacheDirectory(): String {
+        return con().cacheDir.absolutePath
+    }
+
+    @Api
+    @JvmStatic
+    fun assetManager(): AssetManager {
+        return assetManager
+    }
+
+    fun roenObtainSound(soundname: String): Int? {
+        val mappedID = soundEffectMap[soundname]
+        if (mappedID != null) {
+            return mappedID
+        }
+
+        var realID = -1
         try {
-            Intent theintent = new Intent("android.intent.action.VIEW", Uri.parse("market://details?id=com.jormy.nin"));
-            theintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            con().startActivity(theintent);
-        } catch (ActivityNotFoundException e) {
-            Intent theintent2 = new Intent("android.intent.action.VIEW", Uri.parse("http://play.google.com/store/apps/details?id=com.jormy.nin"));
-            theintent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            con().startActivity(theintent2);
+            val descriptor = assetManager().openFd("$soundname.ogg")
+            realID = soundPool.load(descriptor, 1)
+        } catch (e: IOException) {
+            prin("Cannot load the sound : $soundname")
         }
-    }
 
-    @Api
-    public static void vibrate(int millisecs) {
-        Log.d("NIN", "vibrate " + millisecs);
-        Vibrator v = (Vibrator) con().getSystemService(Context.VIBRATOR_SERVICE);
-        if (v != null) {
-            v.vibrate(millisecs);
+        if (realID < 0) {
+            return null
         }
-    }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public static void tracedims(String desc, float xdim, float ydim) {
-        System.out.println("jormoust/jav:" + desc + " : " + xdim + " x " + ydim + " (" + (ydim / xdim) + " )");
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public static void prin(String lestr) {
-        System.out.println("jormoust/jav:" + lestr);
-    }
-
-    static Context con() {
-        return SoftKeyboard.globalcontext;
+        soundEffectMap[soundname] = realID
+        return realID
     }
 
     @Api
-    public static String homeDirectory() {
-        return con().getFilesDir().getAbsolutePath();
+    @JvmStatic
+    fun roenPreloadSound(soundname: String) {
+        val soundID = roenObtainSound(soundname) ?: return
+        soundPool!!.play(soundID, DEFAULT_LEFT_VOLUME, DEFAULT_LEFT_VOLUME, 0, 0, DEFAULT_PITCH)
     }
 
     @Api
-    public static String cacheDirectory() {
-        return con().getCacheDir().getAbsolutePath();
+    @JvmStatic
+    fun roenCallPlaySound(soundname: String, pitch: Float, volume: Float) {
+        val intval = roenObtainSound(soundname) ?: return
+        soundPool!!.play(intval, volume, volume, 0, 0, pitch)
+    }
+
+    @JvmStatic
+    fun isScreenLocked(): Boolean {
+        val myKM = con().getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        return myKM.isKeyguardLocked
     }
 
     @Api
-    public static AssetManager assetManager() {
-        if (assetManager == null) {
-            assetManager = con().getAssets();
-        }
-        return assetManager;
+    @JvmStatic
+    fun copyToClipboard(value: String?) {
+        val clipboard = con().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Nintype data", value)
+        clipboard.setPrimaryClip(clip)
     }
 
-    public static void initRoenSoundPool() {
-        if (soundPool == null) {
-            soundPool = new SoundPool(10, 3, 0);
-            soundeffectMap = new HashMap<>();
-        }
-    }
-
-    public static Integer roenObtainSound(String soundname) {
-        initRoenSoundPool();
-        Integer theid = soundeffectMap.get(soundname);
-        if (theid == null) {
-            int realid = -1;
-            try {
-                AssetFileDescriptor descriptor = assetManager().openFd(soundname + ".ogg");
-                realid = soundPool.load(descriptor, 1);
-            } catch (IOException e) {
-                prin("Cannot load the sound : " + soundname);
-            }
-            Integer theid2 = realid;
-            soundeffectMap.put(soundname, theid2);
-            return theid2;
-        }
-        return theid;
-    }
-
+    @JvmStatic
     @Api
-    public static void roenPreloadSound(String soundname) {
-        int intval = roenObtainSound(soundname);
-        if (intval >= 0) {
-            soundPool.play(intval, 0.02f, 0.02f, 0, 0, 1.0f);
-        }
-    }
-
-    @Api
-    public static void roenCallPlaySound(String soundname, float pitch, float volume) {
-        initRoenSoundPool();
-        int intval = roenObtainSound(soundname);
-        if (intval >= 0) {
-            soundPool.play(intval, volume, volume, 0, 0, pitch);
-        }
-    }
-
-    public static boolean isScreenLocked() {
-        KeyguardManager myKM = (KeyguardManager) SoftKeyboard.globalcontext.getSystemService(Context.KEYGUARD_SERVICE);
-        return myKM.inKeyguardRestrictedInputMode();
-    }
-
-    @Api
-    public static void copyToClipboard(String value) {
-        ClipboardManager clipboard = (ClipboardManager) con().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("some text", value);
-        clipboard.setPrimaryClip(clip);
-    }
-
-    @Api
-    public static String getStringFromClipboard() {
-        ClipboardManager clipboard = (ClipboardManager) con().getSystemService(Context.CLIPBOARD_SERVICE);
+    fun getStringFromClipboard(): String? {
+        val clipboard = con().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         if (!clipboard.hasPrimaryClip()) {
-            return null;
+            return null
         }
-        ClipData clip = clipboard.getPrimaryClip();
-        return clip != null ? clip.getItemAt(0).coerceToText(con()).toString() : null;
+        val clip = clipboard.primaryClip
+        return clip?.getItemAt(0)?.coerceToText(con())?.toString()
     }
 }
