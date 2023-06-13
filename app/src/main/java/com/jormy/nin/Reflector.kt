@@ -3,8 +3,8 @@ package com.jormy.nin
 @Api
 internal object Reflector {
 
-    @JvmStatic
     @Api
+    @JvmStatic
     fun analyzeClass(className: String): String {
         return try {
             val theClass = Class.forName(className)
