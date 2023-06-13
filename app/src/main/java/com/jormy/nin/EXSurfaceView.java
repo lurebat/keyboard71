@@ -626,105 +626,101 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             int w = 0;
             int h = 0;
             Runnable event = null;
-            while (true) {
+
+            while (!this.mShouldExit) {
                 try {
                     synchronized (EXSurfaceView.sGLThreadManager) {
-                        while (!this.mShouldExit) {
-                            if (this.mEventQueue.isEmpty()) {
-                                boolean pausing = false;
-                                if (this.mPaused != this.mRequestPaused) {
-                                    pausing = this.mRequestPaused;
-                                    this.mPaused = this.mRequestPaused;
-                                    EXSurfaceView.sGLThreadManager.notifyAll();
-                                }
-                                if (this.mShouldReleaseEglContext) {
-                                    stopEglSurfaceLocked();
-                                    stopEglContextLocked();
-                                    this.mShouldReleaseEglContext = false;
-                                    askedToReleaseEglContext = true;
-                                }
-                                if (lostEglContext) {
-                                    stopEglSurfaceLocked();
-                                    stopEglContextLocked();
-                                    lostEglContext = false;
-                                }
-                                if (pausing && this.mHaveEglSurface) {
-                                    stopEglSurfaceLocked();
-                                }
-                                if (pausing && this.mHaveEglContext) {
-                                    EXSurfaceView view = this.mEXSurfaceViewWeakRef.get();
-                                    boolean preserveEglContextOnPause = view == null ? false : view.mPreserveEGLContextOnPause;
-                                    if (!preserveEglContextOnPause || EXSurfaceView.sGLThreadManager.shouldReleaseEGLContextWhenPausing()) {
-                                        stopEglContextLocked();
-                                    }
-                                }
-                                if (pausing && EXSurfaceView.sGLThreadManager.shouldTerminateEGLWhenPausing()) {
-                                    this.mEglHelper.finish();
-                                }
-                                if (!this.mHasSurface && !this.mWaitingForSurface) {
-                                    if (this.mHaveEglSurface) {
-                                        stopEglSurfaceLocked();
-                                    }
-                                    this.mWaitingForSurface = true;
-                                    this.mSurfaceIsBad = false;
-                                    EXSurfaceView.sGLThreadManager.notifyAll();
-                                }
-                                if (this.mHasSurface && this.mWaitingForSurface) {
-                                    this.mWaitingForSurface = false;
-                                    EXSurfaceView.sGLThreadManager.notifyAll();
-                                }
-                                if (doRenderNotification) {
-                                    wantRenderNotification = false;
-                                    doRenderNotification = false;
-                                    this.mRenderComplete = true;
-                                    EXSurfaceView.sGLThreadManager.notifyAll();
-                                }
-                                if (readyToDraw()) {
-                                    if (!this.mHaveEglContext) {
-                                        if (askedToReleaseEglContext) {
-                                            askedToReleaseEglContext = false;
-                                        } else if (EXSurfaceView.sGLThreadManager.tryAcquireEglContextLocked(this)) {
-                                            try {
-                                                this.mEglHelper.start();
-                                                this.mHaveEglContext = true;
-                                                createEglContext = true;
-                                                EXSurfaceView.sGLThreadManager.notifyAll();
-                                            } catch (RuntimeException t) {
-                                                EXSurfaceView.sGLThreadManager.releaseEglContextLocked(this);
-                                                throw t;
-                                            }
-                                        }
-                                    }
-                                    if (this.mHaveEglContext && !this.mHaveEglSurface) {
-                                        this.mHaveEglSurface = true;
-                                        createEglSurface = true;
-                                        createGlInterface = true;
-                                        sizeChanged = true;
-                                    }
-                                    if (this.mHaveEglSurface) {
-                                        if (this.mSizeChanged) {
-                                            sizeChanged = true;
-                                            w = this.mWidth;
-                                            h = this.mHeight;
-                                            wantRenderNotification = true;
-                                            createEglSurface = true;
-                                            this.mSizeChanged = false;
-                                        }
-                                        this.mRequestRender = false;
-                                        EXSurfaceView.sGLThreadManager.notifyAll();
-                                    }
-                                }
-                                EXSurfaceView.sGLThreadManager.wait();
-                            } else {
-                                event = this.mEventQueue.remove(0);
+                        if (this.mEventQueue.isEmpty()) {
+                            boolean pausing = false;
+                            if (this.mPaused != this.mRequestPaused) {
+                                pausing = this.mRequestPaused;
+                                this.mPaused = this.mRequestPaused;
+                                EXSurfaceView.sGLThreadManager.notifyAll();
                             }
+                            if (this.mShouldReleaseEglContext) {
+                                stopEglSurfaceLocked();
+                                stopEglContextLocked();
+                                this.mShouldReleaseEglContext = false;
+                                askedToReleaseEglContext = true;
+                            }
+                            if (lostEglContext) {
+                                stopEglSurfaceLocked();
+                                stopEglContextLocked();
+                                lostEglContext = false;
+                            }
+                            if (pausing && this.mHaveEglSurface) {
+                                stopEglSurfaceLocked();
+                            }
+                            if (pausing && this.mHaveEglContext) {
+                                EXSurfaceView view = this.mEXSurfaceViewWeakRef.get();
+                                boolean preserveEglContextOnPause = view == null ? false : view.mPreserveEGLContextOnPause;
+                                if (!preserveEglContextOnPause || EXSurfaceView.sGLThreadManager.shouldReleaseEGLContextWhenPausing()) {
+                                    stopEglContextLocked();
+                                }
+                            }
+                            if (pausing && EXSurfaceView.sGLThreadManager.shouldTerminateEGLWhenPausing()) {
+                                this.mEglHelper.finish();
+                            }
+                            if (!this.mHasSurface && !this.mWaitingForSurface) {
+                                if (this.mHaveEglSurface) {
+                                    stopEglSurfaceLocked();
+                                }
+                                this.mWaitingForSurface = true;
+                                this.mSurfaceIsBad = false;
+                                EXSurfaceView.sGLThreadManager.notifyAll();
+                            }
+                            if (this.mHasSurface && this.mWaitingForSurface) {
+                                this.mWaitingForSurface = false;
+                                EXSurfaceView.sGLThreadManager.notifyAll();
+                            }
+                            if (doRenderNotification) {
+                                wantRenderNotification = false;
+                                doRenderNotification = false;
+                                this.mRenderComplete = true;
+                                EXSurfaceView.sGLThreadManager.notifyAll();
+                            }
+                            if (!readyToDraw()) {
+                                EXSurfaceView.sGLThreadManager.wait();
+                                continue;
+                            }
+                            if (!this.mHaveEglContext) {
+                                if (askedToReleaseEglContext) {
+                                    askedToReleaseEglContext = false;
+                                } else if (EXSurfaceView.sGLThreadManager.tryAcquireEglContextLocked(this)) {
+                                    try {
+                                        this.mEglHelper.start();
+                                        this.mHaveEglContext = true;
+                                        createEglContext = true;
+                                        EXSurfaceView.sGLThreadManager.notifyAll();
+                                    } catch (RuntimeException t) {
+                                        EXSurfaceView.sGLThreadManager.releaseEglContextLocked(this);
+                                        throw t;
+                                    }
+                                }
+                            }
+                            if (this.mHaveEglContext && !this.mHaveEglSurface) {
+                                this.mHaveEglSurface = true;
+                                createEglSurface = true;
+                                createGlInterface = true;
+                                sizeChanged = true;
+                            }
+                            if (this.mHaveEglSurface) {
+                                if (this.mSizeChanged) {
+                                    sizeChanged = true;
+                                    w = this.mWidth;
+                                    h = this.mHeight;
+                                    wantRenderNotification = true;
+                                    createEglSurface = true;
+                                    this.mSizeChanged = false;
+                                }
+                                this.mRequestRender = false;
+                                EXSurfaceView.sGLThreadManager.notifyAll();
+                            }
+                        } else {
+                            event = this.mEventQueue.remove(0);
                         }
-                        synchronized (EXSurfaceView.sGLThreadManager) {
-                            stopEglSurfaceLocked();
-                            stopEglContextLocked();
-                        }
-                        return;
                     }
+
                     if (event != null) {
                         event.run();
                         event = null;
