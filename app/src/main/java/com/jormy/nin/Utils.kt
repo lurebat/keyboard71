@@ -76,7 +76,7 @@ object Utils {
     }
 
     fun con(): Context {
-        return SoftKeyboard.globalcontext
+        return SoftKeyboard.globalcontext!!
     }
 
     @Api

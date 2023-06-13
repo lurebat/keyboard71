@@ -21,5 +21,3 @@ internal object Reflector {
         }
     }
 }
-
-annotation class Api
