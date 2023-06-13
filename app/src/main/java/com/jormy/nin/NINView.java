@@ -256,10 +256,12 @@ public class NINView extends EXSurfaceView {
         }
     }
 
+    @Api
     public static float getDevicePPI() {
         return device_ppi;
     }
 
+    @Api
     public static float getDevicePortraitWidth() {
         return device_portraitwidth;
     }
@@ -295,6 +297,7 @@ public class NINView extends EXSurfaceView {
         });
     }
 
+    @Api
     public static void adjustWantedScaling(float thewantedscaling) {
         desired_scaling = thewantedscaling;
         new Handler(Looper.getMainLooper()).post(new Runnable() { // from class: com.jormy.nin.NINView.2
@@ -305,10 +308,12 @@ public class NINView extends EXSurfaceView {
         });
     }
 
+    @Api
     public static void onRoenSignalDirty() {
         globalview.requestRender();
     }
 
+    @Api
     public static void onRoenFrozennessChange(boolean truth) {
         if (!truth) {
             globalview.requestRender();
@@ -336,6 +341,7 @@ public class NINView extends EXSurfaceView {
         return true;
     }
 
+    @Api
     public static void adjustKeyboardDimensions(float wanted_roenheight, boolean fullmode) {
         globalview.desired_roen_pixel_height = 2.0f * wanted_roenheight;
         globalview.desired_roen_fullscreen = fullmode;

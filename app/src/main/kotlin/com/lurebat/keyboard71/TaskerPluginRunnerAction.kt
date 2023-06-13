@@ -79,12 +79,12 @@ class ActionRunner : TaskerPluginRunnerActionNoOutput<ActionInput>() {
             "TextOp" -> {
                 SoftKeyboard.doTextOp(
                     TextOp(
-                        input.regular.textOperation!!.type!![0],
-                        input.regular.textOperation!!.int1,
-                        input.regular.textOperation!!.int2,
-                        input.regular.textOperation!!.bool1,
-                        input.regular.textOperation!!.bool2,
-                        input.regular.textOperation!!.str1
+                        input.regular.textOperation.type!![0],
+                        input.regular.textOperation.int1,
+                        input.regular.textOperation.int2,
+                        input.regular.textOperation.bool1,
+                        input.regular.textOperation.bool2,
+                        input.regular.textOperation.str1
                     )
                 )
             }
@@ -92,10 +92,10 @@ class ActionRunner : TaskerPluginRunnerActionNoOutput<ActionInput>() {
             "TextEvent" -> {
                 SoftKeyboard.doTextEvent(
                     TextboxEvent(
-                        TextboxEventType.valueOf(input.regular.textEvent!!.type!!),
-                        input.regular.textEvent!!.first,
-                        input.regular.textEvent!!.second,
-                        input.regular.textEvent!!.third
+                        TextboxEventType.valueOf(input.regular.textEvent.type!!),
+                        input.regular.textEvent.first,
+                        input.regular.textEvent.second,
+                        input.regular.textEvent.third
                     )
                 )
             }

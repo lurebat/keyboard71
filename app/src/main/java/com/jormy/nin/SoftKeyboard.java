@@ -368,7 +368,7 @@ public class SoftKeyboard extends InputMethodService {
 
     public static void signalCursorCandidacyResult(InputConnection ic, String mode) {
         if (ic == null) {
-            textboxeventsbuffer.add(new TextboxEvent(TextboxEventType.RESET, null, null, null));
+            textboxeventsbuffer.add(new TextboxEvent(TextboxEventType.RESET));
             return;
         }
 
@@ -400,8 +400,7 @@ public class SoftKeyboard extends InputMethodService {
             pretext = pretext.substring(0, pretext.length() - length);
         }
 
-        TextboxEvent inf = new TextboxEvent(TextboxEventType.SELECTION, curword, pretext, posttext);
-        inf.codemode = mode;
+        TextboxEvent inf = new TextboxEvent(TextboxEventType.SELECTION, curword, pretext, posttext, mode);
         textboxeventsbuffer.add(inf);
     }
 
@@ -486,11 +485,14 @@ public class SoftKeyboard extends InputMethodService {
 
     public static void processTextOps() {
         InputConnection ic;
-        TextOp theop;
         int origbatchcount = textopbuffer.size();
         if (origbatchcount != 0 && (ic = globalsoftkeyboard.getCurrentInputConnection()) != null) {
             ic.beginBatchEdit();
-            for (int i = 0; i < origbatchcount && (theop = textopbuffer.poll()) != null; i++) {
+            for (int i = 0; i < origbatchcount; i++) {
+                TextOp theop = textopbuffer.poll();
+                if (theop == null) {
+                    break;
+                }
                 TextOp thenext = textopbuffer.peek();
                 boolean skipit = false;
                 // only if debug level
@@ -607,7 +609,6 @@ public class SoftKeyboard extends InputMethodService {
 
     }
 
-    /* loaded from: classes.dex */
     static class PerformTextOpsTask implements Runnable {
         PerformTextOpsTask() {
         }
@@ -619,49 +620,55 @@ public class SoftKeyboard extends InputMethodService {
         }
     }
 
+    @Api
     public static void callMUCommand(String cmd, String a1, String a2, String a3) {
-        TextOp topush = new TextOp('C', 0, 0, false, false, null);
-        topush.strarg = cmd;
-        topush.a1 = a1;
-        topush.a2 = a2;
-        topush.a3 = a3;
+        TextOp topush = new TextOp('C', 0, 0, false, false, cmd, a1, a2, a3);
         doTextOp(topush);
     }
 
+    @Api
     public static void callRequestSel() {
-        doTextOp(new TextOp('!', 0, 0, false, false, null));
+        doTextOp(new TextOp('!'));
     }
 
+    @Api
     public static void callSetSel(int startpoint, int endpoint, boolean fromstart, boolean dontsignal) {
-        doTextOp(new TextOp('e', startpoint, endpoint, fromstart, dontsignal, null));
+        doTextOp(new TextOp('e', startpoint, endpoint, fromstart, dontsignal));
     }
 
+    @Api
     public static void callDragCursorUp(int releasedir) {
-        doTextOp(new TextOp('u', releasedir, 0, false, false, null));
+        doTextOp(new TextOp('u', releasedir));
     }
 
+    @Api
     public static void callDragCursorMove(int xmove, int ymove, boolean selmode) {
-        doTextOp(new TextOp('m', xmove, ymove, selmode, false, null));
+        doTextOp(new TextOp('m', xmove, ymove, selmode));
     }
 
+    @Api
     public static void callSimpleBackspace(boolean simplecharmode) {
-        doTextOp(new TextOp('<', 0, 0, simplecharmode, false, null));
+        doTextOp(new TextOp('<',  simplecharmode));
     }
 
+    @Api
     public static void callBackReplacement(int rawbackindex, String oldstr, String lestr) {
         doTextOp(new TextOp('r', rawbackindex, oldstr.length(), true, false, lestr));
     }
 
+    @Api
     public static void callBackspaceModed(String lestr) {
-        doTextOp(new TextOp('b', 0, 0, true, false, lestr));
+        doTextOp(new TextOp('b', lestr));
     }
 
+    @Api
     public static void callMarkLiquid(String lestr) {
-        doTextOp(new TextOp('l', 0, 0, true, false, lestr));
+        doTextOp(new TextOp('l', lestr));
     }
 
+    @Api
     public static void callSolidify(String lestr) {
-        TextOp op = new TextOp('s', 0, 0, true, false, lestr);
+        TextOp op = new TextOp('s', lestr);
         doTextOp(op);
     }
 
