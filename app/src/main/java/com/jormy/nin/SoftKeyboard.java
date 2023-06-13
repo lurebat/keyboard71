@@ -104,30 +104,30 @@ public class SoftKeyboard extends InputMethodService {
     }
 
     public static void performBackReplacement(int rawBackIndex, int originalUnicodeLen, String replacement, InputConnection ic) {
-        var moveIndex = getUnicodeMovementForIndex(ic, rawBackIndex);
-
-        var forwards = fillText(ic, 50, false);
-
-        var endOfWordIndex = -1;
-        for (int i = 0; i < forwards.length(); i++) {
-            if (Character.isWhitespace(forwards.charAt(i))) {
-                endOfWordIndex = i;
-                break;
-            }
-        }
-
-        if (endOfWordIndex == -1) {
-            endOfWordIndex = forwards.length();
-        }
-
-        boolean inMiddleOfWord = moveIndex < endOfWordIndex;
+        // If there is a candidate - the index refers to before it
         var candidateLength = currentCandidateEnd - currentCandidateStart;
         var startPoint = currentSelectionStart;
-        if (candidateLength != 0) {
-            startPoint -= candidateLength;
+        if (candidateLength > 0) {
+            rawBackIndex += candidateLength;
         }
+        var startOfOriginalWordOffset = -getUnicodeMovementForIndex(ic, -rawBackIndex);
+        fillText(ic, startOfOriginalWordOffset + originalUnicodeLen, true);
 
-        int replaceStartPoint = startPoint - moveIndex;
+        int endOfOriginalWordOffset;
+        for (endOfOriginalWordOffset = startOfOriginalWordOffset - originalUnicodeLen; endOfOriginalWordOffset > 0; endOfOriginalWordOffset--) {
+            var currentChar = textBeforeCursor.charAt(textBeforeCursor.length() - endOfOriginalWordOffset - 1);
+            if (Character.isAlphabetic(currentChar) || Character.isDigit(currentChar) || currentChar == '_' || currentChar == '-') {
+                continue;
+            }
+            break;
+        }
+        endOfOriginalWordOffset += 1;
+
+        var originalWordLength = startOfOriginalWordOffset - endOfOriginalWordOffset;
+
+        boolean wordOverriding = startOfOriginalWordOffset < originalWordLength;
+
+        int replaceStartPoint = startPoint - startOfOriginalWordOffset;
         if (replaceStartPoint < 0) {
             return;
         }
@@ -135,17 +135,17 @@ public class SoftKeyboard extends InputMethodService {
         // Delete the original text
         ic.setSelection(replaceStartPoint, replaceStartPoint);
         ic.setComposingRegion(replaceStartPoint, replaceStartPoint);
-        ic.deleteSurroundingText(0, endOfWordIndex);
+        ic.deleteSurroundingText(0, originalWordLength);
 
         // Insert the replacement text
         ic.commitText(replacement, 1);
 
-        var positionShift = replacement.length() - endOfWordIndex;
+        var positionShift = replacement.length() - originalWordLength;
         changeSelection(ic, currentSelectionStart + positionShift, currentSelectionEnd + positionShift, currentCandidateStart + positionShift, currentCandidateEnd + positionShift, null);
 
-        ic.setComposingRegion(currentSelectionStart, currentCandidateEnd);
+        ic.setComposingRegion(currentCandidateStart, currentCandidateEnd);
         ic.setSelection(currentSelectionStart, currentSelectionEnd);
-        if (inMiddleOfWord) {
+        if (wordOverriding) {
             signalCursorCandidacyResult(ic, "backrepl");
         }
     }
