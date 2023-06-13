@@ -394,6 +394,9 @@ public class SoftKeyboard extends InputMethodService {
                 }
                 if (!skipit && ic != null) {
                     if (theop.type == 's') {
+                        if (theop.strarg.equals("<\n>")) {
+                            keyDownUp(ic, 66);
+                        }
                         if (theop.strarg.equals("\n")) {
                             int action = 1;
                             if ((globalsoftkeyboard.getCurrentInputEditorInfo().imeOptions & 1073741824) == 0) {
