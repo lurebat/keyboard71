@@ -1,9 +1,18 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-parcelize'
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\lureb\\Programming\\nintype\\keys.jks')
+            storePassword 'm6420354'
+            keyAlias 'key'
+            keyPassword 'm6420354'
+        }
+    }
     defaultConfig {
         compileSdk 33
         applicationId 'com.lurebat.keyboard71'

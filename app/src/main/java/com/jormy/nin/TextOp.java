@@ -2,7 +2,7 @@ package com.jormy.nin;
 
 /* compiled from: SoftKeyboard.java */
 /* loaded from: classes.dex */
-class TextOp {
+public class TextOp {
     String a1;
     String a2;
     String a3;
@@ -21,5 +21,20 @@ class TextOp {
         this.strarg = lestrarg;
         this.boolarg = leboolarg;
         this.boolarg2 = leboolarg2;
+    }
+
+    @Override
+    public String toString() {
+        return "TextOp{" +
+                "a1='" + a1 + '\'' +
+                ", a2='" + a2 + '\'' +
+                ", a3='" + a3 + '\'' +
+                ", boolarg=" + boolarg +
+                ", boolarg2=" + boolarg2 +
+                ", intarg1=" + intarg1 +
+                ", intarg2=" + intarg2 +
+                ", strarg='" + strarg + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

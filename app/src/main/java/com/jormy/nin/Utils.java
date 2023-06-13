@@ -12,6 +12,8 @@ import android.content.res.AssetManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.util.Log;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -68,7 +70,8 @@ public class Utils {
     }
 
     public static void vibrate(int millisecs) {
-        Vibrator v = (Vibrator) con().getSystemService("vibrator");
+        Log.d("NIN", "vibrate " + millisecs);
+        Vibrator v = (Vibrator) con().getSystemService(Context.VIBRATOR_SERVICE);
         if (v != null) {
             v.vibrate(millisecs);
         }
