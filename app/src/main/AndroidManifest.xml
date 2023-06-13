@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="500" android:versionName="70">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="600" android:versionName="71.2.0">
     <uses-feature android:glEsVersion="0x20000"/>
     <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="true"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
