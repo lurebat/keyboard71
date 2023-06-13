@@ -22,7 +22,7 @@ android {
     defaultConfig {
         compileSdk 33
         applicationId 'com.lurebat.keyboard71'
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 33
         versionCode 427
         versionName "70"
