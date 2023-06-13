@@ -13,6 +13,7 @@ sealed class TextOp {
     data class BackspaceModed(val mode: String) : TextOp()
     data class MarkLiquid(val newString: String) : TextOp()
     data class Solidify(val newString: String) : TextOp()
+    data class Special(val args: String) : TextOp()
 
     companion object {
         fun parse(type: Char, intArg1: Int, intArg2: Int, boolArg1: Boolean, boolArg2: Boolean, stringArg1: String?): TextOp {
