@@ -14,6 +14,8 @@ import kotlin.time.Duration.Companion.minutes
 
 class NINActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         val context = applicationContext
         val pm = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
 
@@ -22,7 +24,6 @@ class NINActivity : Activity() {
         wakeLock.release()
 
         window.addFlags(FLAG_SHOW_WHEN_LOCKED)
-        super.onCreate(savedInstanceState)
 
         val image = ImageView(context)
         try {

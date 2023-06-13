@@ -4,7 +4,6 @@ package com.jormy.nin
 
 import android.R
 import android.content.Context
-import android.graphics.Rect
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Handler
@@ -13,10 +12,8 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.CompletionInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import android.view.inputmethod.InputMethodSubtype
 import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onEditorChangeTypeClass
 import com.jormy.nin.NINLib.onExternalSelChange
@@ -118,19 +115,6 @@ class SoftKeyboard : InputMethodService() {
     }
 
     // android.inputmethodservice.InputMethodService
-    override fun onFinishInput() {
-        super.onFinishInput()
-    }
-
-    // android.inputmethodservice.InputMethodService
-    public override fun onCurrentInputMethodSubtypeChanged(letype: InputMethodSubtype) {}
-
-    // android.inputmethodservice.InputMethodService
-    override fun onUnbindInput() {
-        prin("----------onUnbindInput!")
-    }
-
-    // android.inputmethodservice.InputMethodService
     override fun onViewClicked(focusChanged: Boolean) {
         val curconn = currentInputConnection
         if (curconn != null) {
@@ -139,37 +123,16 @@ class SoftKeyboard : InputMethodService() {
         }
     }
 
-    // android.inputmethodservice.InputMethodService
-    override fun onUpdateCursor(newCursor: Rect) {}
-
-    // android.inputmethodservice.InputMethodService
-    override fun onDisplayCompletions(completions: Array<CompletionInfo>) {}
-    private fun translateKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return true
-    }
-
-    // android.inputmethodservice.InputMethodService, android.view.KeyEvent.Callback
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         return super.onKeyDown(keyCode, event)
     }
 
-    // android.inputmethodservice.InputMethodService, android.view.KeyEvent.Callback
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         return super.onKeyUp(keyCode, event)
     }
 
     private fun commitTyped(inputConnection: InputConnection) {
         inputConnection.commitText("haha!", "haha!".length)
-    }
-
-    private fun updateShiftKeyState(attr: EditorInfo?) {
-        if (attr != null) {
-            currentInputConnection.getCursorCapsMode(attr.inputType)
-        }
-    }
-
-    private fun handleClose() {
-        commitTyped(currentInputConnection)
     }
 
     companion object {
@@ -361,9 +324,8 @@ class SoftKeyboard : InputMethodService() {
 
             fillText(ic, abs(currentSelectionEnd) + originalUnicodeLen, false)
             val totalText = textBeforeCursor.toString() + textAfterCursor.toString()
-            val cursorIndexBytes =
-                if (currentSelectionEnd > 0) currentSelectionEnd else textBeforeCursor.toString()
-                    .toByteArray(StandardCharsets.UTF_8).size
+            val cursorIndexBytes =textBeforeCursor.toString()
+                .toByteArray(StandardCharsets.UTF_8).size
 
             val bytes = totalText.toByteArray(StandardCharsets.UTF_8)
 
@@ -522,7 +484,7 @@ class SoftKeyboard : InputMethodService() {
             while (true) {
                 val torel = textboxeventsbuffer!!.poll()
                 if (torel != null) {
-                    Log.d("NIN", "relaying delayed event $torel")
+                    //Log.d("NIN", "relaying delayed event $torel")
                 }
                 if (torel == null) {
                     break
@@ -591,6 +553,10 @@ class SoftKeyboard : InputMethodService() {
                     WordHelper.lastWordBreak(seq.toString())
                 }
                 ic.deleteSurroundingText(seq.length - index, 0)
+                if (seq.subSequence(index, seq.length).matches(".*\\P{L}.*".toRegex())) {
+                    changeSelection(ic, index, index, index, index, "external")
+                }
+
                 return;
             }
             ic.setComposingRegion(start, start)
@@ -612,7 +578,7 @@ class SoftKeyboard : InputMethodService() {
                         val thenext = textopbuffer!!.peek()
                         var skipit = false
                         // only if debug level
-                        Log.d("NIN", theop.toString() + " ---- " + (thenext?.toString() ?: "null"))
+                        //Log.d("NIN", theop.toString() + " ---- " + (thenext?.toString() ?: "null"))
                         if (thenext != null && (thenext.type == 's' || thenext.type == 'l') && theop.type == 'l') {
                             skipit = true
                         }
