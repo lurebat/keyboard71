@@ -12,6 +12,12 @@ android {
             keyAlias 'key'
             keyPassword 'm6420354'
         }
+        release {
+            storeFile file('C:\\Users\\lureb\\Programming\\nintype\\keys.jks')
+            storePassword 'm6420354'
+            keyAlias 'key'
+            keyPassword 'm6420354'
+        }
     }
     defaultConfig {
         compileSdk 33
@@ -28,6 +34,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
