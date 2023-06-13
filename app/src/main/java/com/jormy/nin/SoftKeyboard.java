@@ -20,6 +20,7 @@ import com.jormy.Sistm;
 import com.lurebat.keyboard71.TaskerPluginEventKt;
 
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.text.BreakIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -37,8 +38,8 @@ public class SoftKeyboard extends InputMethodService {
     static int currentCandidateEnd = 0;
     static boolean updatesel_byroenflag = false;
     static long updatesel_byroen_lasttimemilli = 0;
-    private static String textAfterCursor = "";
-    private static String textBeforeCursor = "";
+    private static CharSequence textAfterCursor = "";
+    private static CharSequence textBeforeCursor = "";
 
     @Override // android.inputmethodservice.InputMethodService, android.app.Service
     public void onCreate() {
@@ -71,9 +72,9 @@ public class SoftKeyboard extends InputMethodService {
                 textBeforeCursor = "";
             }
             else {
-                var start = textAfterCursor.substring(0, selectionEndMovement);
-                textAfterCursor = textAfterCursor.substring(selectionEndMovement);
-                textBeforeCursor = textBeforeCursor + start;
+                var start = textAfterCursor.subSequence(0, selectionEndMovement);
+                textAfterCursor = textAfterCursor.subSequence(selectionEndMovement, textAfterCursor.length());
+                textBeforeCursor = start.toString() + textBeforeCursor;
             }
         }
         else if (selectionEndMovement < 0) {
@@ -82,10 +83,10 @@ public class SoftKeyboard extends InputMethodService {
                 textBeforeCursor = "";
             }
             else {
-                var start = textBeforeCursor.substring(0, -selectionEndMovement);
-                var end = textBeforeCursor.substring(-selectionEndMovement);
+                var start = textBeforeCursor.subSequence(0, -selectionEndMovement);
+                var end = textBeforeCursor.subSequence(-selectionEndMovement, textBeforeCursor.length());
                 textBeforeCursor = start;
-                textAfterCursor = end + textAfterCursor;
+                textAfterCursor = end.toString() + textAfterCursor;
             }
         }
 
@@ -110,19 +111,17 @@ public class SoftKeyboard extends InputMethodService {
         if (candidateLength > 0) {
             rawBackIndex += candidateLength;
         }
-        var startOfOriginalWordOffset = -getUnicodeMovementForIndex(ic, -rawBackIndex);
-        fillText(ic, startOfOriginalWordOffset + originalUnicodeLen, true);
-
+        fillText(ic, rawBackIndex + originalUnicodeLen, true);
+        byte[] bytes = textBeforeCursor.toString().getBytes(StandardCharsets.UTF_8);
+        var startOfOriginalWordOffset = new String(bytes, bytes.length - rawBackIndex, rawBackIndex).length();
         int endOfOriginalWordOffset;
-        for (endOfOriginalWordOffset = startOfOriginalWordOffset - originalUnicodeLen; endOfOriginalWordOffset > 0; endOfOriginalWordOffset--) {
-            var currentChar = textBeforeCursor.charAt(textBeforeCursor.length() - endOfOriginalWordOffset - 1);
+        for (endOfOriginalWordOffset = startOfOriginalWordOffset; endOfOriginalWordOffset > 0; endOfOriginalWordOffset--) {
+            var currentChar = textBeforeCursor.charAt(textBeforeCursor.length() - endOfOriginalWordOffset);
             if (Character.isAlphabetic(currentChar) || Character.isDigit(currentChar) || currentChar == '_' || currentChar == '-') {
                 continue;
             }
             break;
         }
-        endOfOriginalWordOffset += 1;
-
         var originalWordLength = startOfOriginalWordOffset - endOfOriginalWordOffset;
 
         boolean wordOverriding = startOfOriginalWordOffset < originalWordLength;
@@ -347,14 +346,11 @@ public class SoftKeyboard extends InputMethodService {
 
         fillText(ic, amount, isBackwards);
 
-        String currentChars = isBackwards ? textBeforeCursor : textAfterCursor;
-        if (currentChars == null) {
-            return 0;
-        }
+        CharSequence currentChars = isBackwards ? textBeforeCursor : textAfterCursor;
 
         BreakIterator iterator = BreakIterator.getCharacterInstance();
 
-        iterator.setText(currentChars);
+        iterator.setText(currentChars.toString());
 
         var finalVar = 0;
         int i = 0;
@@ -391,7 +387,7 @@ public class SoftKeyboard extends InputMethodService {
                     break;
                 }
 
-                iterator.setText(currentChars.substring(finalVar));
+                iterator.setText(currentChars.subSequence(finalVar, currentChars.length()).toString());
             } else {
                 break;
             }
@@ -400,7 +396,7 @@ public class SoftKeyboard extends InputMethodService {
         return isBackwards ? -finalVar : finalVar;
     }
 
-    private static String fillText(InputConnection ic, int amount, Boolean isBackwards) {
+    private static CharSequence fillText(InputConnection ic, int amount, Boolean isBackwards) {
         if (textAfterCursor.length() < amount && (isBackwards == null || isBackwards.equals(false))) {
             var temp = ic.getTextAfterCursor(amount, 0);
             textAfterCursor = temp == null ? "" : temp.toString();
