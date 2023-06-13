@@ -1,38 +1,34 @@
-package com.jormy.nin;
+package com.jormy.nin
 
-/* loaded from: classes.dex */
-public class NINLib {
-    public static native int getUnicodeBackIndex(String str, int i);
+object NINLib {
+    external fun getUnicodeBackIndex(str: String?, i: Int): Int
+    external fun getUnicodeFrontIndex(str: String?, i: Int): Int
+    @JvmStatic
+    external fun init(i: Int, i2: Int, i3: Int, i4: Int)
+    external fun memTestStep()
+    @JvmStatic
+    external fun onChangeAppOrTextbox(str: String?, str2: String?, str3: String?)
+    @JvmStatic
+    external fun onEditorChangeTypeClass(str: String?, str2: String?)
+    @JvmStatic
+    external fun onExternalSelChange()
+    @JvmStatic
+    external fun onTextSelection(str: String?, str2: String?, str3: String?, str4: String?)
+    @JvmStatic
+    external fun onTouchEvent(i: Int, i2: Int, f: Float, f2: Float, f3: Float, f4: Float, j: Long)
+    @JvmStatic
+    external fun onWordDestruction(str: String?, str2: String?)
+    external fun processBackspaceAllowance(str: String?, str2: String?, i: Int): Int
+    @JvmStatic
+    external fun processSoftKeyboardCursorMovementLeft(str: String?): Long
+    @JvmStatic
+    external fun processSoftKeyboardCursorMovementRight(str: String?): Long
+    @JvmStatic
+    external fun step()
+    @JvmStatic
+    external fun syncTiming(j: Long): Long
 
-    public static native int getUnicodeFrontIndex(String str, int i);
-
-    public static native void init(int i, int i2, int i3, int i4);
-
-    public static native void memTestStep();
-
-    public static native void onChangeAppOrTextbox(String str, String str2, String str3);
-
-    public static native void onEditorChangeTypeClass(String str, String str2);
-
-    public static native void onExternalSelChange();
-
-    public static native void onTextSelection(String str, String str2, String str3, String str4);
-
-    public static native void onTouchEvent(int i, int i2, float f, float f2, float f3, float f4, long j);
-
-    public static native void onWordDestruction(String str, String str2);
-
-    public static native int processBackspaceAllowance(String str, String str2, int i);
-
-    public static native long processSoftKeyboardCursorMovementLeft(String str);
-
-    public static native long processSoftKeyboardCursorMovementRight(String str);
-
-    public static native void step();
-
-    public static native long syncTiming(long j);
-
-    static {
-        System.loadLibrary("gl2jni");
+    init {
+        System.loadLibrary("gl2jni")
     }
 }

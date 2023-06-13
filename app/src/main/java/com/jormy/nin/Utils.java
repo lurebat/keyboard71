@@ -34,6 +34,7 @@ public class Utils {
     Utils() {
     }
 
+    @Api
     public static String getIPAddressIPV4() {
         try {
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
@@ -54,6 +55,7 @@ public class Utils {
         return "";
     }
 
+    @Api
     public static void openNinPlayStoreLink() {
         try {
             Intent theintent = new Intent("android.intent.action.VIEW", Uri.parse("market://details?id=com.jormy.nin"));
@@ -70,6 +72,7 @@ public class Utils {
         System.out.println("jormoust testing length : |" + lestr + "| @ " + lestr.length());
     }
 
+    @Api
     public static void vibrate(int millisecs) {
         Log.d("NIN", "vibrate " + millisecs);
         Vibrator v = (Vibrator) con().getSystemService(Context.VIBRATOR_SERVICE);
@@ -99,14 +102,17 @@ public class Utils {
         return wra_global;
     }
 
+    @Api
     public static String homeDirectory() {
         return con().getFilesDir().getAbsolutePath();
     }
 
+    @Api
     public static String cacheDirectory() {
         return con().getCacheDir().getAbsolutePath();
     }
 
+    @Api
     public static AssetManager assetManager() {
         if (leassetmanager == null) {
             leassetmanager = con().getAssets();
@@ -139,6 +145,7 @@ public class Utils {
         return theid;
     }
 
+    @Api
     public static void roenPreloadSound(String soundname) {
         Integer theid = roenObtainSound(soundname);
         int intval = theid.intValue();
@@ -147,6 +154,7 @@ public class Utils {
         }
     }
 
+    @Api
     public static void roenCallPlaySound(String soundname, float pitch, float volume) {
         initRoenSoundPool();
         Integer theid = roenObtainSound(soundname);
@@ -182,12 +190,14 @@ public class Utils {
         }
     }
 
+    @Api
     public static void copyToClipboard(String value) {
         ClipboardManager clipboard = (ClipboardManager) con().getSystemService("clipboard");
         ClipData clip = ClipData.newPlainText("some text", value);
         clipboard.setPrimaryClip(clip);
     }
 
+    @Api
     public static String getStringFromClipboard() {
         ClipboardManager clipboard = (ClipboardManager) con().getSystemService("clipboard");
         if (!clipboard.hasPrimaryClip()) {

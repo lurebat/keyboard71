@@ -1,22 +1,4 @@
-package com.jormy.nin;
-
-/* compiled from: SoftKeyboard.java */
-/* loaded from: classes.dex */
-class WordDestructionInfo {
-    String destructedstring;
-    String destructedword;
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public WordDestructionInfo(String theword, String thestring) {
-        this.destructedword = theword;
-        this.destructedstring = thestring;
-    }
-
-    @Override
-    public String toString() {
-        return "WordDestructionInfo{" +
-                "destructedstring='" + destructedstring + '\'' +
-                ", destructedword='" + destructedword + '\'' +
-                '}';
-    }
-}
+package com.jormy.nin
+data class WordDestructionInfo (
+    @JvmField var destructedword: String, @JvmField var destructedstring: String
+)
