@@ -593,6 +593,8 @@ class SoftKeyboard : InputMethodService() {
             next: TextOp?,
             ic: InputConnection
         ) {
+
+            //Log.d("NIN", "processOperation: $op, next: $next")
             when (op) {
                 is TextOp.MarkLiquid -> {
                     if (next !is TextOp.MarkLiquid && next !is TextOp.Solidify) {
@@ -602,9 +604,17 @@ class SoftKeyboard : InputMethodService() {
 
                 is TextOp.Solidify -> {
                     when {
-                        op.newString == "bleb" -> {
-                            NINLib.getUnicodeFrontIndex("wow", 1)
+                        next != null && next is TextOp.Solidify && op.newString.trim().isEmpty() && next.newString.startsWith("<{") && next.newString.endsWith("}>") -> {
+                            changeSelection(
+                                ic,
+                                currentSelectionStart,
+                                currentSelectionEnd,
+                                currentCandidateStart,
+                                currentCandidateEnd,
+                                "external"
+                            )
                         }
+
                         op.newString == "\n" -> {
                             var action = 1
                             if (globalsoftkeyboard!!.currentInputEditorInfo.imeOptions and 1073741824 == 0) {
@@ -619,14 +629,17 @@ class SoftKeyboard : InputMethodService() {
                         }
 
                         op.newString.startsWith("<{") && op.newString.endsWith("}>") -> {
-                            try {
-                                handleSpecialText(ic, op.newString)
-                            } catch (e: Exception) {
-                                Log.e(
-                                    "NIN",
-                                    "Error handling special text: " + e.message
+                            val inner = op.newString.substring(2, op.newString.length - 2)
+                            if (inner.isNotEmpty()) {
+                                changeSelection(
+                                    ic,
+                                    currentSelectionStart,
+                                    currentSelectionEnd,
+                                    currentCandidateStart,
+                                    currentCandidateEnd,
+                                    "external"
                                 )
-                                ic.commitText(op.newString, 1)
+                                callSpecialOperation(inner)
                             }
                         }
 
@@ -683,17 +696,14 @@ class SoftKeyboard : InputMethodService() {
                     op.selectionMode,
                     ic
                 )
+
+                is TextOp.Special -> parseSpecialText(ic, op.args)
             }
         }
 
-        private fun handleSpecialText(ic: InputConnection, str: String) {
-            val inner = str.substring(2, str.length - 2)
-            if (inner.isEmpty()) {
-                return
-            }
-
-            val first = inner[0]
-            val rest = inner.substring(1).trim()
+        private fun parseSpecialText(ic: InputConnection, args: String) {
+            val first = args[0]
+            val rest = args.substring(1).trim()
             val parts = rest.let {
                 val temp = it.split("\\|".toRegex()).toTypedArray()
                 if (temp.isEmpty()) {
@@ -703,15 +713,16 @@ class SoftKeyboard : InputMethodService() {
                 }
             }
 
-
             when (first) {
                 'k' -> {
                     val code = WordHelper.parseKeyCode(parts[0])
                     val modifiers = if (parts.size > 1) WordHelper.parseModifiers(parts[1]) else 0
                     val repeat = if (parts.size > 2) parts[2].toInt() else 0
-                    val flags = if (parts.size > 3) parts[3].toInt() else KeyEvent.FLAG_SOFT_KEYBOARD
+                    val flags =
+                        if (parts.size > 3) parts[3].toInt() else KeyEvent.FLAG_SOFT_KEYBOARD
                     keyDownUp(ic, code, modifiers, repeat, flags)
                 }
+
                 'c' -> ic.performContextMenuAction(
                     when (parts[0].uppercase()) {
                         "0", "CUT" -> R.id.cut
@@ -724,16 +735,13 @@ class SoftKeyboard : InputMethodService() {
                         else -> parts[0].toInt()
                     }
                 )
+
                 't' -> globalcontext!!.triggerBasicTaskerEvent(rest)
             }
-            changeSelection(
-                ic,
-                currentSelectionStart,
-                currentSelectionEnd,
-                currentCandidateStart,
-                currentCandidateEnd,
-                "external"
-            )
+        }
+
+        fun callSpecialOperation(args: String) {
+            doTextOp(TextOp.Special(args))
         }
 
         @Api
@@ -851,7 +859,7 @@ object WordHelper {
     fun parseKeyCode(keyCode: String): Int = keyCodesMap[keyCode.uppercase()] ?: keyCode.toInt()
     fun parseModifiers(modifiers: String): Int {
         if (modifiers.all { it.isDigit() }) return modifiers.toInt()
-        return modifiers.split("|").map { it.trim() }.map { modifiersMap[it.uppercase()] ?: it.toInt() }.reduce { acc, i -> acc or i }
+        return modifiers.split(",").map { it.trim() }.map { modifiersMap[it.uppercase()] ?: it.toInt() }.reduce { acc, i -> acc or i }
     }
 
     fun lastWordBreak(text: String): Int {
