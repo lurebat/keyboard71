@@ -30,8 +30,6 @@ public class Utils {
     private static ContextWrapper wra_global;
     static SoundPool sp = null;
     static Map<String, Integer> soundeffect_map = null;
-    static String currentLayout = null;
-    static Pattern layoutPattern = Pattern.compile(".*m(\\w+).emkeylayout.*");
 
     Utils() {
     }
@@ -87,11 +85,6 @@ public class Utils {
 
     /* JADX INFO: Access modifiers changed from: package-private */
     public static void prin(String lestr) {
-        var matcher = layoutPattern.matcher(lestr);
-        if (matcher.matches()) {
-            currentLayout = matcher.group(1);
-        }
-
         System.out.println("jormoust/jav:" + lestr);
     }
 
