@@ -491,7 +491,12 @@ public class SoftKeyboard extends InputMethodService {
                         } else {
                             if (theop.strarg.startsWith("<{") && theop.strarg.endsWith("}>")) {
                                 String taskerstring = theop.strarg.substring(2, theop.strarg.length() - 2);
-                                if (HandleSpecialText(ic, theop, taskerstring)) return;
+                                try {
+                                    handleSpecialText(ic, theop, taskerstring);
+                                } catch (Exception e) {
+                                    Log.e("NIN", "Error handling special text: " + e.getMessage());
+                                    ic.commitText(theop.strarg, 1);
+                                }
                             } else {
                                 ic.commitText(theop.strarg, 1);
                             }
@@ -523,15 +528,16 @@ public class SoftKeyboard extends InputMethodService {
         }
     }
 
-    private static boolean HandleSpecialText(InputConnection ic, TextOp theop, String taskerstring) {
+    private static void handleSpecialText(InputConnection ic, TextOp theop, String taskerstring) {
         if (taskerstring.startsWith("k")) {
             String substring = taskerstring.substring(1);
             String[] parts = substring.split("\\|");
+            int keycode = 0;
             if (parts.length < 1) {
-                return true;
+                keycode = Integer.parseInt(substring);
+            } else {
+                keycode = Integer.parseInt(parts[0]);
             }
-            int keycode = Integer.parseInt(parts[0]);
-
             int modifiers = 0;
             if (parts.length > 1) {
                 modifiers = Integer.parseInt(parts[1]);
@@ -545,14 +551,38 @@ public class SoftKeyboard extends InputMethodService {
             if (parts.length > 2) {
                 flags = Integer.parseInt(parts[2]);
             }
-
             keyDownUp(ic, keycode, modifiers, repeat, flags);
         }
-        else {
-            TaskerPluginEventKt.triggerBasicTaskerEvent(globalcontext, theop.strarg);
-            ic.commitText(theop.strarg, 1);
+        else if (taskerstring.startsWith("c")) {
+            String substring = taskerstring.substring(1);
+            String[] parts = substring.split("\\|");
+            int code = 0;
+            if (parts.length < 1) {
+                code = Integer.parseInt(substring);
+            } else {
+                code = Integer.parseInt(parts[0]);
+            }
+
+            ic.performContextMenuAction(
+                    switch(code) {
+                        case 0 -> android.R.id.cut;
+                        case 1 -> android.R.id.copy;
+                        case 2 -> android.R.id.paste;
+                        case 3 -> android.R.id.selectAll;
+                        case 4 -> android.R.id.startSelectingText;
+                        case 5 -> android.R.id.stopSelectingText;
+                        case 6 -> android.R.id.switchInputMethod;
+                        default -> code;
+                    }
+            );
+
         }
-        return false;
+        else if (taskerstring.startsWith("t")) {
+            TaskerPluginEventKt.triggerBasicTaskerEvent(globalcontext, theop.strarg);
+        }
+
+        changeSelection(ic, currentSelectionStart, currentSelectionEnd, currentCandidateStart, currentCandidateEnd, "external");
+
     }
 
     /* loaded from: classes.dex */

@@ -22,7 +22,7 @@ android {
     defaultConfig {
         compileSdk 33
         applicationId 'com.lurebat.keyboard71'
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 33
         versionCode 427
         versionName "70"
@@ -33,16 +33,12 @@ android {
     buildTypes {
         debug {
             testCoverageEnabled = "true"
-            buildConfigField "boolean", "LOG_DEBUG_MODE", "true"
-            buildConfigField "boolean", "LOG_DEBUG_WITH_STACKTRACE_MODE", "true"
         }
 
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            buildConfigField "boolean", "LOG_DEBUG_MODE", "false"
-            buildConfigField "boolean", "LOG_DEBUG_WITH_STACKTRACE_MODE", "false"
         }
     }
 
