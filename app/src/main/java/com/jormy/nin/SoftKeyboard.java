@@ -330,7 +330,6 @@ public class SoftKeyboard extends InputMethodService {
 
         fillText(ic, 50, null);
 
-
         var newStart = (selectStart == 0) ? 0 : Math.max(0, baseStart + getUnicodeMovementForIndex(ic, selectStart));
         var newEnd = (selectEnd == 0) ? 0 : Math.max(0, baseEnd + getUnicodeMovementForIndex(ic, selectEnd));
         ic.setComposingRegion(newStart, newEnd);
@@ -426,28 +425,41 @@ public class SoftKeyboard extends InputMethodService {
         }
     }
 
-    public static void performBackspacing(String mode, boolean singlecharmode, InputConnection ic) {
-        if (currentCandidateEnd != currentCandidateStart) {
-            changeSelection(ic, currentCandidateStart, currentCandidateStart, currentCandidateStart, currentCandidateStart, null);
-            ic.setComposingRegion(currentCandidateStart, currentCandidateStart);
-            ic.setSelection(currentCandidateStart, currentCandidateStart);
-            ic.deleteSurroundingText(0, currentCandidateEnd - currentCandidateStart);
-            return;
+    public static void performBackspacing(String mode, boolean singleCharacterMode, InputConnection ic) {
+        var hasCandidate = currentCandidateEnd != currentCandidateStart;
+        var hasSelection = currentSelectionStart != currentSelectionEnd;
+        int start;
+        int end;
+        if (hasSelection) {
+            start = currentSelectionStart;
+            end = currentSelectionEnd;
         }
-        if (currentSelectionStart != currentSelectionEnd) {
-            changeSelection(ic, currentSelectionStart, currentSelectionStart, currentSelectionStart, currentSelectionStart, null);
-            ic.setComposingRegion(currentSelectionStart, currentSelectionStart);
-            ic.setSelection(currentSelectionStart, currentSelectionStart);
-            ic.deleteSurroundingText(0, currentSelectionEnd - currentSelectionStart);
-            return;
+        else if (hasCandidate) {
+            start = currentCandidateStart;
+            end = currentCandidateEnd;
+        }
+        else if(mode != null && mode.startsWith("X:")) {
+            start = currentSelectionStart - Integer.parseInt(mode.substring(2));
+            end = currentSelectionEnd;
+        } else {
+            var seq = fillText(ic, 300, true);
+            BreakIterator iterator = singleCharacterMode ? BreakIterator.getCharacterInstance() : BreakIterator.getWordInstance();
+            iterator.setText(seq.toString());
+            iterator.last();
+            int index = iterator.previous();
+            if (index == BreakIterator.DONE) {
+                index = 0;
+            }
+
+            start = Math.max(0, currentSelectionStart - (seq.length() - index));
+            end = currentSelectionEnd;
         }
 
-        CharSequence charseq = ic.getTextBeforeCursor(120, 0);
-        if (charseq != null) {
-            String backbuf = charseq.toString();
-            int delcount = NINLib.processBackspaceAllowance(backbuf, mode, singlecharmode ? 1 : 0);
-            ic.deleteSurroundingText(delcount, 0);
-        }
+        changeSelection(ic, start, start, start, start, null);
+        ic.setComposingRegion(start, start);
+        ic.setSelection(start, start);
+        ic.deleteSurroundingText(0, end - start);
+
     }
 
     public static void processTextOps() {
@@ -459,6 +471,7 @@ public class SoftKeyboard extends InputMethodService {
             for (int i = 0; i < origbatchcount && (theop = textopbuffer.poll()) != null; i++) {
                 TextOp thenext = textopbuffer.peek();
                 boolean skipit = false;
+                // only if debug level
                 Log.d("NIN", theop + " ---- " + (thenext == null ? "null" : thenext.toString()));
                 if (thenext != null && ((thenext.type == 's' || thenext.type == 'l') && theop.type == 'l')) {
                     skipit = true;
