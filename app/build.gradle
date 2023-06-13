@@ -31,10 +31,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            testCoverageEnabled = "true"
+            buildConfigField "boolean", "LOG_DEBUG_MODE", "true"
+            buildConfigField "boolean", "LOG_DEBUG_WITH_STACKTRACE_MODE", "true"
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            buildConfigField "boolean", "LOG_DEBUG_MODE", "false"
+            buildConfigField "boolean", "LOG_DEBUG_WITH_STACKTRACE_MODE", "false"
         }
     }
 
