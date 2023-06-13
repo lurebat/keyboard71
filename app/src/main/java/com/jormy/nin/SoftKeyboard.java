@@ -51,7 +51,7 @@ public class SoftKeyboard extends InputMethodService {
 
     @Override // android.inputmethodservice.InputMethodService
     public void onUpdateSelection(int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, int candidatesStart, int candidatesEnd) {
-        var shouldSignal = updatesel_byroenflag || System.currentTimeMillis() - updatesel_byroen_lasttimemilli < 55;
+        var shouldSignal =!(updatesel_byroenflag || System.currentTimeMillis() - updatesel_byroen_lasttimemilli < 55);
         Utils.prin("candstart " + currentCandidateStart + " -> " + currentCandidateEnd + " || " + currentSelectionStart + " -> " + currentSelectionEnd);
 
         changeSelection(getCurrentInputConnection(), newSelStart, newSelEnd, candidatesStart, candidatesEnd, shouldSignal ? "external" : null);
@@ -103,45 +103,50 @@ public class SoftKeyboard extends InputMethodService {
         worddestructionbuffer.add(new WordDestructionInfo(leword, lestring));
     }
 
-    public static void performBackReplacement(int rawbackindex, int origstrunicodelen, String toreplacewith, InputConnection ic) {
-        CharSequence charseq = ic.getTextBeforeCursor(120, 0);
-        CharSequence nextseq = ic.getTextAfterCursor(60, 0);
-        if (charseq != null) {
-            String thebackbuffer = charseq.toString();
-            nextseq.toString();
-            int usedselstart = currentSelectionStart;
-            Utils.prin("-----------------------");
-            Utils.prin("PREDOt " + currentCandidateStart + " -> " + currentCandidateEnd + " || " + currentSelectionStart + " -> " + currentSelectionEnd);
-            int i = currentCandidateEnd;
-            int i2 = currentCandidateStart;
-            if (i != i2) {
-                int candlength = i - i2;
-                if (candlength < thebackbuffer.length()) {
-                    thebackbuffer = thebackbuffer.substring(0, thebackbuffer.length() - candlength);
-                    usedselstart -= candlength;
-                } else {
-                    return;
-                }
-            }
-            int realbackindex = NINLib.getUnicodeBackIndex(thebackbuffer, rawbackindex);
-            Utils.prin("realbackindex : " + realbackindex);
-            boolean replacingfuture = realbackindex < origstrunicodelen;
-            int replstart = usedselstart - realbackindex;
-            if (replstart >= 0) {
-                ic.setSelection(replstart, replstart);
-                ic.setComposingRegion(replstart, replstart);
-                ic.deleteSurroundingText(0, origstrunicodelen);
-                ic.commitText(toreplacewith, 1);
-                int posshift = toreplacewith.length() - origstrunicodelen;
+    public static void performBackReplacement(int rawBackIndex, int originalUnicodeLen, String replacement, InputConnection ic) {
+        var moveIndex = getUnicodeMovementForIndex(ic, rawBackIndex);
 
-                changeSelection(ic, currentSelectionStart + posshift, currentSelectionEnd + posshift, currentCandidateStart + posshift, currentCandidateEnd + posshift, null);
+        var forwards = fillText(ic, 50, false);
 
-                ic.setComposingRegion(currentSelectionStart, currentCandidateEnd);
-                ic.setSelection(currentSelectionStart, currentSelectionEnd);
-                if (replacingfuture) {
-                    signalCursorCandidacyResult(ic, "backrepl");
-                }
+        var endOfWordIndex = -1;
+        for (int i = 0; i < forwards.length(); i++) {
+            if (Character.isWhitespace(forwards.charAt(i))) {
+                endOfWordIndex = i;
+                break;
             }
+        }
+
+        if (endOfWordIndex == -1) {
+            endOfWordIndex = forwards.length();
+        }
+
+        boolean inMiddleOfWord = moveIndex < endOfWordIndex;
+        var candidateLength = currentCandidateEnd - currentCandidateStart;
+        var startPoint = currentSelectionStart;
+        if (candidateLength != 0) {
+            startPoint -= candidateLength;
+        }
+
+        int replaceStartPoint = startPoint - moveIndex;
+        if (replaceStartPoint < 0) {
+            return;
+        }
+
+        // Delete the original text
+        ic.setSelection(replaceStartPoint, replaceStartPoint);
+        ic.setComposingRegion(replaceStartPoint, replaceStartPoint);
+        ic.deleteSurroundingText(0, endOfWordIndex);
+
+        // Insert the replacement text
+        ic.commitText(replacement, 1);
+
+        var positionShift = replacement.length() - endOfWordIndex;
+        changeSelection(ic, currentSelectionStart + positionShift, currentSelectionEnd + positionShift, currentCandidateStart + positionShift, currentCandidateEnd + positionShift, null);
+
+        ic.setComposingRegion(currentSelectionStart, currentCandidateEnd);
+        ic.setSelection(currentSelectionStart, currentSelectionEnd);
+        if (inMiddleOfWord) {
+            signalCursorCandidacyResult(ic, "backrepl");
         }
     }
 
@@ -324,7 +329,7 @@ public class SoftKeyboard extends InputMethodService {
             }
         }
 
-        fillTextAndCheckRTL(ic, 50, selectEnd < 0);
+        fillText(ic, 50, null);
 
 
         var newStart = (selectStart == 0) ? 0 : Math.max(0, baseStart + getUnicodeMovementForIndex(ic, selectStart));
@@ -334,17 +339,13 @@ public class SoftKeyboard extends InputMethodService {
 
     }
 
-    public static boolean checkRtl(char c) {
-        return c >= 0x590 && c <= 0x6ff;
-    }
-
     private static int getUnicodeMovementForIndex(InputConnection ic, int count) {
         var factor = 2;
         int abs = Math.abs(count);
         int amount = (abs * factor);
         boolean isBackwards = count < 0;
 
-        fillTextAndCheckRTL(ic, amount, isBackwards);
+        fillText(ic, amount, isBackwards);
 
         String currentChars = isBackwards ? textBeforeCursor : textAfterCursor;
         if (currentChars == null) {
@@ -380,7 +381,7 @@ public class SoftKeyboard extends InputMethodService {
 
                 amount *= 2;
 
-                fillTextAndCheckRTL(ic, amount, isBackwards);
+                fillText(ic, amount, isBackwards);
                 currentChars = isBackwards ? textBeforeCursor : textAfterCursor;
                 if (currentChars == null) {
                     return 0;
@@ -399,24 +400,24 @@ public class SoftKeyboard extends InputMethodService {
         return isBackwards ? -finalVar : finalVar;
     }
 
-    private static boolean fillTextAndCheckRTL(InputConnection ic, int amount, boolean isBackwards) {
-        if (textAfterCursor.length() < amount) {
+    private static String fillText(InputConnection ic, int amount, Boolean isBackwards) {
+        if (textAfterCursor.length() < amount && (isBackwards == null || isBackwards.equals(false))) {
             var temp = ic.getTextAfterCursor(amount, 0);
             textAfterCursor = temp == null ? "" : temp.toString();
         }
 
-        if (textBeforeCursor == null || textBeforeCursor.length() < amount) {
+        if (textBeforeCursor.length() < amount && (isBackwards == null || isBackwards.equals(true))) {
             var temp = ic.getTextBeforeCursor(amount, 0);
             textBeforeCursor = temp == null ? "" : temp.toString();
         }
 
-        if (isBackwards && textAfterCursor.length() > 0 && checkRtl(textAfterCursor.charAt(0))) {
-            return true;
+        if (isBackwards == null) {
+            return null;
+        } else if (isBackwards.equals(true)) {
+            return textBeforeCursor;
+        } else {
+            return textAfterCursor;
         }
-        if (!isBackwards && textBeforeCursor.length() > 0 && checkRtl(textBeforeCursor.charAt(textBeforeCursor.length() - 1))) {
-            return true;
-        }
-        return false;
     }
 
     public static void performMUCommand(String cmd, String a1, String a2, String a3, InputConnection ic) {
@@ -481,34 +482,7 @@ public class SoftKeyboard extends InputMethodService {
                         } else {
                             if (theop.strarg.startsWith("<{") && theop.strarg.endsWith("}>")) {
                                 String taskerstring = theop.strarg.substring(2, theop.strarg.length() - 2);
-                                if (taskerstring.startsWith("k")) {
-                                    String substring = taskerstring.substring(1);
-                                    String[] parts = substring.split("\\|");
-                                    if (parts.length < 1) {
-                                        return;
-                                    }
-                                    int keycode = Integer.parseInt(parts[0]);
-
-                                    int modifiers = 0;
-                                    if (parts.length > 1) {
-                                        modifiers = Integer.parseInt(parts[1]);
-                                    }
-                                    int repeat = 0;
-                                    if (parts.length > 2) {
-                                        repeat = Integer.parseInt(parts[2]);
-                                    }
-
-                                    int flags = KeyEvent.FLAG_SOFT_KEYBOARD;
-                                    if (parts.length > 2) {
-                                        flags = Integer.parseInt(parts[2]);
-                                    }
-
-                                    keyDownUp(ic, keycode, modifiers, repeat, flags);
-                                }
-                                else {
-                                    TaskerPluginEventKt.triggerBasicTaskerEvent(globalcontext, theop.strarg);
-                                    ic.commitText(theop.strarg, 1);
-                                }
+                                if (HandleSpecialText(ic, theop, taskerstring)) return;
                             } else {
                                 ic.commitText(theop.strarg, 1);
                             }
@@ -538,6 +512,38 @@ public class SoftKeyboard extends InputMethodService {
             updatesel_byroen_lasttimemilli = System.currentTimeMillis();
             ic.endBatchEdit();
         }
+    }
+
+    private static boolean HandleSpecialText(InputConnection ic, TextOp theop, String taskerstring) {
+        if (taskerstring.startsWith("k")) {
+            String substring = taskerstring.substring(1);
+            String[] parts = substring.split("\\|");
+            if (parts.length < 1) {
+                return true;
+            }
+            int keycode = Integer.parseInt(parts[0]);
+
+            int modifiers = 0;
+            if (parts.length > 1) {
+                modifiers = Integer.parseInt(parts[1]);
+            }
+            int repeat = 0;
+            if (parts.length > 2) {
+                repeat = Integer.parseInt(parts[2]);
+            }
+
+            int flags = KeyEvent.FLAG_SOFT_KEYBOARD;
+            if (parts.length > 2) {
+                flags = Integer.parseInt(parts[2]);
+            }
+
+            keyDownUp(ic, keycode, modifiers, repeat, flags);
+        }
+        else {
+            TaskerPluginEventKt.triggerBasicTaskerEvent(globalcontext, theop.strarg);
+            ic.commitText(theop.strarg, 1);
+        }
+        return false;
     }
 
     /* loaded from: classes.dex */
