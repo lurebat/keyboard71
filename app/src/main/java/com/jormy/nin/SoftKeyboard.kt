@@ -2,7 +2,6 @@
 
 package com.jormy.nin
 
-import android.R
 import android.content.Context
 import android.inputmethodservice.InputMethodService
 import android.os.Build
@@ -16,7 +15,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import com.jormy.nin.KotlinUtils.changeIf
 import com.jormy.nin.NINLib.onChangeAppOrTextbox
-import com.jormy.nin.NINLib.onEditorChangeTypeClass
 import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
@@ -31,18 +29,14 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-/* loaded from: classes.dex */
 class SoftKeyboard : InputMethodService() {
-    // android.inputmethodservice.InputMethodService, android.app.Service
     override fun onCreate() {
         super.onCreate()
         textopbuffer = ConcurrentLinkedQueue()
         textboxeventsbuffer = ConcurrentLinkedQueue()
-        worddestructionbuffer = ConcurrentLinkedQueue()
         globalsoftkeyboard = this
     }
 
-    // android.inputmethodservice.InputMethodService
     override fun onUpdateSelection(
         oldSelStart: Int,
         oldSelEnd: Int,
@@ -102,13 +96,11 @@ class SoftKeyboard : InputMethodService() {
                 }
             }
         }
-        val inf = TextboxEvent(
-            TextboxEventType.APP_FIELD_CHANGE,
-            attribute.packageName,
-            attribute.fieldName,
-            typemode
+
+        doTextEvent(
+            TextEvent.AppFieldChange(attribute.packageName, attribute.fieldName, typemode)
         )
-        textboxeventsbuffer!!.add(inf)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             textAfterCursor = attribute.getInitialTextAfterCursor(1000, 0)
             textBeforeCursor = attribute.getInitialTextBeforeCursor(1000, 0)
@@ -119,10 +111,10 @@ class SoftKeyboard : InputMethodService() {
                 textBeforeCursor = ""
             }
         }
+
         signalCursorCandidacyResult(globalsoftkeyboard!!.currentInputConnection, "startInputView")
     }
 
-    // android.inputmethodservice.InputMethodService
     override fun onViewClicked(focusChanged: Boolean) {
         val curconn = currentInputConnection
         if (curconn != null) {
@@ -146,10 +138,9 @@ class SoftKeyboard : InputMethodService() {
     companion object {
         var globalcontext: Context? = null
         var globalsoftkeyboard: SoftKeyboard? = null
-        var textboxeventsbuffer: ConcurrentLinkedQueue<TextboxEvent>? = null
+        var textboxeventsbuffer: ConcurrentLinkedQueue<TextEvent>? = null
         var textopbuffer: ConcurrentLinkedQueue<TextOp>? = null
         var theopenglview: NINView? = null
-        var worddestructionbuffer: ConcurrentLinkedQueue<WordDestructionInfo>? = null
         var currentSelectionStart = 0
         var currentSelectionEnd = 0
         var currentCandidateStart = 0
@@ -325,7 +316,7 @@ class SoftKeyboard : InputMethodService() {
 
             fillText(ic, abs(currentSelectionEnd) + originalUnicodeLen, false)
             val totalText = textBeforeCursor.toString() + textAfterCursor.toString()
-            val cursorIndexBytes =textBeforeCursor.toString()
+            val cursorIndexBytes = textBeforeCursor.toString()
                 .toByteArray(StandardCharsets.UTF_8).size
 
             val bytes = totalText.toByteArray(StandardCharsets.UTF_8)
@@ -446,12 +437,12 @@ class SoftKeyboard : InputMethodService() {
         @Api
         @JvmStatic
         fun signalWordDestruction(leword: String?, lestring: String?) {
-            worddestructionbuffer!!.add(WordDestructionInfo(leword!!, lestring!!))
+            doTextEvent(TextEvent.WordDestruction(leword, lestring))
         }
 
         fun signalCursorCandidacyResult(ic: InputConnection?, mode: String?) {
             if (ic == null) {
-                textboxeventsbuffer!!.add(TextboxEvent(TextboxEventType.RESET))
+                doTextEvent(TextEvent.Reset)
                 return
             }
             val hasSelection = currentSelectionStart != currentSelectionEnd
@@ -476,35 +467,35 @@ class SoftKeyboard : InputMethodService() {
                 curword = pretext.substring(pretext.length - length)
                 pretext = pretext.substring(0, pretext.length - length)
             }
-            val inf = TextboxEvent(TextboxEventType.SELECTION, curword, pretext, posttext, mode)
-            textboxeventsbuffer!!.add(inf)
+            doTextEvent(TextEvent.Selection(curword, pretext, posttext, mode))
         }
 
         @JvmStatic
         fun relayDelayedEvents() {
             while (true) {
-                val torel = textboxeventsbuffer!!.poll()
-                if (torel != null) {
-                    //Log.d("NIN", "relaying delayed event $torel")
-                }
-                if (torel == null) {
-                    break
-                } else if (torel.type === TextboxEventType.RESET) {
-                    onExternalSelChange()
-                } else if (torel.type === TextboxEventType.SELECTION) {
-                    onTextSelection(torel.arg1, torel.mainarg, torel.arg2, torel.codemode)
-                } else if (torel.type === TextboxEventType.APP_FIELD_CHANGE) {
-                    onChangeAppOrTextbox(torel.mainarg, torel.arg1, torel.arg2)
-                } else if (torel.type === TextboxEventType.FIELD_TYPE_CLASS_CHANGE) {
-                    onEditorChangeTypeClass(torel.mainarg, torel.arg1)
-                }
-            }
-            while (true) {
-                val desu = worddestructionbuffer!!.poll()
-                if (desu != null) {
-                    onWordDestruction(desu.destructedword, desu.destructedstring)
-                } else {
-                    return
+                val event = textboxeventsbuffer!!.poll()
+                when (event) {
+                    is TextEvent.AppFieldChange -> onChangeAppOrTextbox(
+                        event.packageName,
+                        event.field,
+                        event.mode
+                    )
+
+                    TextEvent.Reset -> onExternalSelChange()
+
+                    is TextEvent.Selection -> onTextSelection(
+                        event.textBefore,
+                        event.currentWord,
+                        event.textAfter,
+                        event.mode
+                    )
+
+                    is TextEvent.WordDestruction -> onWordDestruction(
+                        event.destroyedWord,
+                        event.destroyedString
+                    )
+
+                    null -> break
                 }
             }
         }
@@ -604,7 +595,10 @@ class SoftKeyboard : InputMethodService() {
 
                 is TextOp.Solidify -> {
                     when {
-                        next != null && next is TextOp.Solidify && op.newString.trim().isEmpty() && next.newString.startsWith("<{") && next.newString.endsWith("}>") -> {
+                        next != null && next is TextOp.Solidify && op.newString.trim()
+                            .isEmpty() && next.newString.startsWith("<{") && next.newString.endsWith(
+                            "}>"
+                        ) -> {
                             changeSelection(
                                 ic,
                                 currentSelectionStart,
@@ -725,13 +719,13 @@ class SoftKeyboard : InputMethodService() {
 
                 'c' -> ic.performContextMenuAction(
                     when (parts[0].uppercase()) {
-                        "0", "CUT" -> R.id.cut
-                        "1", "COPY" -> R.id.copy
-                        "2", "PASTE" -> R.id.paste
-                        "3", "SELECT_ALL" -> R.id.selectAll
-                        "4", "START_SELECT" -> R.id.startSelectingText
-                        "5", "STOP_SELECT" -> R.id.stopSelectingText
-                        "6", "SWITCH_KEYBOARD" -> R.id.switchInputMethod
+                        "0", "CUT" -> android.R.id.cut
+                        "1", "COPY" -> android.R.id.copy
+                        "2", "PASTE" -> android.R.id.paste
+                        "3", "SELECT_ALL" -> android.R.id.selectAll
+                        "4", "START_SELECT" -> android.R.id.startSelectingText
+                        "5", "STOP_SELECT" -> android.R.id.stopSelectingText
+                        "6", "SWITCH_KEYBOARD" -> android.R.id.switchInputMethod
                         else -> parts[0].toInt()
                     }
                 )
@@ -753,7 +747,7 @@ class SoftKeyboard : InputMethodService() {
         @Api
         @JvmStatic
         fun callRequestSel() {
-            doTextOp(TextOp.RequestSelection())
+            doTextOp(TextOp.RequestSelection)
         }
 
         @Api
@@ -782,7 +776,11 @@ class SoftKeyboard : InputMethodService() {
 
         @Api
         @JvmStatic
-        fun callBackReplacement(backIndexFromCursorBytes: Int, oldString: String, newString: String) {
+        fun callBackReplacement(
+            backIndexFromCursorBytes: Int,
+            oldString: String,
+            newString: String
+        ) {
             doTextOp(TextOp.BackspaceReplacement(backIndexFromCursorBytes, oldString, newString))
         }
 
@@ -804,16 +802,14 @@ class SoftKeyboard : InputMethodService() {
             doTextOp(TextOp.Solidify(string))
         }
 
-        fun doTextOp(op: TextOp) {
-            textopbuffer!!.add(op)
+        fun doTextOp(op: TextOp) = textopbuffer?.let {
+            it.add(op)
             Handler(Looper.getMainLooper()).post(PerformTextOpsTask())
         }
 
-        fun doTextEvent(event: TextboxEvent) {
-            textboxeventsbuffer!!.add(event)
-        }
+        fun doTextEvent(event: TextEvent) = textboxeventsbuffer?.add(event)
 
-        fun keyDownUp(
+        private fun keyDownUp(
             ic: InputConnection,
             keyEventCode: Int,
             modifiers: Int,
@@ -853,13 +849,23 @@ class SoftKeyboard : InputMethodService() {
 
 object WordHelper {
 
-    val keyCodesMap = KeyEvent::class.java.fields.asSequence().filter { it.name.startsWith("KEYCODE_") }.associateTo(mutableMapOf()) { Pair(it.name.substring(8), it.getInt(null)) }
-    val modifiersMap = KeyEvent::class.java.fields.asSequence().filter { it.name.startsWith("META_")  && it.name.endsWith("_ON")}.associateTo(mutableMapOf()) { Pair(it.name.substring(5, it.name.indexOf("_ON")), it.getInt(null)) }
+    private val keyCodesMap =
+        KeyEvent::class.java.fields.asSequence().filter { it.name.startsWith("KEYCODE_") }
+            .associateTo(mutableMapOf()) { Pair(it.name.substring(8), it.getInt(null)) }
+    private val modifiersMap = KeyEvent::class.java.fields.asSequence()
+        .filter { it.name.startsWith("META_") && it.name.endsWith("_ON") }
+        .associateTo(mutableMapOf()) {
+            Pair(
+                it.name.substring(5, it.name.indexOf("_ON")),
+                it.getInt(null)
+            )
+        }
 
     fun parseKeyCode(keyCode: String): Int = keyCodesMap[keyCode.uppercase()] ?: keyCode.toInt()
     fun parseModifiers(modifiers: String): Int {
         if (modifiers.all { it.isDigit() }) return modifiers.toInt()
-        return modifiers.split(",").map { it.trim() }.map { modifiersMap[it.uppercase()] ?: it.toInt() }.reduce { acc, i -> acc or i }
+        return modifiers.split(",").map { it.trim() }
+            .map { modifiersMap[it.uppercase()] ?: it.toInt() }.reduce { acc, i -> acc or i }
     }
 
     fun lastWordBreak(text: String): Int {
