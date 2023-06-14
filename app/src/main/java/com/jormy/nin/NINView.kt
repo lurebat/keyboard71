@@ -106,52 +106,52 @@ class NINView(context: Context) : EXSurfaceView(context) {
         }
     }
 
-    class ConfigChooser(
-        protected var mRedSize: Int,
-        protected var mGreenSize: Int,
-        protected var mBlueSize: Int,
-        protected var mAlphaSize: Int,
-        protected var mDepthSize: Int,
-        protected var mStencilSize: Int
+    data class ConfigChooser(
+        val redSize: Int,
+        val greenSize: Int,
+        val blueSize: Int,
+        val alphaSize: Int,
+        val minDepthSize: Int,
+        val minStencilSize: Int
     ) : EGLConfigChooser {
         override fun chooseConfig(egl: EGL10, display: EGLDisplay): EGLConfig {
-            val num_config = IntArray(1)
-            egl.eglChooseConfig(display, attributes, null, 0, num_config)
-            val numConfigs = num_config[0]
+            val numConfigsArr = IntArray(1)
+            egl.eglChooseConfig(display, attributes, null, 0, numConfigsArr)
+            val numConfigs = numConfigsArr[0]
             require(numConfigs > 0) { "No configs match configSpec" }
             val configs = arrayOfNulls<EGLConfig>(numConfigs)
-            egl.eglChooseConfig(display, attributes, configs, numConfigs, num_config)
-            return chooseConfig(egl, display, configs)!!
+            egl.eglChooseConfig(display, attributes, configs, numConfigs, numConfigsArr)
+            return chooseConfig(egl, display, configs)
         }
 
-        fun chooseConfig(egl: EGL10, display: EGLDisplay, configs: Array<EGLConfig?>): EGLConfig? {
+        private fun chooseConfig(egl: EGL10, display: EGLDisplay, configs: Array<EGLConfig?>): EGLConfig {
             for (config in configs) {
-                val d = egl.findConfigAttrib(display, config, 12325)
-                val s = egl.findConfigAttrib(display, config, 12326)
-                if (d >= mDepthSize && s >= mStencilSize) {
-                    val r = egl.findConfigAttrib(display, config, 12324)
-                    val g = egl.findConfigAttrib(display, config, 12323)
-                    val b = egl.findConfigAttrib(display, config, 12322)
-                    val a = egl.findConfigAttrib(display, config, 12321)
-                    if (r == mRedSize && g == mGreenSize && b == mBlueSize && a == mAlphaSize) {
-                        return config
-                    }
-                }
+                val d = egl.findConfigAttrib(display, config, EGL14.EGL_DEPTH_SIZE)
+                val s = egl.findConfigAttrib(display, config, EGL14.EGL_STENCIL_SIZE)
+                if (d < minDepthSize || s < minStencilSize) continue
+
+                val r = egl.findConfigAttrib(display, config, EGL14.EGL_RED_SIZE)
+                val g = egl.findConfigAttrib(display, config, EGL14.EGL_GREEN_SIZE)
+                val b = egl.findConfigAttrib(display, config, EGL14.EGL_BLUE_SIZE)
+                val a = egl.findConfigAttrib(display, config, EGL14.EGL_ALPHA_SIZE)
+                if (r != redSize || g != greenSize || b != blueSize || a != alphaSize) continue
+
+                if (config == null) continue
+
+                return config
             }
-            return null
+            throw IllegalArgumentException("No config chosen")
         }
 
         private fun EGL10.findConfigAttrib(
             display: EGLDisplay,
             config: EGLConfig?,
             attribute: Int,
-        ): Int {
-            intArrayOf(0).let {
-                return if (eglGetConfigAttrib(display, config, attribute, it)) {
-                    it[0]
-                } else {
-                    0
-                }
+        ): Int = intArrayOf(0).let {
+            return if (eglGetConfigAttrib(display, config, attribute, it)) {
+                it[0]
+            } else {
+                0
             }
         }
 
@@ -180,7 +180,7 @@ class NINView(context: Context) : EXSurfaceView(context) {
             val portraitInches = portraitPixels / ppi
             val pixelPerfectRoenPixelWidth = desiredRoenPixelWidth * (portraitInches / 1.9631902f)
             val desiredPortrait = pixelPerfectRoenPixelWidth / desiredScaling
-            last_desired_portrait = desiredPortrait
+            lastDesiredPortrait = desiredPortrait
             return if (width <= height) desiredPortrait else desiredPortrait * (width / height)
         }
 
@@ -279,12 +279,11 @@ class NINView(context: Context) : EXSurfaceView(context) {
         // com.jormy.nin.EXSurfaceView.Renderer
         override fun onSurfaceChanged(gl10: GL10, width: Int, height: Int) {
             val metrics = globalView.resources.displayMetrics
-            val wwww = metrics.widthPixels
-            val hhhh = metrics.heightPixels
-            init(width, height, wwww, hhhh)
+            val widthPixels = metrics.widthPixels
+            val heightPixels = metrics.heightPixels
+            init(width, height, widthPixels, heightPixels)
         }
 
-        // com.jormy.nin.EXSurfaceView.Renderer
         override fun onSurfaceCreated(gl10: GL10, config: EGLConfig) {}
     }
 
@@ -303,7 +302,7 @@ class NINView(context: Context) : EXSurfaceView(context) {
         var devicePortraitWidth = 640.0f
 
         var desiredScaling = 1.0f
-        var last_desired_portrait = 640.0f
+        var lastDesiredPortrait = 640.0f
 
         fun checkEglError(prompt: String?, egl: EGL10) {
             while (true) {
