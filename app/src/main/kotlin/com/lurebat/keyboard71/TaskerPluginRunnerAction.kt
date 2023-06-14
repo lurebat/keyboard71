@@ -1,3 +1,5 @@
+@file:Suppress("USELESS_ELVIS")
+
 package com.lurebat.keyboard71
 
 import android.content.Context
@@ -39,33 +41,35 @@ import com.joaomgcd.taskerpluginlibrary.input.TaskerInputRoot
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResult
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultSucess
 import com.jormy.nin.SoftKeyboard
+import com.jormy.nin.TextEvent
+import com.jormy.nin.TextEventType
 import com.jormy.nin.TextOp
-import com.jormy.nin.TextboxEvent
-import com.jormy.nin.TextboxEventType
+import com.jormy.nin.TextOpType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @TaskerInputRoot
 data class ActionInput @JvmOverloads constructor(
     @field:TaskerInputField("opType") var opType: String? = null,
-    @field:TaskerInputObject("textOperatio") var textOperation: TextOperation = TextOperation(),
-    @field:TaskerInputObject("textEven") var textEvent: TextEvent = TextEvent(),
+    @field:TaskerInputObject("textOperation") var textOperation: TaskerTextOperation = TaskerTextOperation(),
+    @field:TaskerInputObject("textEven") var taskerTextEvent: TaskerTextEvent = TaskerTextEvent(),
 ) : Parcelable
 
 @Parcelize
 @TaskerInputObject("textOperation")
-data class TextOperation @JvmOverloads constructor(
+data class TaskerTextOperation @JvmOverloads constructor(
     @field:TaskerInputField("type") var type: String? = null,
     @field:TaskerInputField("int1") var int1: Int = 0,
     @field:TaskerInputField("int2") var int2: Int = 0,
     @field:TaskerInputField("bool1") var bool1: Boolean = false,
     @field:TaskerInputField("bool2") var bool2: Boolean = false,
     @field:TaskerInputField("str1") var str1: String? = null,
+    @field:TaskerInputField("str2") var str2: String? = null,
 ) : Parcelable
 
 @Parcelize
 @TaskerInputObject("textEvent")
-data class TextEvent @JvmOverloads constructor(
+data class TaskerTextEvent @JvmOverloads constructor(
     @field:TaskerInputField("type") var type: String? = null,
     @field:TaskerInputField("first") var first: String? = null,
     @field:TaskerInputField("second") var second: String? = null,
@@ -79,23 +83,24 @@ class ActionRunner : TaskerPluginRunnerActionNoOutput<ActionInput>() {
             "TextOp" -> {
                 SoftKeyboard.doTextOp(
                     TextOp.parse(
-                        input.regular.textOperation.type!![0],
+                        TextOpType.valueOf(input.regular.opType!!),
                         input.regular.textOperation.int1,
                         input.regular.textOperation.int2,
                         input.regular.textOperation.bool1,
                         input.regular.textOperation.bool2,
-                        input.regular.textOperation.str1
+                        input.regular.textOperation.str1,
+                        input.regular.textOperation.str2
                     )
                 )
             }
 
             "TextEvent" -> {
                 SoftKeyboard.doTextEvent(
-                    TextboxEvent(
-                        TextboxEventType.valueOf(input.regular.textEvent.type!!),
-                        input.regular.textEvent.first,
-                        input.regular.textEvent.second,
-                        input.regular.textEvent.third
+                    TextEvent.fromType(
+                        TextEventType.valueOf(input.regular.taskerTextEvent.type!!),
+                        input.regular.taskerTextEvent.first,
+                        input.regular.taskerTextEvent.second,
+                        input.regular.taskerTextEvent.third
                     )
                 )
             }
@@ -108,66 +113,65 @@ class ActionRunner : TaskerPluginRunnerActionNoOutput<ActionInput>() {
 @Parcelize
 class TextOpAction(
     val type: String,
-    val name: String,
     val int1Name: String? = null,
     val int2Name: String? = null,
     val bool1Name: String? = null,
     val bool2Name: String? = null,
-    val strName: String? = null,
-) : Parcelable;
+    val str1Name: String? = null,
+    val str2Name: String? = null,
+) : Parcelable
 
 
 val textOpActions = listOf(
-    TextOpAction("C", "Command", strName = "Command"),
-    TextOpAction("!", "RequestSel"),
+    TextOpAction(TextOpType.MU_COMMAND.name, str1Name = "Command"),
+    TextOpAction(TextOpType.REQUEST_SELECTION.name),
     TextOpAction(
-        "e",
-        "SetSel",
+        TextOpType.SET_SELECTION.name,
         int1Name = "Start",
         int2Name = "End",
         bool1Name = "FromStart",
         bool2Name = "DontSignal"
     ),
-    TextOpAction("m", "DragCursorMove", int1Name = "XMove"),
-    TextOpAction("<", "SimpleBackspace", bool1Name = "Single Char Mode"),
+    TextOpAction(TextOpType.DRAG_CURSOR_MOVE.name, int1Name = "XMove"),
+    TextOpAction(TextOpType.SIMPLE_BACKSPACE.name, bool1Name = "Single Char Mode"),
     TextOpAction(
-        "r",
-        "BackReplacement",
+        TextOpType.BACKSPACE_REPLACEMENT.name,
         int1Name = "RawBackIndex",
-        int2Name = "Old String Length",
-        strName = "New String"
+        str1Name = "Old String",
+        str2Name = "New String"
     ),
-    TextOpAction("b", "BackspaceModed", strName = "String"),
-    TextOpAction("l", "MarkLiquid", strName = "String"),
-    TextOpAction("s", "Solidify", strName = "String"),
+    TextOpAction(TextOpType.BACKSPACE_MODED.name, str1Name = "String"),
+    TextOpAction(TextOpType.MARK_LIQUID.name, str1Name = "String"),
+    TextOpAction(TextOpType.SOLIDIFY.name, str1Name = "String"),
 )
 
 @Parcelize
 data class TextEventAction(
     val type: String,
-    val name: String,
     val firstName: String? = null,
     val secondName: String? = null,
     val thirdName: String? = null,
-) : Parcelable;
+) : Parcelable
 
 val textEventActions = listOf(
-    TextEventAction("RESET", "Reset"),
+    TextEventAction(TextEventType.RESET.name),
     TextEventAction(
-        "SELECTION",
-        "Selection",
+        TextEventType.SELECTION.name,
         firstName = "Current Word",
         secondName = "Pre Text",
         thirdName = "Post Text"
     ),
     TextEventAction(
-        "APPFIELDCHANGE",
-        "App Field Change",
+        TextEventType.APP_FIELD_CHANGE.name,
         firstName = "Package Name",
         secondName = "Field Name",
         thirdName = "Type Mode"
     ),
-    TextEventAction("FIELDTYPECLASSCHANGE", "Field Type Class Change", firstName = "Type Mode"),
+    TextEventAction(
+        TextEventType.WORD_DESTRUCTION.name,
+        firstName = "Destroyed Word",
+        secondName = "Destroyed String",
+    ),
 )
 
 class ActionHelper(
@@ -176,7 +180,7 @@ class ActionHelper(
     override val runnerClass: Class<ActionRunner> = ActionRunner::class.java
 ) : TaskerPluginConfigHelperNoOutput<ActionInput, ActionRunner>(config)
 
-class KeyboardActionActivity() : ComponentActivity(), TaskerPluginConfig<ActionInput> {
+class KeyboardActionActivity : ComponentActivity(), TaskerPluginConfig<ActionInput> {
     override val inputForTasker: TaskerInput<ActionInput> get() = TaskerInput(input)
     var input = ActionInput()
 
@@ -191,7 +195,7 @@ class KeyboardActionActivity() : ComponentActivity(), TaskerPluginConfig<ActionI
 
         setContent {
             ActionInputForm(inputForTasker.regular, { taskerHelper.finishForTasker() }) {
-                Log.d("KeyboardActionActivity", "setContent: ${it}")
+                Log.d("KeyboardActionActivity", "setContent: $it")
                 input = it
             }
         }
@@ -213,15 +217,15 @@ class KeyboardActionActivity() : ComponentActivity(), TaskerPluginConfig<ActionI
         }
 
         var textEvent by rememberSaveable {
-            mutableStateOf(input.textEvent)
+            mutableStateOf(input.taskerTextEvent)
         }
 
         val callChange = {
             inputChanged(
                 ActionInput(
                     opType = opType,
-                    textOperation = textOp ,
-                    textEvent = textEvent,
+                    textOperation = textOp,
+                    taskerTextEvent = textEvent,
                 )
             )
         }
@@ -264,10 +268,10 @@ class KeyboardActionActivity() : ComponentActivity(), TaskerPluginConfig<ActionI
                         ) {
                             DropdownMenuItem(text = {
                                 Text("TextOp")
-                            }, onClick = { opType = "TextOp"; expanded = false; callChange()})
+                            }, onClick = { opType = "TextOp"; expanded = false; callChange() })
                             DropdownMenuItem(text = {
                                 Text("TextEvent")
-                            }, onClick = { opType = "TextEvent"; expanded = false; callChange()})
+                            }, onClick = { opType = "TextEvent"; expanded = false; callChange() })
                         }
                     }
                 }
@@ -284,11 +288,13 @@ class KeyboardActionActivity() : ComponentActivity(), TaskerPluginConfig<ActionI
                 }
 
                 Button(onClick = {
-                    onFinish(ActionInput(
-                        opType = opType,
-                        textOperation = textOp,
-                        textEvent = textEvent,
-                    ))
+                    onFinish(
+                        ActionInput(
+                            opType = opType,
+                            textOperation = textOp,
+                            taskerTextEvent = textEvent,
+                        )
+                    )
                 }) {
                     Text("Finish")
                 }
@@ -302,32 +308,32 @@ class KeyboardActionActivity() : ComponentActivity(), TaskerPluginConfig<ActionI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextEventForm(input: ActionInput, inputChanged: (t: TextEvent) -> Unit) {
+fun TextEventForm(input: ActionInput, inputChanged: (t: TaskerTextEvent) -> Unit) {
     var typeOfEvent by rememberSaveable {
-        mutableStateOf(input.textEvent?.type?.let { type ->
+        mutableStateOf(input.taskerTextEvent.type?.let { type ->
             textEventActions.find { it.type == type }
         } ?: textEventActions.first())
     }
     var first by rememberSaveable {
-        mutableStateOf(input.textEvent?.first ?: "")
+        mutableStateOf(input.taskerTextEvent.first ?: "")
     }
     var second by rememberSaveable {
-        mutableStateOf(input.textEvent?.second ?: "")
+        mutableStateOf(input.taskerTextEvent.second ?: "")
     }
     var third by rememberSaveable {
-        mutableStateOf(input.textEvent?.third ?: "")
+        mutableStateOf(input.taskerTextEvent.third ?: "")
     }
 
     val callChange = {
         inputChanged(
-            TextEvent(
+            TaskerTextEvent(
                 typeOfEvent.type,
                 first,
                 second,
                 third,
             )
         )
-    };
+    }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     Column {
@@ -341,7 +347,7 @@ fun TextEventForm(input: ActionInput, inputChanged: (t: TextEvent) -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 TextField(
-                    value = typeOfEvent.name,
+                    value = typeOfEvent.type,
                     onValueChange = { },
                     label = { Text("Type") },
                     readOnly = true,
@@ -361,7 +367,7 @@ fun TextEventForm(input: ActionInput, inputChanged: (t: TextEvent) -> Unit) {
                 ) {
                     textEventActions.forEach { action ->
                         DropdownMenuItem(text = {
-                            Text(action.name)
+                            Text(action.type)
                         }, onClick = { typeOfEvent = action; expanded = false; callChange() })
                     }
 
@@ -370,9 +376,9 @@ fun TextEventForm(input: ActionInput, inputChanged: (t: TextEvent) -> Unit) {
         }
         if (typeOfEvent.firstName != null) {
             Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 TextField(
                     value = first,
                     onValueChange = { first = it; callChange() },
@@ -382,10 +388,10 @@ fun TextEventForm(input: ActionInput, inputChanged: (t: TextEvent) -> Unit) {
             }
         }
         if (typeOfEvent.secondName != null) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 TextField(
                     value = second,
                     onValueChange = { second = it; callChange() },
@@ -395,10 +401,10 @@ fun TextEventForm(input: ActionInput, inputChanged: (t: TextEvent) -> Unit) {
             }
         }
         if (typeOfEvent.thirdName != null) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 TextField(
                     value = third,
                     onValueChange = { third = it; callChange() },
@@ -412,39 +418,44 @@ fun TextEventForm(input: ActionInput, inputChanged: (t: TextEvent) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TextOpForm(input: ActionInput, inputChanged: (t: TextOperation) -> Unit) {
+private fun TextOpForm(input: ActionInput, inputChanged: (t: TaskerTextOperation) -> Unit) {
     var action by rememberSaveable {
-        mutableStateOf(input.textOperation?.type?.let { type ->
+        mutableStateOf(input.textOperation.type?.let { type ->
             textOpActions.find { it.type == type }
         } ?: textOpActions.first())
     }
     var int1 by rememberSaveable {
-        mutableStateOf(input.textOperation?.int1.toString())
+        mutableStateOf(input.textOperation.int1.toString())
     }
     var int2 by rememberSaveable {
-        mutableStateOf(input.textOperation?.int2.toString())
+        mutableStateOf(input.textOperation.int2.toString())
     }
     var bool1 by rememberSaveable {
-        mutableStateOf(input.textOperation?.bool1)
+        mutableStateOf(input.textOperation.bool1)
     }
     var bool2 by rememberSaveable {
-        mutableStateOf(input.textOperation?.bool2)
+        mutableStateOf(input.textOperation.bool2)
     }
     var str by rememberSaveable {
-        mutableStateOf(input.textOperation?.str1)
+        mutableStateOf(input.textOperation.str1)
+    }
+    var str2 by rememberSaveable {
+        mutableStateOf(input.textOperation.str2)
     }
 
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     val callChange = {
         inputChanged(
-            TextOperation(
+            TaskerTextOperation(
                 action.type,
                 int1.toIntOrNull() ?: 0,
                 int2.toIntOrNull() ?: 0,
                 bool1 ?: false,
                 bool2 ?: false,
                 str ?: "",
+                str2 ?: "",
+
             )
         )
     }
@@ -460,7 +471,7 @@ private fun TextOpForm(input: ActionInput, inputChanged: (t: TextOperation) -> U
                 modifier = Modifier.weight(1f)
             ) {
                 TextField(
-                    value = action.name,
+                    value = action.type,
                     onValueChange = { },
                     label = { Text("Type") },
                     readOnly = true,
@@ -480,7 +491,7 @@ private fun TextOpForm(input: ActionInput, inputChanged: (t: TextOperation) -> U
                 ) {
                     textOpActions.forEach { a ->
                         DropdownMenuItem(text = {
-                            Text(a.name)
+                            Text(a.type)
                         }, onClick = { action = a; expanded = false;callChange() })
                     }
                 }
@@ -505,7 +516,7 @@ private fun TextOpForm(input: ActionInput, inputChanged: (t: TextOperation) -> U
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
-                    value = int2.toString(),
+                    value = int2,
                     onValueChange = { int2 = it; callChange() },
                     label = { Text(action.int2Name!!) },
                     modifier = Modifier.fillMaxWidth()
@@ -541,7 +552,7 @@ private fun TextOpForm(input: ActionInput, inputChanged: (t: TextOperation) -> U
             }
         }
 
-        if (action.strName != null) {
+        if (action.str1Name != null) {
             Row(
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -549,7 +560,21 @@ private fun TextOpForm(input: ActionInput, inputChanged: (t: TextOperation) -> U
                 TextField(
                     value = str ?: "",
                     onValueChange = { str = it; callChange() },
-                    label = { Text(action.strName!!) },
+                    label = { Text(action.str1Name!!) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+
+        if (action.str2Name != null) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextField(
+                    value = str2 ?: "",
+                    onValueChange = { str2 = it; callChange() },
+                    label = { Text(action.str2Name!!) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

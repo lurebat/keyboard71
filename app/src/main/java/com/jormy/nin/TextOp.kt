@@ -1,8 +1,21 @@
 package com.jormy.nin
 
+enum class TextOpType {
+    SOLIDIFY,
+    MARK_LIQUID,
+    SET_SELECTION,
+    BACKSPACE_MODED,
+    BACKSPACE_REPLACEMENT,
+    DRAG_CURSOR_MOVE,
+    REQUEST_SELECTION,
+    DRAG_CURSOR_UP,
+    SIMPLE_BACKSPACE,
+    MU_COMMAND,
+}
+
 sealed class TextOp {
     data class MuCommand(val command: String, val arg1: String? = null, val arg2: String? = null, val arg3: String? = null) : TextOp()
-    class RequestSelection() : TextOp()
+    object RequestSelection : TextOp()
     data class SetSelection(val start: Int, val end: Int, val fromStart: Boolean, val signal: Boolean) : TextOp()
 
     data class DragCursorUp(val releasedDirection: Int) : TextOp()
@@ -16,19 +29,20 @@ sealed class TextOp {
     data class Special(val args: String) : TextOp()
 
     companion object {
-        fun parse(type: Char, intArg1: Int, intArg2: Int, boolArg1: Boolean, boolArg2: Boolean, stringArg1: String?): TextOp {
-            val stringArg1 = stringArg1 ?: ""
+        fun parse(type: TextOpType, intArg1: Int, intArg2: Int, boolArg1: Boolean, boolArg2: Boolean, stringArg1: String?, stringArg2: String?): TextOp {
+            val str1 = stringArg1 ?: ""
+            val str2 = stringArg2 ?: ""
             return when(type) {
-                's' -> Solidify(stringArg1)
-                'm' -> MarkLiquid(stringArg1)
-                'e' -> SetSelection(intArg1, intArg2, boolArg1, !boolArg2)
-                'b' -> BackspaceModed(stringArg1)
-                'r' -> BackspaceReplacement(intArg1, String(), stringArg1)
-                'd' -> DragCursorMove(intArg1, intArg2, boolArg1)
-                '!' -> RequestSelection()
-                'u' -> DragCursorUp(intArg1)
-                '<' -> SimpleBackspace(boolArg1)
-                else -> MuCommand(stringArg1)
+                TextOpType.SOLIDIFY -> Solidify(str1)
+                TextOpType.MARK_LIQUID -> MarkLiquid(str1)
+                TextOpType.SET_SELECTION -> SetSelection(intArg1, intArg2, boolArg1, !boolArg2)
+                TextOpType.BACKSPACE_MODED -> BackspaceModed(str1)
+                TextOpType.BACKSPACE_REPLACEMENT -> BackspaceReplacement(intArg1, str1, str2)
+                TextOpType.DRAG_CURSOR_MOVE -> DragCursorMove(intArg1, intArg2, boolArg1)
+                TextOpType.REQUEST_SELECTION -> RequestSelection
+                TextOpType.DRAG_CURSOR_UP -> DragCursorUp(intArg1)
+                TextOpType.SIMPLE_BACKSPACE -> SimpleBackspace(boolArg1)
+                TextOpType.MU_COMMAND -> MuCommand(str1)
             }
         }
     }
