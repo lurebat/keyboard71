@@ -188,7 +188,7 @@ class NINActivity : ComponentActivity() {
     }
 }
 
-class Pref(val context: Context) {
+class Preferences(val context: Context) {
     val store = context.composeSettingsDataStore
 
     private val hapticFeedback = store.data.map { s ->

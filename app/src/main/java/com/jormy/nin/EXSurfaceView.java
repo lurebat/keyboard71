@@ -5,9 +5,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import java.io.Writer;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -18,20 +19,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 /* loaded from: classes.dex */
 public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
-    public static final int DEBUG_CHECK_GL_ERROR = 1;
-    public static final int DEBUG_LOG_GL_CALLS = 2;
-    private static final boolean LOG_ATTACH_DETACH = false;
-    private static final boolean LOG_EGL = false;
-    private static final boolean LOG_PAUSE_RESUME = false;
-    private static final boolean LOG_RENDERER = false;
-    private static final boolean LOG_RENDERER_DRAW_FRAME = false;
-    private static final boolean LOG_SURFACE = false;
-    private static final boolean LOG_THREADS = false;
-    public static final int RENDERMODE_CONTINUOUSLY = 1;
-    public static final int RENDERMODE_WHEN_DIRTY = 0;
     private static final String TAG = "EXSurfaceView";
     private static final GLThreadManager sGLThreadManager = new GLThreadManager();
-    private int mDebugFlags;
     private boolean mDetached;
     private EGLConfigChooser mEGLConfigChooser;
     private int mEGLContextClientVersion;
@@ -39,7 +28,6 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private EGLWindowSurfaceFactory mEGLWindowSurfaceFactory;
     private GLThread mGLThread;
     private GLWrapper mGLWrapper;
-    private KeyboardGLPauser mKeyboardGLPauser;
     private boolean mPreserveEGLContextOnPause;
     private Renderer mRenderer;
     private final WeakReference<EXSurfaceView> mThisWeakRef;
@@ -72,7 +60,7 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public interface Renderer {
         void onDrawFrame(GL10 gl10);
 
-        void onSurfaceChanged(GL10 gl10, int i, int i2);
+        void onSurfaceChanged(GL10 gl10, int width, int height);
 
         void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig);
     }
@@ -102,28 +90,12 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private void init() {
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-        this.mKeyboardGLPauser = new KeyboardGLPauser(this);
-        this.mKeyboardGLPauser.start();
-    }
-
-    public void setGLWrapper(GLWrapper glWrapper) {
-        this.mGLWrapper = glWrapper;
-    }
-
-    public void setDebugFlags(int debugFlags) {
-        this.mDebugFlags = debugFlags;
-    }
-
-    public int getDebugFlags() {
-        return this.mDebugFlags;
+        KeyboardGLPauser mKeyboardGLPauser = new KeyboardGLPauser(this);
+        mKeyboardGLPauser.start();
     }
 
     public void setPreserveEGLContextOnPause(boolean preserveOnPause) {
         this.mPreserveEGLContextOnPause = preserveOnPause;
-    }
-
-    public boolean getPreserveEGLContextOnPause() {
-        return this.mPreserveEGLContextOnPause;
     }
 
     public void setRenderer(Renderer renderer) {
@@ -203,10 +175,6 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     public void onResume() {
         this.mGLThread.onResume();
-    }
-
-    public void queueEvent(Runnable r) {
-        this.mGLThread.queueEvent(r);
     }
 
     @Override // android.view.SurfaceView, android.view.View
@@ -947,51 +915,12 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    /* loaded from: classes.dex */
-    static class LogWriter extends Writer {
-        private StringBuilder mBuilder = new StringBuilder();
-
-        LogWriter() {
-        }
-
-        @Override // java.io.Writer, java.io.Closeable, java.lang.AutoCloseable
-        public void close() {
-            flushBuilder();
-        }
-
-        @Override // java.io.Writer, java.io.Flushable
-        public void flush() {
-            flushBuilder();
-        }
-
-        @Override // java.io.Writer
-        public void write(char[] buf, int offset, int count) {
-            for (int i = 0; i < count; i++) {
-                char c = buf[offset + i];
-                if (c == '\n') {
-                    flushBuilder();
-                } else {
-                    this.mBuilder.append(c);
-                }
-            }
-        }
-
-        private void flushBuilder() {
-            if (this.mBuilder.length() > 0) {
-                Log.v(EXSurfaceView.TAG, this.mBuilder.toString());
-                this.mBuilder.delete(0, this.mBuilder.length());
-            }
-        }
-    }
-
     private void checkRenderThreadState() {
         if (this.mGLThread != null) {
             throw new IllegalStateException("setRenderer has already been called for this instance.");
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
     public static class GLThreadManager {
         private static String TAG = "GLThreadManager";
         private static final int kGLES_20 = 131072;
@@ -1055,7 +984,7 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         this.mMultipleGLESContextsAllowed = !renderer.startsWith(kMSM7K_RENDERER_PREFIX);
                         notifyAll();
                     }
-                    this.mLimitedGLESContexts = this.mMultipleGLESContextsAllowed ? false : true;
+                    this.mLimitedGLESContexts = !this.mMultipleGLESContextsAllowed;
                     this.mGLESDriverCheckComplete = true;
                 }
             }
