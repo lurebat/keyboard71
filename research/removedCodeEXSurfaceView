@@ -1,0 +1,30 @@
+    public void setGLWrapper(GLWrapper glWrapper) {
+        this.mGLWrapper = glWrapper;
+    }
+
+    public void setDebugFlags(int debugFlags) {
+        this.mDebugFlags = debugFlags;
+    }
+
+    public int getDebugFlags() {
+        return this.mDebugFlags;
+    }
+
+    public boolean getPreserveEGLContextOnPause() {
+            return this.mPreserveEGLContextOnPause;
+        }
+
+
+private int mDebugFlags;
+private GLWrapper mGLWrapper;
+
+if (createEglContext) {
+    EXSurfaceView view2 = this.mEXSurfaceViewWeakRef.get();
+    if (view2 != null) {
+        view2.mRenderer.onSurfaceCreated(gl, this.mEglHelper.mEglConfig);
+    }
+    createEglContext = false;
+}
+    public void queueEvent(Runnable r) {
+        this.mGLThread.queueEvent(r);
+    }
