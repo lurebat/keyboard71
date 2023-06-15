@@ -76,7 +76,7 @@ object Utils {
     }
 
     fun con(): Context {
-        return SoftKeyboard.globalcontext!!
+        return com.lurebat.keyboard71.SoftKeyboard.globalcontext!!
     }
 
     @Api
