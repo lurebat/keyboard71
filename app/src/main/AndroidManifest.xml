@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application android:label="Keyboard 71" android:icon="@drawable/nintype_zenkey">
-        <activity android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:name="com.jormy.nin.NINActivity" android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden"
+        <activity android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:name=".NINActivity" android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".KeyboardActionActivity"
+                android:name="com.lurebat.keyboard71.tasker.KeyboardActionActivity"
                 android:exported="true"
                 android:icon="@mipmap/ic_launcher"
                 android:label="Keyboard Action Activity">
@@ -25,7 +25,7 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
-        <activity android:name=".KeyboardOnWordActivity"
+        <activity android:name="com.lurebat.keyboard71.tasker.KeyboardOnWordActivity"
                 android:exported="true"
                 android:icon="@mipmap/ic_launcher"
                 android:label="My Event Condition">
@@ -33,11 +33,12 @@
                 <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT" />
             </intent-filter>
         </activity>
-        <service android:name="com.jormy.nin.SoftKeyboard" android:permission="android.permission.BIND_INPUT_METHOD"
+        <service android:name="com.lurebat.keyboard71.SoftKeyboard" android:permission="android.permission.BIND_INPUT_METHOD"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.view.InputMethod"/>
             </intent-filter>
+
             <meta-data android:name="android.view.im" android:resource="@xml/method"/>
         </service>
     </application>

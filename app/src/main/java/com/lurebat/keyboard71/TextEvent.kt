@@ -1,4 +1,4 @@
-package com.jormy.nin
+package com.lurebat.keyboard71
 
 enum class TextEventType {
     SELECTION,

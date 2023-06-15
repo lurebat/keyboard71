@@ -1,4 +1,4 @@
-package com.jormy.nin
+package com.lurebat.keyboard71
 
 import android.content.Context
 import android.content.Intent
