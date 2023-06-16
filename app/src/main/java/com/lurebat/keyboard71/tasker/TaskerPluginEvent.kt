@@ -37,6 +37,7 @@ import com.joaomgcd.taskerpluginlibrary.output.TaskerOutputVariable
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultCondition
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultConditionSatisfied
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultConditionUnsatisfied
+import com.lurebat.keyboard71.SoftKeyboard
 
 const val COMPARE_METHOD_FULL = "full"
 const val COMPARE_METHOD_STARTS_WITH = "startsWith"
