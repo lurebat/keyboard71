@@ -40,7 +40,7 @@ import com.joaomgcd.taskerpluginlibrary.input.TaskerInputObject
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInputRoot
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResult
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultSucess
-import com.lurebat.keyboard71.TextEvent
+import com.lurebat.keyboard71.TextBoxEvent
 import com.lurebat.keyboard71.TextEventType
 import com.lurebat.keyboard71.TextOp
 import com.lurebat.keyboard71.TextOpType
@@ -95,7 +95,7 @@ class ActionRunner : TaskerPluginRunnerActionNoOutput<ActionInput>() {
 
             "TextEvent" -> {
                 com.lurebat.keyboard71.SoftKeyboard.doTextEvent(
-                    TextEvent.fromType(
+                    TextBoxEvent.fromType(
                         TextEventType.valueOf(input.regular.taskerTextEvent.type!!),
                         input.regular.taskerTextEvent.first,
                         input.regular.taskerTextEvent.second,

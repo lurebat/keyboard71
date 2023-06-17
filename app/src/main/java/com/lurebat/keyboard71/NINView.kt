@@ -18,7 +18,6 @@ import com.jormy.nin.NINLib.step
 import com.jormy.nin.NINLib.syncTiming
 import com.jormy.nin.Utils.prin
 import com.jormy.nin.Utils.tracedims
-import com.lurebat.keyboard71.SoftKeyboard.Companion.relayDelayedEvents
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLConfig
@@ -270,7 +269,7 @@ class NINView(context: Context) : EXSurfaceView(context) {
                         rti.timestampLong
                     )
                 } else {
-                    relayDelayedEvents()
+                    SoftKeyboard.keyboard?.relayDelayedEvents()
                     step()
                     return
                 }
