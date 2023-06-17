@@ -88,7 +88,6 @@ public class Utils {
         System.out.println("jormoust/jav:" + desc + " : " + xdim + " x " + ydim + " (" + (ydim / xdim) + " )");
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Api
     public static void prin(String lestr) {
         System.out.println("jormoust/jav:" + lestr);
@@ -96,7 +95,7 @@ public class Utils {
 
     @Api
     static Context con() {
-        return com.lurebat.keyboard71.SoftKeyboard.Companion.getGlobalsoftkeyboard();
+        return com.lurebat.keyboard71.SoftKeyboard.Companion.getKeyboard();
     }
 
     @Api
@@ -173,7 +172,7 @@ public class Utils {
 
     @Api
     public static boolean androidScreenLocked() {
-        KeyguardManager myKM = (KeyguardManager) Objects.requireNonNull(SoftKeyboard.Companion.getGlobalsoftkeyboard()).getSystemService(Context.KEYGUARD_SERVICE);
+        KeyguardManager myKM = (KeyguardManager) Objects.requireNonNull(SoftKeyboard.Companion.getKeyboard()).getSystemService(Context.KEYGUARD_SERVICE);
         return myKM.inKeyguardRestrictedInputMode();
     }
 

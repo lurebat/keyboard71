@@ -2,24 +2,22 @@
 
 package com.lurebat.keyboard71
 
-import android.content.Context
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import com.jormy.nin.Api
 import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
 import com.jormy.nin.NINLib.processSoftKeyboardCursorMovementLeft
 import com.jormy.nin.NINLib.processSoftKeyboardCursorMovementRight
-import com.jormy.nin.Utils.prin
 import com.lurebat.keyboard71.tasker.triggerBasicTaskerEvent
 import java.nio.charset.StandardCharsets
 import java.text.BreakIterator
@@ -29,11 +27,21 @@ import kotlin.math.max
 import kotlin.math.min
 
 class SoftKeyboard : InputMethodService() {
+    val textBoxEventQueue: ConcurrentLinkedQueue<TextBoxEvent> = ConcurrentLinkedQueue()
+    val textOpQueue: ConcurrentLinkedQueue<TextOp> = ConcurrentLinkedQueue()
+    private var ninView: NINView? = null
+    private var selectionStart = 0
+    private var selectionEnd = 0
+    private var candidateStart = 0
+    private var candidateEnd = 0
+    private var didProcessTextOps = false
+    private var lastTextOpTimeMillis: Long = 0
+    private var textAfterCursor: CharSequence? = ""
+    private var textBeforeCursor: CharSequence? = ""
+
     override fun onCreate() {
         super.onCreate()
-        textopbuffer = ConcurrentLinkedQueue()
-        textboxeventsbuffer = ConcurrentLinkedQueue()
-        globalsoftkeyboard = this
+        keyboard = this
     }
 
     override fun onUpdateSelection(
@@ -45,8 +53,10 @@ class SoftKeyboard : InputMethodService() {
         candidatesEnd: Int
     ) {
         val shouldSignal =
-            !(updatesel_byroenflag || System.currentTimeMillis() - updatesel_byroen_lasttimemilli < 55)
-        prin("candstart " + currentCandidateStart + " -> " + currentCandidateEnd + " || " + currentSelectionStart + " -> " + currentSelectionEnd)
+            !didProcessTextOps && System.currentTimeMillis() - lastTextOpTimeMillis >= 55
+        Log.d("SoftKeyboard",
+            "candstart $candidateStart -> $candidateEnd || $selectionStart -> $selectionEnd"
+        )
         changeSelection(
             currentInputConnection,
             newSelStart,
@@ -56,64 +66,55 @@ class SoftKeyboard : InputMethodService() {
             if (shouldSignal) "external" else null
         )
         if (!shouldSignal) {
-            updatesel_byroenflag = false
-        }
-    }
-
-    internal class PerformTextOpsTask : Runnable {
-        override fun run() {
-            processTextOps()
+            didProcessTextOps = false
         }
     }
 
     override fun onCreateInputView(): View {
-        globalcontext = this
-
-        val view = theopenglview
+        val view = ninView
         if (view == null) {
-            theopenglview = NINView(this).apply {
+            ninView = NINView(this).apply {
                 setZOrderOnTop(true)
             }
         } else {
             (view.parent as ViewGroup?)?.removeView(view)
         }
 
-        return theopenglview!!
+        return ninView!!
     }
 
     override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
-        val printStream = System.out
-        printStream.println("------------ jormoust Editor Info : " + attribute.packageName + " | " + attribute.fieldName + "|" + attribute.inputType)
-        var typemode = ""
-        when (attribute.inputType and 15) {
-            1 -> {
-                val variation = attribute.inputType and 4080
-                typemode = "uri"
-                if (variation == 128) {
-                    typemode = "passwd"
+        Log.d("SoftKeyboard",
+            "------------ jormoust Editor Info : ${attribute.packageName} | ${attribute.fieldName}|${attribute.inputType}"
+        )
+        var keyboardType = ""
+        when (attribute.inputType and EditorInfo.TYPE_MASK_CLASS) {
+            EditorInfo.TYPE_CLASS_TEXT -> {
+                val variation = attribute.inputType and EditorInfo.TYPE_MASK_VARIATION
+                keyboardType = "uri"
+                if (variation == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD) {
+                    keyboardType = "passwd"
                 }
             }
         }
 
         doTextEvent(
-            TextEvent.AppFieldChange(attribute.packageName, attribute.fieldName, typemode)
+            TextBoxEvent.AppFieldChange(attribute.packageName, attribute.fieldName, keyboardType)
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            textAfterCursor = attribute.getInitialTextAfterCursor(1000, 0)
-            textBeforeCursor = attribute.getInitialTextBeforeCursor(1000, 0)
-            if (textAfterCursor == null) {
-                textAfterCursor = ""
-            }
-            if (textBeforeCursor == null) {
-                textBeforeCursor = ""
-            }
+            textAfterCursor = attribute.getInitialTextAfterCursor(1000, 0) ?: ""
+            textBeforeCursor = attribute.getInitialTextBeforeCursor(1000, 0) ?: ""
+        } else {
+            textAfterCursor = currentInputConnection.getTextAfterCursor(1000, 0) ?: ""
+            textBeforeCursor = currentInputConnection.getTextBeforeCursor(1000, 0) ?: ""
         }
 
-        signalCursorCandidacyResult(globalsoftkeyboard!!.currentInputConnection, "startInputView")
+        signalCursorCandidacyResult(currentInputConnection, "startInputView")
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onViewClicked(focusChanged: Boolean) {
         val curconn = currentInputConnection
         if (curconn != null) {
@@ -129,21 +130,6 @@ class SoftKeyboard : InputMethodService() {
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         return super.onKeyUp(keyCode, event)
     }
-
-    companion object {
-        var globalcontext: Context? = null
-        var globalsoftkeyboard: SoftKeyboard? = null
-        var textboxeventsbuffer: ConcurrentLinkedQueue<TextEvent>? = null
-        var textopbuffer: ConcurrentLinkedQueue<TextOp>? = null
-        var theopenglview: NINView? = null
-        var currentSelectionStart = 0
-        var currentSelectionEnd = 0
-        var currentCandidateStart = 0
-        var currentCandidateEnd = 0
-        var updatesel_byroenflag = false
-        var updatesel_byroen_lasttimemilli: Long = 0
-        private var textAfterCursor: CharSequence? = ""
-        private var textBeforeCursor: CharSequence? = ""
         private fun changeSelection(
             ic: InputConnection,
             selStart: Int,
@@ -153,17 +139,17 @@ class SoftKeyboard : InputMethodService() {
             signal: String?
         ) {
             adjustCursorText(selEnd)
-            currentSelectionStart = selStart
-            currentSelectionEnd = selEnd
-            currentCandidateStart = candidatesStart
-            currentCandidateEnd = candidatesEnd
+            selectionStart = selStart
+            selectionEnd = selEnd
+            candidateStart = candidatesStart
+            candidateEnd = candidatesEnd
             if (signal != null) {
                 signalCursorCandidacyResult(ic, signal)
             }
         }
 
         private fun adjustCursorText(selEnd: Int) {
-            val selectionEndMovement = selEnd - currentSelectionEnd
+            val selectionEndMovement = selEnd - selectionEnd
             if (selEnd < 0) {
                 textAfterCursor = ""
                 textBeforeCursor = ""
@@ -216,19 +202,19 @@ class SoftKeyboard : InputMethodService() {
             var selectEnd = selectEnd
             if (selectStart == 0 && selectEnd == 0 && !fromStart) {
                 // Select nothing - just stay in place
-                val endPoint = currentCandidateEnd
+                val endPoint = candidateEnd
                 ic.setComposingRegion(endPoint, endPoint)
                 ic.setSelection(endPoint, endPoint)
                 changeSelection(ic, endPoint, endPoint, endPoint, endPoint, null)
                 return
             }
-            var baseStart = currentSelectionStart
-            val baseEnd = currentSelectionEnd
+            var baseStart = selectionStart
+            val baseEnd = selectionEnd
             if (fromStart) {
-                if (selectStart <= 0 && selectEnd <= 0 && currentCandidateEnd == currentSelectionStart) {
-                    baseStart = currentCandidateStart
-                } else if (currentCandidateStart != -1) {
-                    val shifter = currentCandidateStart - currentSelectionEnd
+                if (selectStart <= 0 && selectEnd <= 0 && candidateEnd == selectionStart) {
+                    baseStart = candidateStart
+                } else if (candidateStart != -1) {
+                    val shifter = candidateStart - selectionEnd
                     selectStart += shifter
                     selectEnd += shifter
                 }
@@ -255,8 +241,7 @@ class SoftKeyboard : InputMethodService() {
             var i = 0
             if (isBackwards) iterator.last() else iterator.first()
             while (i < abs) {
-                var result = 0
-                result = if (isBackwards) {
+                var result = if (isBackwards) {
                     iterator.previous()
                 } else {
                     iterator.next()
@@ -299,27 +284,27 @@ class SoftKeyboard : InputMethodService() {
             }
         }
 
-        fun performBackReplacement(
+        private fun performBackReplacement(
             rawBackIndex: Int,
             original: String,
             replacement: String?,
             ic: InputConnection
         ) {
             var startOfOriginalWordOffsetBytes = rawBackIndex
-            val candidateLength = currentCandidateEnd - currentCandidateStart
+            val candidateLength = candidateEnd - candidateStart
             val originalUnicodeLen = original.length
 
-            fillText(ic, abs(currentSelectionEnd) + originalUnicodeLen, false)
+            fillText(ic, abs(selectionEnd) + originalUnicodeLen, false)
             val totalText = textBeforeCursor.toString() + textAfterCursor.toString()
             val cursorIndexBytes = textBeforeCursor.toString()
                 .toByteArray(StandardCharsets.UTF_8).size
 
             val bytes = totalText.toByteArray(StandardCharsets.UTF_8)
 
-            if (candidateLength > 0 && currentCandidateStart > 0) {
+            if (candidateLength > 0 && candidateStart > 0) {
                 val candidate = totalText.substring(
-                    currentCandidateStart,
-                    currentCandidateStart + candidateLength
+                    candidateStart,
+                    candidateStart + candidateLength
                 ).toByteArray(StandardCharsets.UTF_8)
                 startOfOriginalWordOffsetBytes += candidate.size
             }
@@ -339,20 +324,21 @@ class SoftKeyboard : InputMethodService() {
             val positionShift = (replacement ?: "").length - originalUnicodeLen
             changeSelection(
                 ic,
-                currentSelectionStart + positionShift,
-                currentSelectionEnd + positionShift,
-                currentCandidateStart + positionShift,
-                currentCandidateEnd + positionShift,
+                selectionStart + positionShift,
+                selectionEnd + positionShift,
+                candidateStart + positionShift,
+                candidateEnd + positionShift,
                 null
             )
-            ic.setComposingRegion(currentCandidateStart, currentCandidateEnd)
-            ic.setSelection(currentSelectionStart, currentSelectionEnd)
+            ic.setComposingRegion(candidateStart, candidateEnd)
+            ic.setSelection(selectionStart, selectionEnd)
             if (wordOverriding) {
                 signalCursorCandidacyResult(ic, "backrepl")
             }
         }
 
-        fun performCursorMovement(
+        @Suppress("UNUSED_PARAMETER")
+        private fun performCursorMovement(
             xmove: Int,
             ymove: Int,
             selectionMode: Boolean,
@@ -364,11 +350,11 @@ class SoftKeyboard : InputMethodService() {
                 val charseq = ic.getTextBeforeCursor(120, 0)
                 if (charseq != null) {
                     var thestr = charseq.toString()
-                    var usedcurpos = currentSelectionStart
-                    val i = currentCandidateEnd
-                    if (i == currentSelectionStart) {
-                        usedcurpos = currentCandidateStart
-                        val thedifference = i - currentCandidateStart
+                    var usedcurpos = selectionStart
+                    val i = candidateEnd
+                    if (i == selectionStart) {
+                        usedcurpos = candidateStart
+                        val thedifference = i - candidateStart
                         if (thedifference > 0) {
                             thestr = thestr.substring(0, thestr.length - thedifference)
                         }
@@ -401,11 +387,11 @@ class SoftKeyboard : InputMethodService() {
                 val charseq2 = ic.getTextAfterCursor(120, 0)
                 if (charseq2 != null) {
                     val thestr2 = charseq2.toString()
-                    if (currentCandidateEnd != currentCandidateStart) {
-                        laterpoint = currentCandidateEnd
+                    if (candidateEnd != candidateStart) {
+                        laterpoint = candidateEnd
                         later2 = laterpoint
                     } else {
-                        val usedcurpos2 = currentSelectionStart
+                        val usedcurpos2 = selectionStart
                         val result2 = processSoftKeyboardCursorMovementRight(thestr2)
                         val earlier2 = (result2 shr 32).toInt()
                         val later22 = ((-1).toLong() and result2).toInt()
@@ -429,63 +415,57 @@ class SoftKeyboard : InputMethodService() {
             }
         }
 
-        @Api
-        @JvmStatic
-        fun signalWordDestruction(leword: String?, lestring: String?) {
-            doTextEvent(TextEvent.WordDestruction(leword, lestring))
-        }
-
-        fun signalCursorCandidacyResult(ic: InputConnection?, mode: String?) {
+        private fun signalCursorCandidacyResult(ic: InputConnection?, mode: String?) {
             if (ic == null) {
-                doTextEvent(TextEvent.Reset)
+                doTextEvent(TextBoxEvent.Reset)
                 return
             }
-            val hasSelection = currentSelectionStart != currentSelectionEnd
+            val hasSelection = selectionStart != selectionEnd
             if (hasSelection) {
                 return
             }
-            val candidateLength = currentCandidateEnd - currentCandidateStart
+            val candidateLength = candidateEnd - candidateStart
             val nullCandidate = candidateLength == 0
-            if (currentCandidateStart != currentSelectionStart && currentCandidateEnd != currentSelectionStart && !nullCandidate) {
-                prin("softkeyboard going haywire!! : " + currentCandidateStart + " -> " + currentCandidateEnd + " :: " + currentSelectionStart)
+            if (candidateStart != selectionStart && candidateEnd != selectionStart && !nullCandidate) {
+                Log.e("SoftKeyboard",
+                    "softkeyboard going haywire!! : $candidateStart -> $candidateEnd :: $selectionStart"
+                )
                 return
             }
             fillText(ic, 200, false)
             var curword: String? = null
             var pretext = textBeforeCursor.toString()
             var posttext = textAfterCursor.toString()
-            if (nullCandidate || currentCandidateStart == currentSelectionStart) {
+            if (nullCandidate || candidateStart == selectionStart) {
                 val length = min(textAfterCursor!!.length, candidateLength)
                 posttext = posttext.substring(length)
-            } else if (currentCandidateEnd == currentSelectionStart) {
+            } else if (candidateEnd == selectionStart) {
                 val length = min(textBeforeCursor!!.length, candidateLength)
                 curword = pretext.substring(pretext.length - length)
                 pretext = pretext.substring(0, pretext.length - length)
             }
-            doTextEvent(TextEvent.Selection(curword, pretext, posttext, mode))
+            doTextEvent(TextBoxEvent.Selection(curword, pretext, posttext, mode))
         }
 
-        @JvmStatic
         fun relayDelayedEvents() {
             while (true) {
-                val event = textboxeventsbuffer!!.poll()
-                when (event) {
-                    is TextEvent.AppFieldChange -> onChangeAppOrTextbox(
+                when (val event = textBoxEventQueue.poll()) {
+                    is TextBoxEvent.AppFieldChange -> onChangeAppOrTextbox(
                         event.packageName,
                         event.field,
                         event.mode
                     )
 
-                    TextEvent.Reset -> onExternalSelChange()
+                    TextBoxEvent.Reset -> onExternalSelChange()
 
-                    is TextEvent.Selection -> onTextSelection(
+                    is TextBoxEvent.Selection -> onTextSelection(
                         event.textBefore,
                         event.currentWord,
                         event.textAfter,
                         event.mode
                     )
 
-                    is TextEvent.WordDestruction -> onWordDestruction(
+                    is TextBoxEvent.WordDestruction -> onWordDestruction(
                         event.destroyedWord,
                         event.destroyedString
                     )
@@ -495,7 +475,8 @@ class SoftKeyboard : InputMethodService() {
             }
         }
 
-        fun performMUCommand(
+        @Suppress("UNUSED_PARAMETER")
+        private fun performMUCommand(
             cmd: String?,
             a1: String?,
             a2: String?,
@@ -504,27 +485,27 @@ class SoftKeyboard : InputMethodService() {
         ) {
             if (cmd == "retypebksp") {
                 ic.setComposingText("", 0)
-                val i = currentSelectionStart
-                currentSelectionEnd = i
-                currentCandidateStart = i
-                currentCandidateEnd = i
+                val i = selectionStart
+                selectionEnd = i
+                candidateStart = i
+                candidateEnd = i
             }
         }
 
-        fun performBackspacing(mode: String?, singleCharacterMode: Boolean, ic: InputConnection) {
-            val hasCandidate = currentCandidateEnd != currentCandidateStart
-            val hasSelection = currentSelectionStart != currentSelectionEnd
+        private fun performBackspacing(mode: String?, singleCharacterMode: Boolean, ic: InputConnection) {
+            val hasCandidate = candidateEnd != candidateStart
+            val hasSelection = selectionStart != selectionEnd
             val start: Int
             val end: Int
             if (hasSelection) {
-                start = currentSelectionStart
-                end = currentSelectionEnd
+                start = selectionStart
+                end = selectionEnd
             } else if (hasCandidate) {
-                start = currentCandidateStart
-                end = currentCandidateEnd
+                start = candidateStart
+                end = candidateEnd
             } else if (mode != null && mode.startsWith("X:")) {
-                start = currentSelectionStart - mode.substring(2).toInt()
-                end = currentSelectionEnd
+                start = selectionStart - mode.substring(2).toInt()
+                end = selectionEnd
             } else {
                 val seq = fillText(ic, 300, true)
                 val index = if (singleCharacterMode) {
@@ -544,7 +525,7 @@ class SoftKeyboard : InputMethodService() {
                     changeSelection(ic, index, index, index, index, "external")
                 }
 
-                return;
+                return
             }
             ic.setComposingRegion(start, start)
             ic.setSelection(start, start)
@@ -553,23 +534,23 @@ class SoftKeyboard : InputMethodService() {
         }
 
         fun processTextOps() {
-            val buffer = textopbuffer ?: return
+            val buffer = textOpQueue
             val bufferSize = buffer.size
             if (bufferSize == 0) return
 
-            val ic = globalsoftkeyboard?.currentInputConnection ?: return
+            val ic = keyboard?.currentInputConnection ?: return
 
             ic.beginBatchEdit()
 
             try {
                 for (i in 0 until bufferSize) {
-                    val op = textopbuffer!!.poll() ?: break
-                    val next = textopbuffer!!.peek()
+                    val op = textOpQueue.poll() ?: break
+                    val next = textOpQueue.peek()
                     processOperation(op, next, ic)
                 }
             } finally {
-                updatesel_byroenflag = true
-                updatesel_byroen_lasttimemilli = System.currentTimeMillis()
+                didProcessTextOps = true
+                lastTextOpTimeMillis = System.currentTimeMillis()
                 ic.endBatchEdit()
             }
         }
@@ -596,19 +577,19 @@ class SoftKeyboard : InputMethodService() {
                         ) -> {
                             changeSelection(
                                 ic,
-                                currentSelectionStart,
-                                currentSelectionEnd,
-                                currentCandidateStart,
-                                currentCandidateEnd,
+                                selectionStart,
+                                selectionEnd,
+                                candidateStart,
+                                candidateEnd,
                                 "external"
                             )
                         }
 
                         op.newString == "\n" -> {
                             var action = 1
-                            if (globalsoftkeyboard!!.currentInputEditorInfo.imeOptions and 1073741824 == 0) {
+                            if (currentInputEditorInfo.imeOptions and EditorInfo.IME_FLAG_NO_ENTER_ACTION == 0) {
                                 action =
-                                    globalsoftkeyboard!!.currentInputEditorInfo.imeOptions and 255
+                                    currentInputEditorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
                             }
                             if (action != 1) {
                                 ic.performEditorAction(action)
@@ -622,13 +603,13 @@ class SoftKeyboard : InputMethodService() {
                             if (inner.isNotEmpty()) {
                                 changeSelection(
                                     ic,
-                                    currentSelectionStart,
-                                    currentSelectionEnd,
-                                    currentCandidateStart,
-                                    currentCandidateEnd,
+                                    selectionStart,
+                                    selectionEnd,
+                                    candidateStart,
+                                    candidateEnd,
                                     "external"
                                 )
-                                callSpecialOperation(inner)
+                                doTextOp(TextOp.Special(inner))
                             }
                         }
 
@@ -725,84 +706,21 @@ class SoftKeyboard : InputMethodService() {
                     }
                 )
 
-                't' -> globalcontext!!.triggerBasicTaskerEvent(rest)
+                't' -> this.triggerBasicTaskerEvent(rest)
             }
         }
 
-        fun callSpecialOperation(args: String) {
-            doTextOp(TextOp.Special(args))
+    companion object {
+        var keyboard: SoftKeyboard? = null
+
+        fun doTextOp(op: TextOp) = keyboard?.let{ k ->
+            k.textOpQueue.let {
+                it.add(op)
+                Handler(Looper.getMainLooper()).post{ k.processTextOps()}
+            }
         }
 
-        @Api
-        @JvmStatic
-        fun callMUCommand(command: String, arg1: String?, arg2: String?, arg3: String?) {
-            doTextOp(TextOp.MuCommand(command, arg1, arg2, arg3))
-        }
-
-        @Api
-        @JvmStatic
-        fun callRequestSel() {
-            doTextOp(TextOp.RequestSelection)
-        }
-
-        @Api
-        @JvmStatic
-        fun callSetSel(start: Int, end: Int, fromStart: Boolean, dontSignal: Boolean) {
-            doTextOp(TextOp.SetSelection(start, end, fromStart, !dontSignal))
-        }
-
-        @Api
-        @JvmStatic
-        fun callDragCursorUp(releasedDirection: Int) {
-            doTextOp(TextOp.DragCursorUp(releasedDirection))
-        }
-
-        @Api
-        @JvmStatic
-        fun callDragCursorMove(xMovement: Int, yMovement: Int, selectionMode: Boolean) {
-            doTextOp(TextOp.DragCursorMove(xMovement, yMovement, selectionMode))
-        }
-
-        @Api
-        @JvmStatic
-        fun callSimpleBackspace(singleCharacterMode: Boolean) {
-            doTextOp(TextOp.SimpleBackspace(singleCharacterMode))
-        }
-
-        @Api
-        @JvmStatic
-        fun callBackReplacement(
-            backIndexFromCursorBytes: Int,
-            oldString: String,
-            newString: String
-        ) {
-            doTextOp(TextOp.BackspaceReplacement(backIndexFromCursorBytes, oldString, newString))
-        }
-
-        @Api
-        @JvmStatic
-        fun callBackspaceModed(string: String) {
-            doTextOp(TextOp.BackspaceModed(string))
-        }
-
-        @Api
-        @JvmStatic
-        fun callMarkLiquid(string: String) {
-            doTextOp(TextOp.MarkLiquid(string))
-        }
-
-        @Api
-        @JvmStatic
-        fun callSolidify(string: String) {
-            doTextOp(TextOp.Solidify(string))
-        }
-
-        fun doTextOp(op: TextOp) = textopbuffer?.let {
-            it.add(op)
-            Handler(Looper.getMainLooper()).post(PerformTextOpsTask())
-        }
-
-        fun doTextEvent(event: TextEvent) = textboxeventsbuffer?.add(event)
+        fun doTextEvent(event: TextBoxEvent) = keyboard?.textBoxEventQueue?.add(event)
 
         private fun keyDownUp(
             ic: InputConnection,
