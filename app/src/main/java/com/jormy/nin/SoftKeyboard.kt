@@ -158,11 +158,14 @@ class SoftKeyboard : InputMethodService() {
             signal: String?
         ) {
             adjustCursorText(selEnd)
+            if (textAfterCursor == "" && textBeforeCursor == "") {
+                fillText(ic, 100, false);
+            }
+
             currentSelectionStart = selStart
             currentSelectionEnd = selEnd
             currentCandidateStart = candidatesStart
             currentCandidateEnd = candidatesEnd
-            //fillText(ic, 200, false)
             if (signal != null) {
                 signalCursorCandidacyResult(ic, signal)
             }
@@ -213,12 +216,12 @@ class SoftKeyboard : InputMethodService() {
         }
 
         private fun setSelectionHelper(
-            selectStart: Int,
-            selectEnd: Int,
+            selectStartBytes: Int,
+            selectEndBytes: Int,
             fromStart: Boolean,
             ic: InputConnection
         ) {
-            if (selectStart == 0 && selectEnd == 0 && !fromStart) {
+            if (selectStartBytes == 0 && selectEndBytes == 0 && !fromStart) {
                 // Select nothing - just stay in place
                 val endPoint = currentCandidateEnd
                 ic.setComposingRegion(endPoint, endPoint)
@@ -247,22 +250,31 @@ class SoftKeyboard : InputMethodService() {
                 }
             }
 
-            val newStart = if (selectStart == 0) 0 else max(
+            val newStart = if (selectStartBytes == 0) 0 else max(
                 0,
-                baseStart + getUnicodeMovementForIndex(ic, selectStart)
+                baseStart + getUnicodeMovementForIndex(ic, selectStartBytes, true)
             )
-            val newEnd = if (selectEnd == 0) 0 else max(
+            val newEnd = if (selectEndBytes == 0) 0 else max(
                 0,
-                baseEnd + getUnicodeMovementForIndex(ic, selectEnd)
+                baseEnd + getUnicodeMovementForIndex(ic, selectEndBytes, true)
             )
             ic.setComposingRegion(newStart, newEnd)
             ic.setSelection(newEnd, newEnd)
             changeSelection(ic, newEnd, newEnd, newStart, newEnd, null)
         }
 
-        private fun getUnicodeMovementForIndex(currentChars: CharSequence?, count: Int): Int {
+        private fun getUnicodeMovementForIndex(currentChars: CharSequence?, count: Int, inBytes: Boolean): Int {
             val isBackwards = count < 0
             val abs = abs(count)
+            if (inBytes) {
+                val bytes = currentChars.toString().toByteArray(StandardCharsets.UTF_8)
+                return if (!isBackwards) {
+                    String(bytes, 0, min(count, bytes.size), StandardCharsets.UTF_8).length
+                } else {
+                    -String(bytes, max(bytes.size + count, 0), min(-count, bytes.size), StandardCharsets.UTF_8).length
+                }
+            }
+
             val iterator = BreakIterator.getCharacterInstance()
             iterator.setText(currentChars.toString())
             var finalVar = 0
@@ -284,13 +296,13 @@ class SoftKeyboard : InputMethodService() {
             return finalVar
         }
 
-        private fun getUnicodeMovementForIndex(ic: InputConnection, count: Int): Int {
+        private fun getUnicodeMovementForIndex(ic: InputConnection, count: Int, inBytes: Boolean): Int {
             val factor = 10
             val abs = abs(count)
             val isBackwards = count < 0
             val amount = abs * factor
             val currentChars = fillText(ic, amount, isBackwards)
-            return getUnicodeMovementForIndex(currentChars, count)
+            return getUnicodeMovementForIndex(currentChars, count, inBytes)
         }
 
         private fun fillText(
@@ -458,6 +470,10 @@ class SoftKeyboard : InputMethodService() {
             val candidateLength = currentCandidateEnd - currentCandidateStart
             val nullCandidate = candidateLength == 0
 
+            if (!nullCandidate && currentCandidateStart != currentSelectionEnd && currentCandidateEnd != currentSelectionEnd) {
+                ic.finishComposingText()
+            }
+
             fillText(ic, 200, false)
             var curword: String? = null
             var pretext = textBeforeCursor.toString()
@@ -478,7 +494,7 @@ class SoftKeyboard : InputMethodService() {
             while (true) {
                 val event = textboxeventsbuffer!!.poll()
                 if (event != null) {
-                    Log.i("jormoust", "Relaying delayed event: $event")
+                    //Log.d("jormoust", "Relaying delayed event: $event")
                 }
                 when (event) {
                     is TextEvent.AppFieldChange -> onChangeAppOrTextbox(
@@ -586,7 +602,7 @@ class SoftKeyboard : InputMethodService() {
             ic: InputConnection
         ) {
 
-            Log.d("NIN", "processOperation: $op, next: $next")
+            //Log.d("NIN", "processOperation: $op, next: $next")
             when (op) {
                 is TextOp.MarkLiquid -> {
                     if (next !is TextOp.MarkLiquid && next !is TextOp.Solidify) {
