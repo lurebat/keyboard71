@@ -135,25 +135,16 @@ class SoftKeyboard : InputMethodService() {
 
         private fun performSetSelection(
             selectStart: Int,
+
             selectEnd: Int,
             fromStart: Boolean,
             signal: Boolean,
             ic: InputConnection
         ) {
-            var newStart = selectStart
-            var newEnd = selectEnd
             if (!fromStart) {
-                newStart = lazyString.selection.start + selectStart
-                newEnd = lazyString.selection.start + selectEnd
-            }
-
-
-
-            // todo - make sure what type we get here (I think it's bytes)
-            if (fromStart) {
+                lazyString.moveSelection(lazyString.byteOffsetToGraphemeOffset(lazyString.selection.start, selectStart), lazyString.byteOffsetToGraphemeOffset(lazyString.selection.start, selectEnd))
+            }  else {
                 lazyString.setSelection(selectStart, selectEnd)
-            } else {
-                lazyString.moveSelection(selectEnd, selectEnd)
             }
             // TODO - are they actually expecting this to be a candidate?
             ic.setComposingRegion(lazyString.selection.start, lazyString.selection.end)

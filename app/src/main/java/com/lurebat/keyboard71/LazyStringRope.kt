@@ -2,6 +2,7 @@ package com.lurebat.keyboard71
 
 import android.view.inputmethod.InputConnection
 import java.text.BreakIterator
+import kotlin.math.abs
 
 interface Cursor {
     var start: Int
@@ -63,6 +64,9 @@ interface LazyString {
     fun overrideString(index: Int, string: String)
     fun delete(start: Int, end: Int)
     fun getStringByIndex(start: Int, end: Int): String
+    fun getGraphemesAfterCursor(count: Int): Int
+    fun getGraphemesAtIndex(startIndex: Int, isBackwards: Boolean, isWord: Boolean, count: Int): Int
+    fun byteOffsetToGraphemeOffset(index: Int, byteCount: Int): Int
 }
 data class SimpleCursor(override var start: Int, override var end: Int = start) : Cursor {
     override var min: Int = -1
@@ -135,7 +139,7 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
     }
 
     override fun getCharsAfterCursor(count: Int): CharSequence {
-        val safe = minOf(count, rope.length() - selection.max)
+        val safe = maxOf(count, 0)
         return rope.get(selection.max, selection.max + safe) ?: requestCharsAfterCursor(count)
     }
 
@@ -150,7 +154,7 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
     }
 
     private fun requestCharsAfterCursor(count: Int): CharSequence {
-        val chars = refresher.afterCursor(minOf(count, rope.length() - selection.max))
+        val chars = refresher.afterCursor(maxOf(count, 0))
         chars?.let { rope.insert(selection.max, it) }
         return chars ?: ""
     }
@@ -167,12 +171,27 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
         }
     }
 
+    override fun byteOffsetToGraphemeOffset(index: Int, byteCount: Int): Int {
+        val newIndex =
+            minOf(index + byteCount, index)
+        val newStartEnd =
+            maxOf(index + byteCount, index)
+        val startString = getStringByIndex(newIndex, newStartEnd)
+        val startBytes = startString.toByteArray()
+        val startChars = String(startBytes, 0, minOf(abs(byteCount), startBytes.size) , Charsets.UTF_8).length
+        return getGraphemesAtIndex(newIndex, isBackwards = byteCount < 0, isWord = false, count = startChars) * (if (byteCount < 0) -1 else 1)
+    }
+
     override fun getGraphemesBeforeCursor(count: Int): Int {
-        return breakIteratorBackwards(false, count)
+        return getGraphemesAtIndex(selection.min, isBackwards = true, isWord = false, count = count)
+    }
+
+    override fun getGraphemesAfterCursor(count: Int): Int {
+        return getGraphemesAtIndex(selection.max, isBackwards = false, isWord = false, count = count)
     }
 
     override fun getWordBeforeCursor(): CharSequence {
-        return breakIteratorBackwards(true, 1).let {
+        return getGraphemesAtIndex(selection.max, isBackwards = true, isWord = true, count = 1).let {
             getCharsBeforeCursor(it).toString()
         }
     }
@@ -199,47 +218,39 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
     }
 
     override fun getStringByIndex(start: Int, end: Int): String {
-        return rope.get(start, end)?.toString() ?: ""
-    }
-
-
-    private fun breakIteratorBackwards(isWord: Boolean, count: Int): Int {
-        var chars = getCharsBeforeCursor(count).toString()
-        var totalLength = chars.length
-
-        val iterator =
-            if (isWord) BreakIterator.getWordInstance() else BreakIterator.getCharacterInstance()
-        iterator.setText(chars)
-        iterator.last()
-        var j = 0
-        while (true) {
-            for (i in j until count) {
-                val it = iterator.previous()
-
-                if (it <= 0) {
-                    break
-                }
-                j++
-            }
-
-            if (j == count) {
-                return chars.length - iterator.current()
-            }
-
-            if (selection.min - totalLength <= 0) {
-                return chars.length
-            }
-
-            val oldLength = totalLength
-            totalLength *= 2
-            chars = getCharsBeforeCursor(totalLength).toString()
-            iterator.setText(chars)
-            iterator.following(oldLength)
+        if (start == end) {
+            return ""
         }
+        val min = minOf(start, end)
+        val max = maxOf(start, end)
+        // min|-----|max
+        ///     | |
+        val charsAfterCount = max - maxOf(min, selection.max)
+        val charsAtCount = minOf(max, selection.max) - maxOf(min, selection.min)
+        val charsBeforeCount = minOf(max, selection.min) - min
+
+        val builder = StringBuilder()
+        if (charsBeforeCount > 0) {
+            builder.append(getCharsBeforeCursor(charsBeforeCount))
+        }
+        if (charsAtCount > 0) {
+            builder.append(getSelection().substring(0, minOf(charsAtCount, selection.length())))
+        }
+        if (charsAfterCount > 0) {
+            builder.append(getCharsAfterCursor(charsAfterCount))
+        }
+        return builder.toString()
     }
 
-    fun breakIterator(isBackwards: Boolean, isWord: Boolean, count: Int): Int {
-        var chars = (if (isBackwards) getCharsBeforeCursor(count) else getCharsAfterCursor(count)).toString()
+    override fun getGraphemesAtIndex(startIndex: Int, isBackwards: Boolean, isWord: Boolean, count: Int): Int {
+        var charsToGet = count
+        charsToGet = 100
+        if (isBackwards) {
+            charsToGet *= -1
+        }
+
+        var chars = getStringByIndex(startIndex, startIndex + charsToGet)
+
         var totalLength = chars.length
         var isLast = false;
 
@@ -256,7 +267,7 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
             for (i in j until count) {
                 val it = if (isBackwards) iterator.previous() else iterator.next()
 
-                if (it <= 0) {
+                if (it <= 0 || it >= chars.length) {
                     break
                 }
                 j++
@@ -272,8 +283,8 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
 
             val oldLength = totalLength
             totalLength *= 2
-            chars = (if (isBackwards) getCharsBeforeCursor(totalLength) else getCharsAfterCursor(totalLength)).toString()
-            if (chars.length == oldLength) {
+            chars = getStringByIndex(startIndex, startIndex + totalLength * (if (isBackwards) -1 else 1))
+            if (chars.length < totalLength || totalLength == 0) {
                 isLast = true
             }
 
