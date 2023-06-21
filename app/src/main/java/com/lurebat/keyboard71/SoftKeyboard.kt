@@ -165,7 +165,8 @@ class SoftKeyboard : InputMethodService() {
             val replacement = replacement ?: ""
             val overriding = replacement.length > stringUntilCursor.length
             val startIndex = lazyString.selection.min - stringUntilCursor.length
-            lazyString.overrideString(startIndex, replacement)
+            lazyString.delete(startIndex, startIndex + original.length)
+            lazyString.addString(startIndex, replacement)
 
             //todo handle candidate
 
