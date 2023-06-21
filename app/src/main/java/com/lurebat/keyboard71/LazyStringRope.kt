@@ -61,7 +61,7 @@ interface LazyString {
     fun getGraphemesBeforeCursor(count: Int): Int
     fun getWordBeforeCursor(): CharSequence
     fun getStringByBytesBeforeCursor(byteCount: Int): String
-    fun overrideString(index: Int, string: String)
+    fun addString(index: Int, string: String)
     fun delete(start: Int, end: Int)
     fun getStringByIndex(start: Int, end: Int): String
     fun getGraphemesAfterCursor(count: Int): Int
@@ -196,8 +196,20 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
         }
     }
 
-    override fun overrideString(index: Int, string: String) {
+    override fun addString(index: Int, string: String) {
         rope.insert(index, string)
+        // change selection to match
+        if (selection.max < index) {
+            return
+        }
+        if (selection.min >= index) {
+            selection.move(string.length, string.length)
+            return
+        }
+        val countBeforeSelection = selection.min - index
+        val countInsideSelection = index + string.length - selection.min
+
+        moveSelection(countBeforeSelection, countBeforeSelection + countInsideSelection)
     }
 
     override fun delete(start: Int, end: Int) {
