@@ -16,28 +16,16 @@ import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
-import com.jormy.nin.NINLib.processSoftKeyboardCursorMovementLeft
-import com.jormy.nin.NINLib.processSoftKeyboardCursorMovementRight
 import com.lurebat.keyboard71.tasker.triggerBasicTaskerEvent
-import java.nio.charset.StandardCharsets
-import java.text.BreakIterator
 import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 class SoftKeyboard : InputMethodService() {
     val textBoxEventQueue: ConcurrentLinkedQueue<TextBoxEvent> = ConcurrentLinkedQueue()
     val textOpQueue: ConcurrentLinkedQueue<TextOp> = ConcurrentLinkedQueue()
     private var ninView: NINView? = null
-    private var selectionStart = 0
-    private var selectionEnd = 0
-    private var candidateStart = 0
-    private var candidateEnd = 0
+    private lateinit var lazyString: LazyString
     private var didProcessTextOps = false
     private var lastTextOpTimeMillis: Long = 0
-    private var textAfterCursor: CharSequence? = ""
-    private var textBeforeCursor: CharSequence? = ""
 
     override fun onCreate() {
         super.onCreate()
@@ -55,7 +43,7 @@ class SoftKeyboard : InputMethodService() {
         val shouldSignal =
             !didProcessTextOps && System.currentTimeMillis() - lastTextOpTimeMillis >= 55
         Log.d("SoftKeyboard",
-            "candstart $candidateStart -> $candidateEnd || $selectionStart -> $selectionEnd"
+            "candstart $lazyString"
         )
         changeSelection(
             currentInputConnection,
@@ -103,13 +91,14 @@ class SoftKeyboard : InputMethodService() {
             TextBoxEvent.AppFieldChange(attribute.packageName, attribute.fieldName, keyboardType)
         )
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            textAfterCursor = attribute.getInitialTextAfterCursor(1000, 0) ?: ""
-            textBeforeCursor = attribute.getInitialTextBeforeCursor(1000, 0) ?: ""
-        } else {
-            textAfterCursor = currentInputConnection.getTextAfterCursor(1000, 0) ?: ""
-            textBeforeCursor = currentInputConnection.getTextBeforeCursor(1000, 0) ?: ""
-        }
+        lazyString = LazyStringRope(
+            SimpleCursor(attribute.initialSelStart, attribute.initialSelEnd),
+            SimpleCursor(-1, -1),
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) attribute.getInitialTextBeforeCursor(1000, 0) else currentInputConnection.getTextBeforeCursor(1000, 0),
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) attribute.getInitialSelectedText(0) else currentInputConnection.getSelectedText(0),
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) attribute.getInitialTextAfterCursor(1000, 0) else currentInputConnection.getTextAfterCursor(1000, 0),
+            InputConnectionRefresher(){ currentInputConnection }
+        )
 
         signalCursorCandidacyResult(currentInputConnection, "startInputView")
     }
@@ -132,50 +121,15 @@ class SoftKeyboard : InputMethodService() {
     }
         private fun changeSelection(
             ic: InputConnection,
-            selStart: Int,
-            selEnd: Int,
-            candidatesStart: Int,
-            candidatesEnd: Int,
-            signal: String?
+            selStart: Int? = null,
+            selEnd: Int? = null,
+            candidatesStart: Int? = null,
+            candidatesEnd: Int? = null,
+            signal: String? = null
         ) {
-            adjustCursorText(selEnd)
-            selectionStart = selStart
-            selectionEnd = selEnd
-            candidateStart = candidatesStart
-            candidateEnd = candidatesEnd
+            lazyString.setSelectionAndCandidate(selStart, selEnd, candidatesStart, candidatesEnd)
             if (signal != null) {
                 signalCursorCandidacyResult(ic, signal)
-            }
-        }
-
-        private fun adjustCursorText(selEnd: Int) {
-            val selectionEndMovement = selEnd - selectionEnd
-            if (selEnd < 0) {
-                textAfterCursor = ""
-                textBeforeCursor = ""
-            } else {
-                // adjust currentSelectionForwards and currentSelectionBackwards based on the new selection
-                if (selectionEndMovement > 0) {
-                    if (selEnd > textAfterCursor!!.length) {
-                        textAfterCursor = ""
-                        textBeforeCursor = ""
-                    } else {
-                        val start = textAfterCursor!!.subSequence(0, selEnd)
-                        textAfterCursor =
-                            textAfterCursor!!.subSequence(selEnd, textAfterCursor!!.length)
-                        textBeforeCursor = textBeforeCursor.toString() + start.toString()
-                    }
-                } else if (selectionEndMovement < 0) {
-                    if (selEnd > textBeforeCursor!!.length) {
-                        textAfterCursor = ""
-                        textBeforeCursor = ""
-                    } else {
-                        val start =
-                            textBeforeCursor!!.subSequence(selEnd, textBeforeCursor!!.length)
-                        textBeforeCursor = textBeforeCursor!!.subSequence(0, selEnd)
-                        textAfterCursor = start.toString() + textAfterCursor.toString()
-                    }
-                }
             }
         }
 
@@ -186,101 +140,18 @@ class SoftKeyboard : InputMethodService() {
             signal: Boolean,
             ic: InputConnection
         ) {
-            setSelectionHelper(selectStart, selectEnd, fromStart, ic)
+            // todo - make sure what type we get here (I think it's bytes)
+            if (fromStart) {
+                lazyString.setSelection(selectStart, selectEnd)
+            } else {
+                lazyString.moveSelection(selectEnd, selectEnd)
+            }
+            // TODO - are they actually expecting this to be a candidate?
+            ic.setComposingRegion(lazyString.selection.start, lazyString.selection.end)
+            ic.setSelection(lazyString.selection.start, lazyString.selection.end)
+
             if (signal) {
                 signalCursorCandidacyResult(ic, "setselle")
-            }
-        }
-
-        private fun setSelectionHelper(
-            selectStart: Int,
-            selectEnd: Int,
-            fromStart: Boolean,
-            ic: InputConnection
-        ) {
-            var selectStart = selectStart
-            var selectEnd = selectEnd
-            if (selectStart == 0 && selectEnd == 0 && !fromStart) {
-                // Select nothing - just stay in place
-                val endPoint = candidateEnd
-                ic.setComposingRegion(endPoint, endPoint)
-                ic.setSelection(endPoint, endPoint)
-                changeSelection(ic, endPoint, endPoint, endPoint, endPoint, null)
-                return
-            }
-            var baseStart = selectionStart
-            val baseEnd = selectionEnd
-            if (fromStart) {
-                if (selectStart <= 0 && selectEnd <= 0 && candidateEnd == selectionStart) {
-                    baseStart = candidateStart
-                } else if (candidateStart != -1) {
-                    val shifter = candidateStart - selectionEnd
-                    selectStart += shifter
-                    selectEnd += shifter
-                }
-            }
-            fillText(ic, 50, false)
-            val newStart = if (selectStart == 0) 0 else max(
-                0,
-                baseStart + getUnicodeMovementForIndex(ic, selectStart)
-            )
-            val newEnd = if (selectEnd == 0) 0 else max(
-                0,
-                baseEnd + getUnicodeMovementForIndex(ic, selectEnd)
-            )
-            ic.setComposingRegion(newStart, newEnd)
-            ic.setSelection(newEnd, newEnd)
-        }
-
-        private fun getUnicodeMovementForIndex(currentChars: CharSequence?, count: Int): Int {
-            val isBackwards = count < 0
-            val abs = abs(count)
-            val iterator = BreakIterator.getCharacterInstance()
-            iterator.setText(currentChars.toString())
-            var finalVar = 0
-            var i = 0
-            if (isBackwards) iterator.last() else iterator.first()
-            while (i < abs) {
-                var result = if (isBackwards) {
-                    iterator.previous()
-                } else {
-                    iterator.next()
-                }
-                if (result == BreakIterator.DONE) {
-                    result = if (isBackwards) 0 else currentChars!!.length
-                }
-                finalVar = if (isBackwards) result - currentChars!!.length else result
-                i++
-            }
-            return finalVar
-        }
-
-        private fun getUnicodeMovementForIndex(ic: InputConnection, count: Int): Int {
-            val factor = 10
-            val abs = abs(count)
-            val isBackwards = count < 0
-            val amount = abs * factor
-            val currentChars = fillText(ic, amount, isBackwards)
-            return getUnicodeMovementForIndex(currentChars, count)
-        }
-
-        private fun fillText(
-            ic: InputConnection,
-            amount: Int,
-            isBackwards: Boolean
-        ): CharSequence {
-            if (textAfterCursor!!.length < amount) {
-                val temp = ic.getTextAfterCursor(amount * 2, 0)
-                textAfterCursor = temp?.toString() ?: ""
-            }
-            if (textBeforeCursor!!.length < amount) {
-                val temp = ic.getTextBeforeCursor(amount * 2, 0)
-                textBeforeCursor = temp?.toString() ?: ""
-            }
-            return if (isBackwards) {
-                textBeforeCursor!!
-            } else {
-                textAfterCursor!!
             }
         }
 
@@ -290,49 +161,24 @@ class SoftKeyboard : InputMethodService() {
             replacement: String?,
             ic: InputConnection
         ) {
-            var startOfOriginalWordOffsetBytes = rawBackIndex
-            val candidateLength = candidateEnd - candidateStart
-            val originalUnicodeLen = original.length
+            val stringUntilCursor = lazyString.getStringByBytesBeforeCursor(rawBackIndex)
+            val replacement = replacement ?: ""
+            val overriding = replacement.length > stringUntilCursor.length
+            val startIndex = lazyString.selection.min - stringUntilCursor.length
+            lazyString.overrideString(startIndex, replacement)
 
-            fillText(ic, abs(selectionEnd) + originalUnicodeLen, false)
-            val totalText = textBeforeCursor.toString() + textAfterCursor.toString()
-            val cursorIndexBytes = textBeforeCursor.toString()
-                .toByteArray(StandardCharsets.UTF_8).size
-
-            val bytes = totalText.toByteArray(StandardCharsets.UTF_8)
-
-            if (candidateLength > 0 && candidateStart > 0) {
-                val candidate = totalText.substring(
-                    candidateStart,
-                    candidateStart + candidateLength
-                ).toByteArray(StandardCharsets.UTF_8)
-                startOfOriginalWordOffsetBytes += candidate.size
-            }
-
-            val startIndex =
-                String(bytes, 0, cursorIndexBytes - startOfOriginalWordOffsetBytes).length
-
-            val wordOverriding = startIndex + originalUnicodeLen > (textBeforeCursor?.length ?: 0)
+            //todo handle candidate
 
             // Delete the original text
             ic.setSelection(startIndex, startIndex)
             ic.setComposingRegion(startIndex, startIndex)
-            ic.deleteSurroundingText(0, originalUnicodeLen)
+            ic.deleteSurroundingText(0, original.length)
 
             // Insert the replacement text
             ic.commitText(replacement, 1)
-            val positionShift = (replacement ?: "").length - originalUnicodeLen
-            changeSelection(
-                ic,
-                selectionStart + positionShift,
-                selectionEnd + positionShift,
-                candidateStart + positionShift,
-                candidateEnd + positionShift,
-                null
-            )
-            ic.setComposingRegion(candidateStart, candidateEnd)
-            ic.setSelection(selectionStart, selectionEnd)
-            if (wordOverriding) {
+            ic.setComposingRegion(lazyString.candidate.start, lazyString.candidate.end)
+            ic.setSelection(lazyString.selection.start, lazyString.selection.end)
+            if (overriding) {
                 signalCursorCandidacyResult(ic, "backrepl")
             }
         }
@@ -344,75 +190,16 @@ class SoftKeyboard : InputMethodService() {
             selectionMode: Boolean,
             ic: InputConnection
         ) {
-            var later2: Int
-            var laterpoint: Int
-            if (xmove < 0) {
-                val charseq = ic.getTextBeforeCursor(120, 0)
-                if (charseq != null) {
-                    var thestr = charseq.toString()
-                    var usedcurpos = selectionStart
-                    val i = candidateEnd
-                    if (i == selectionStart) {
-                        usedcurpos = candidateStart
-                        val thedifference = i - candidateStart
-                        if (thedifference > 0) {
-                            thestr = thestr.substring(0, thestr.length - thedifference)
-                        }
-                    }
-                    val result = processSoftKeyboardCursorMovementLeft(thestr)
-                    val earlier = (result shr 32).toInt()
-                    val later = ((-1).toLong() and result).toInt()
-                    var earlpoint2 = usedcurpos - earlier
-                    var laterpoint2 = usedcurpos - later
-                    if (earlpoint2 < 0) {
-                        earlpoint2 = 0
-                    }
-                    if (laterpoint2 < 0) {
-                        laterpoint2 = 0
-                    }
-                    ic.setComposingRegion(earlpoint2, laterpoint2)
-                    ic.setSelection(earlpoint2, earlpoint2)
-                    changeSelection(
-                        ic,
-                        earlpoint2,
-                        earlpoint2,
-                        earlpoint2,
-                        laterpoint2,
-                        "cursordrag"
-                    )
-                    return
-                }
-                println("jormoust :: No charsequence!")
-            } else if (xmove > 0) {
-                val charseq2 = ic.getTextAfterCursor(120, 0)
-                if (charseq2 != null) {
-                    val thestr2 = charseq2.toString()
-                    if (candidateEnd != candidateStart) {
-                        laterpoint = candidateEnd
-                        later2 = laterpoint
-                    } else {
-                        val usedcurpos2 = selectionStart
-                        val result2 = processSoftKeyboardCursorMovementRight(thestr2)
-                        val earlier2 = (result2 shr 32).toInt()
-                        val later22 = ((-1).toLong() and result2).toInt()
-                        val earlpoint = usedcurpos2 + earlier2
-                        val i2 = usedcurpos2 + later22
-                        later2 = earlpoint
-                        laterpoint = i2
-                    }
-                    if (later2 < 0) {
-                        later2 = 0
-                    }
-                    if (laterpoint < 0) {
-                        laterpoint = 0
-                    }
-                    ic.setComposingRegion(later2, laterpoint)
-                    ic.setSelection(laterpoint, laterpoint)
-                    changeSelection(ic, laterpoint, laterpoint, later2, laterpoint, "cursordrag")
-                    return
-                }
-                println("jormoust :: No charsequence!")
+            //todo handle candidate
+
+            lazyString.moveSelection(xmove, xmove)
+            if (!selectionMode) {
+                lazyString.setSelection(lazyString.selection.end, lazyString.selection.end)
             }
+
+            ic.setComposingRegion(lazyString.selection.start, lazyString.selection.end)
+            ic.setSelection(lazyString.selection.start, lazyString.selection.end)
+            changeSelection(ic, lazyString.selection.start, lazyString.selection.end, lazyString.candidate.start, lazyString.candidate.end, "cursordrag")
         }
 
         private fun signalCursorCandidacyResult(ic: InputConnection?, mode: String?) {
@@ -420,31 +207,15 @@ class SoftKeyboard : InputMethodService() {
                 doTextEvent(TextBoxEvent.Reset)
                 return
             }
-            val hasSelection = selectionStart != selectionEnd
-            if (hasSelection) {
-                return
+            if (lazyString.candidate.isNotEmpty()) {
+                ic.finishComposingText() // todo implications
             }
-            val candidateLength = candidateEnd - candidateStart
-            val nullCandidate = candidateLength == 0
-            if (candidateStart != selectionStart && candidateEnd != selectionStart && !nullCandidate) {
-                Log.e("SoftKeyboard",
-                    "softkeyboard going haywire!! : $candidateStart -> $candidateEnd :: $selectionStart"
-                )
-                return
-            }
-            fillText(ic, 200, false)
-            var curword: String? = null
-            var pretext = textBeforeCursor.toString()
-            var posttext = textAfterCursor.toString()
-            if (nullCandidate || candidateStart == selectionStart) {
-                val length = min(textAfterCursor!!.length, candidateLength)
-                posttext = posttext.substring(length)
-            } else if (candidateEnd == selectionStart) {
-                val length = min(textBeforeCursor!!.length, candidateLength)
-                curword = pretext.substring(pretext.length - length)
-                pretext = pretext.substring(0, pretext.length - length)
-            }
-            doTextEvent(TextBoxEvent.Selection(curword, pretext, posttext, mode))
+
+            //todo get candidate
+
+            val charCount = 100
+
+            doTextEvent(TextBoxEvent.Selection("", lazyString.getCharsBeforeCursor(charCount).toString(), lazyString.getCharsAfterCursor(charCount).toString(), mode))
         }
 
         fun relayDelayedEvents() {
@@ -485,52 +256,35 @@ class SoftKeyboard : InputMethodService() {
         ) {
             if (cmd == "retypebksp") {
                 ic.setComposingText("", 0)
-                val i = selectionStart
-                selectionEnd = i
-                candidateStart = i
-                candidateEnd = i
+                changeSelection(ic, lazyString.selection.start, lazyString.selection.start, lazyString.selection.start, lazyString.selection.start, null)
             }
         }
 
         private fun performBackspacing(mode: String?, singleCharacterMode: Boolean, ic: InputConnection) {
-            val hasCandidate = candidateEnd != candidateStart
-            val hasSelection = selectionStart != selectionEnd
-            val start: Int
-            val end: Int
-            if (hasSelection) {
-                start = selectionStart
-                end = selectionEnd
-            } else if (hasCandidate) {
-                start = candidateStart
-                end = candidateEnd
-            } else if (mode != null && mode.startsWith("X:")) {
-                start = selectionStart - mode.substring(2).toInt()
-                end = selectionEnd
-            } else {
-                val seq = fillText(ic, 300, true)
-                val index = if (singleCharacterMode) {
-                    val iterator = BreakIterator.getCharacterInstance()
-                    iterator.setText(seq.toString())
-                    iterator.last()
-                    var index = iterator.previous()
-                    if (index == BreakIterator.DONE) {
-                        index = 0
-                    }
-                    index
-                } else {
-                    WordHelper.lastWordBreak(seq.toString())
-                }
-                ic.deleteSurroundingText(seq.length - index, 0)
-                if (seq.subSequence(index, seq.length).matches(".*\\P{L}.*".toRegex())) {
-                    changeSelection(ic, index, index, index, index, "external")
-                }
 
-                return
+            if (lazyString.selection.isNotEmpty()) {
+                lazyString.delete(lazyString.selection.min, lazyString.selection.max)
             }
-            ic.setComposingRegion(start, start)
-            ic.setSelection(start, start)
-            ic.deleteSurroundingText(0, end - start)
-            changeSelection(ic, start, start, start, start, "external")
+
+            if (lazyString.candidate.isNotEmpty()) {
+                lazyString.delete(lazyString.candidate.min, lazyString.candidate.max)
+            }
+
+            val toDelete = if (singleCharacterMode) {
+                lazyString.getCharsBeforeCursor(1)
+            }
+            else {
+                lazyString.getWordBeforeCursor()
+            }
+
+            if (toDelete.isNotEmpty()) {
+                lazyString.delete(lazyString.selection.min - toDelete.length, lazyString.selection.min)
+            }
+
+            ic.setComposingRegion(lazyString.selection.min, lazyString.selection.min)
+            ic.setSelection(lazyString.selection.min, lazyString.selection.min)
+            ic.deleteSurroundingText(0, lazyString.selection.length())
+            changeSelection(ic, lazyString.selection.min, lazyString.selection.min, lazyString.selection.min, lazyString.selection.min, "external")
         }
 
         fun processTextOps() {
@@ -571,20 +325,6 @@ class SoftKeyboard : InputMethodService() {
 
                 is TextOp.Solidify -> {
                     when {
-                        next != null && next is TextOp.Solidify && op.newString.trim()
-                            .isEmpty() && next.newString.startsWith("<{") && next.newString.endsWith(
-                            "}>"
-                        ) -> {
-                            changeSelection(
-                                ic,
-                                selectionStart,
-                                selectionEnd,
-                                candidateStart,
-                                candidateEnd,
-                                "external"
-                            )
-                        }
-
                         op.newString == "\n" -> {
                             var action = 1
                             if (currentInputEditorInfo.imeOptions and EditorInfo.IME_FLAG_NO_ENTER_ACTION == 0) {
@@ -603,11 +343,7 @@ class SoftKeyboard : InputMethodService() {
                             if (inner.isNotEmpty()) {
                                 changeSelection(
                                     ic,
-                                    selectionStart,
-                                    selectionEnd,
-                                    candidateStart,
-                                    candidateEnd,
-                                    "external"
+                                    signal="external"
                                 )
                                 doTextOp(TextOp.Special(inner))
                             }
