@@ -140,6 +140,15 @@ class SoftKeyboard : InputMethodService() {
             signal: Boolean,
             ic: InputConnection
         ) {
+            var newStart = selectStart
+            var newEnd = selectEnd
+            if (!fromStart) {
+                newStart = lazyString.selection.start + selectStart
+                newEnd = lazyString.selection.start + selectEnd
+            }
+
+
+
             // todo - make sure what type we get here (I think it's bytes)
             if (fromStart) {
                 lazyString.setSelection(selectStart, selectEnd)
@@ -220,7 +229,11 @@ class SoftKeyboard : InputMethodService() {
 
         fun relayDelayedEvents() {
             while (true) {
-                when (val event = textBoxEventQueue.poll()) {
+                val event = textBoxEventQueue.poll()
+                if (event != null) {
+                    Log.d("relayDelayedEvents", "Relaying delayed event: $event")
+                }
+                when (event) {
                     is TextBoxEvent.AppFieldChange -> onChangeAppOrTextbox(
                         event.packageName,
                         event.field,
@@ -283,8 +296,8 @@ class SoftKeyboard : InputMethodService() {
 
             ic.setComposingRegion(lazyString.selection.min, lazyString.selection.min)
             ic.setSelection(lazyString.selection.min, lazyString.selection.min)
-            ic.deleteSurroundingText(0, lazyString.selection.length())
-            changeSelection(ic, lazyString.selection.min, lazyString.selection.min, lazyString.selection.min, lazyString.selection.min, "external")
+            ic.deleteSurroundingText(0, toDelete.length)
+            changeSelection(ic, lazyString.selection.min, lazyString.selection.min, lazyString.selection.min, lazyString.selection.min, mode ?: "setselle")
         }
 
         fun processTextOps() {
@@ -315,7 +328,7 @@ class SoftKeyboard : InputMethodService() {
             ic: InputConnection
         ) {
 
-            //Log.d("NIN", "processOperation: $op, next: $next")
+            Log.d("NIN", "processOperation: $op, next: $next")
             when (op) {
                 is TextOp.MarkLiquid -> {
                     if (next !is TextOp.MarkLiquid && next !is TextOp.Solidify) {

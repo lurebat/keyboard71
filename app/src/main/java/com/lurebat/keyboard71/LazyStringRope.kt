@@ -62,6 +62,7 @@ interface LazyString {
     fun getStringByBytesBeforeCursor(byteCount: Int): String
     fun overrideString(index: Int, string: String)
     fun delete(start: Int, end: Int)
+    fun getStringByIndex(start: Int, end: Int): String
 }
 data class SimpleCursor(override var start: Int, override var end: Int = start) : Cursor {
     override var min: Int = -1
@@ -183,18 +184,22 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
     override fun delete(start: Int, end: Int) {
         rope.delete(start, end)
         // change selection to match
-        if (selection.end < start) {
+        if (selection.max < start) {
             return
         }
-        if (selection.start > end) {
+        if (selection.min >= end) {
             selection.move(-(end - start), -(end - start))
             return
         }
 
-        val countBeforeSelection = selection.start - start
-        val countInsideSelection = end - start
+        val countBeforeSelection = selection.min - start
+        val countInsideSelection = end - selection.min
 
-        moveSelection(-countBeforeSelection, -countInsideSelection)
+        moveSelection(-countBeforeSelection, -countBeforeSelection + -(countInsideSelection))
+    }
+
+    override fun getStringByIndex(start: Int, end: Int): String {
+        return rope.get(start, end)?.toString() ?: ""
     }
 
 
@@ -205,19 +210,24 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
         val iterator =
             if (isWord) BreakIterator.getWordInstance() else BreakIterator.getCharacterInstance()
         iterator.setText(chars)
+        iterator.last()
+        var j = 0
+        while (true) {
+            for (i in j until count) {
+                val it = iterator.previous()
 
-        for (i in 0 until count) {
-            val it = if (i == 0) iterator.last() else iterator.previous();
-            if (it != BreakIterator.DONE) {
-                continue
+                if (it <= 0) {
+                    break
+                }
+                j++
             }
 
-            if (i == count - 1) {
-                return iterator.current()
+            if (j == count) {
+                return chars.length - iterator.current()
             }
 
             if (selection.min - totalLength <= 0) {
-                return 0
+                return chars.length
             }
 
             val oldLength = totalLength
@@ -226,8 +236,55 @@ class LazyStringRope(override var selection: SimpleCursor, override val candidat
             iterator.setText(chars)
             iterator.following(oldLength)
         }
+    }
 
-        return iterator.current()
+    fun breakIterator(isBackwards: Boolean, isWord: Boolean, count: Int): Int {
+        var chars = (if (isBackwards) getCharsBeforeCursor(count) else getCharsAfterCursor(count)).toString()
+        var totalLength = chars.length
+        var isLast = false;
+
+        val iterator =
+            if (isWord) BreakIterator.getWordInstance() else BreakIterator.getCharacterInstance()
+        iterator.setText(chars)
+        if (isBackwards) {
+            iterator.last()
+        } else {
+            iterator.first()
+        }
+        var j = 0
+        while (true) {
+            for (i in j until count) {
+                val it = if (isBackwards) iterator.previous() else iterator.next()
+
+                if (it <= 0) {
+                    break
+                }
+                j++
+            }
+
+            if (j == count) {
+                return if (isBackwards) chars.length - iterator.current() else iterator.current()
+            }
+
+            if (isLast) {
+                return chars.length
+            }
+
+            val oldLength = totalLength
+            totalLength *= 2
+            chars = (if (isBackwards) getCharsBeforeCursor(totalLength) else getCharsAfterCursor(totalLength)).toString()
+            if (chars.length == oldLength) {
+                isLast = true
+            }
+
+            iterator.setText(chars)
+            if (isBackwards) {
+                iterator.following(oldLength)
+            } else {
+                iterator.preceding(oldLength)
+            }
+        }
+
     }
 
     override fun toString(): String {
