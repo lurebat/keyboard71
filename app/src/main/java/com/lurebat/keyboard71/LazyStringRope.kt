@@ -218,7 +218,8 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         if (cursor.max < start) {
             return
         }
-        cursor.move(sign * count, sign * count)
+        val afterCursor = if (delete) maxOf(start + count - cursor.max, 0) else 0
+        cursor.move(sign * (count - afterCursor), sign * (count - afterCursor))
 
     }
 
@@ -245,7 +246,7 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         }
         if (charsAfterCount > 0) {
             val after = getCharsAfterCursor(charsAfterCount)
-            builder.append(after.substring(0, minOf(max - selection.max, after.length)))
+            builder.append(after.substring(maxOf(0, after.length - charsAfterCount), minOf(max - selection.max, after.length)))
         }
         return builder.toString()
     }
