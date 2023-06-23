@@ -20,14 +20,15 @@ import com.lurebat.keyboard71.tasker.triggerBasicTaskerEvent
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class SoftKeyboard : InputMethodService() {
+    private var inRetype: Boolean = false
     val textBoxEventQueue: ConcurrentLinkedQueue<TextBoxEvent> = ConcurrentLinkedQueue()
     val textOpQueue: ConcurrentLinkedQueue<TextOp> = ConcurrentLinkedQueue()
     private var ninView: NINView? = null
     private lateinit var lazyString: LazyString
     private var didProcessTextOps = false
     private var lastTextOpTimeMillis: Long = 0
-    private var selectionBeforeRetype: SimpleCursor? = null
-    private var candidateBeforeRetype: SimpleCursor? = null
+    private var selectionDiffRetype: SimpleCursor? = null
+    private var candidateLocationBeforeRetype: SimpleCursor? = null
     private var afterRetypeCounter = 0
 
     override fun onCreate() {
@@ -142,70 +143,84 @@ class SoftKeyboard : InputMethodService() {
             fromStart: Boolean,
             signal: Boolean,
             ic: InputConnection,
-            isStartOfRetype: Boolean
         ) {
+            var keepCandidate = false
+
             var start = selectStart
             var end = selectEnd
-            val candidate = lazyString.getCandidate()
-            if (candidate != null && fromStart) {
-                val candidateBeforeSelection = lazyString.selection.min - lazyString.candidate.min
-                if (candidateBeforeSelection > 0) {
-                    start -= candidateBeforeSelection
-                    end -= candidateBeforeSelection
-                }
-            }
+            var signal = signal
 
-            var finalSelectionStart = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.start, start)
-            var finalSelectionEnd = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.start, end)
+            var finalSelectionStart = 0
+            var finalSelectionEnd = 0
             var finalCandidateStart = 0
             var finalCandidateEnd = 0
 
-            if (isStartOfRetype) {
-                selectionBeforeRetype = SimpleCursor(lazyString.selection.start, lazyString.selection.end)
-                candidateBeforeRetype = SimpleCursor(lazyString.candidate.start, lazyString.candidate.end)
-            }
-            lazyString.moveSelectionAndCandidate(finalSelectionStart, finalSelectionEnd, finalCandidateStart, finalCandidateEnd)
-            ic.setComposingRegion(lazyString.candidate.end, lazyString.candidate.end)
-            ic.setSelection(lazyString.selection.start, lazyString.selection.end)
-            signalCursorCandidacyResult(ic, "setselle")
-
             val isAfterRetype = selectStart == 5000 && selectEnd == 5000 && !fromStart && !signal
-            if (!isAfterRetype) {
-                return
-            }
+            if (isAfterRetype) {
+                afterRetypeCounter += 1
+                if (afterRetypeCounter < 3) {
+                    return
+                }
+                afterRetypeCounter = 0
+                val deltaSelection = selectionDiffRetype ?: SimpleCursor(0, 0)
 
-            afterRetypeCounter += 1
-            if (afterRetypeCounter < 3) {
-                return
-            }
-            afterRetypeCounter = 0
+//                val deltaCandidate = candidateLocationBeforeRetype?.let {
+//                    candidateLocationBeforeRetype = null
+//                    if (it.start == -1 || it.end == -1) {
+//                        SimpleCursor(0, 0)
+//                    } else {
+//                        SimpleCursor(deltaSelection.start, deltaSelection.start + it.length())
+//                    }
+//                } ?: SimpleCursor(0, 0)
 
-            val deltaSelection = selectionBeforeRetype?.let {
-                selectionBeforeRetype = null
-                SimpleCursor(lazyString.selection.start - it.start, lazyString.selection.end - it.end)
-            } ?: SimpleCursor(0, 0)
-            val deltaCandidate = candidateBeforeRetype?.let {
-            candidateBeforeRetype = null
-            if (it.start == -1 || it.end == -1) {
-                SimpleCursor(0, 0)
+                finalSelectionStart = deltaSelection.start
+                finalSelectionEnd = deltaSelection.end
+/*                finalCandidateStart = deltaCandidate.start
+                finalCandidateEnd = deltaCandidate.end
+                keepCandidate = true*/
+                // reset candidate
+                finalCandidateStart = -lazyString.candidate.start - 1
+                finalCandidateEnd = -lazyString.candidate.end - 1
+                signal = true
+                inRetype = false
             } else {
-                if (lazyString.candidate.start == -1 || lazyString.candidate.end == -1) {
-                    SimpleCursor(deltaSelection.start + it.start + 1, deltaSelection.end + it.end + 1)
-                } else {
-                    SimpleCursor(deltaSelection.start + lazyString.candidate.start - it.start, deltaSelection.end + lazyString.candidate.end - it.end)
+                val candidate = lazyString.getCandidate()
+                if (candidate != null && fromStart) {
+                    val candidateBeforeSelection = lazyString.selection.min - lazyString.candidate.min
+                    if (candidateBeforeSelection > 0) {
+                        start -= candidateBeforeSelection
+                        end -= candidateBeforeSelection
+                    }
+                }
+
+                finalSelectionStart = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.start, start)
+                finalSelectionEnd = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.start, end)
+                finalCandidateStart = 0
+                finalCandidateEnd = 0
+
+                if (!inRetype) {
+                    // get the selection before retype
+                    selectionDiffRetype = SimpleCursor(lazyString.selection.start, lazyString.selection.end)
                 }
             }
-            } ?: SimpleCursor(0, 0)
 
-            finalSelectionStart = deltaSelection.start
-            finalSelectionEnd = deltaSelection.end
-            finalCandidateStart = deltaCandidate.start
-            finalCandidateEnd = deltaCandidate.end
 
             lazyString.moveSelectionAndCandidate(finalSelectionStart, finalSelectionEnd, finalCandidateStart, finalCandidateEnd)
-            ic.setComposingRegion(lazyString.candidate.start, lazyString.candidate.end)
+
+/*            if (lazyString.selection.start >= lazyString.candidate.start && lazyString.selection.end <= lazyString.candidate.end) {
+                keepCandidate = true
+            }*/
+
+            ic.setComposingRegion(if (keepCandidate) lazyString.candidate.start else lazyString.candidate.end, lazyString.candidate.end)
             ic.setSelection(lazyString.selection.start, lazyString.selection.end)
-            signalCursorCandidacyResult(ic, "setselle")
+            if (!inRetype) {
+                selectionDiffRetype = SimpleCursor(selectionDiffRetype!!.start - lazyString.selection.end, selectionDiffRetype!!.end - lazyString.selection.end)
+            }
+
+
+            if (signal || keepCandidate) {
+                signalCursorCandidacyResult(ic, "setselle")
+            }
         }
 
         private fun performBackReplacement(
@@ -214,24 +229,30 @@ class SoftKeyboard : InputMethodService() {
             replacement: String?,
             ic: InputConnection
         ) {
-            val stringUntilCursor = lazyString.getStringByBytesBeforeCursor(rawBackIndex)
-            val replacement = replacement ?: ""
-            val overriding = replacement.length > original.length
-            var startIndex = lazyString.selection.min - stringUntilCursor.length
-
+            var backIndexBytes = rawBackIndex
             //todo handle candidate
-            val candidate = lazyString.getCandidate()
+
             var candidateBeforeSelection = 0
-            if (candidate != null) {
-                val candidateBeforeSelection = lazyString.selection.min - lazyString.candidate.min
-                if (candidateBeforeSelection > 0) {
-                    startIndex -= candidateBeforeSelection
+            // For some reason it only skips the candidate if the selection is at the end of the candidate
+            if (lazyString.selection.max == lazyString.candidate.max) {
+                val candidate = lazyString.getCandidate()
+                if (candidate != null) {
+                    candidateBeforeSelection = lazyString.selection.min - lazyString.candidate.min
+                    if (candidateBeforeSelection > 0) {
+                        backIndexBytes += candidateBeforeSelection
+                    }
                 }
             }
 
+            val stringUntilCursor = lazyString.getStringByBytesBeforeCursor(backIndexBytes)
+            val replacement = replacement ?: ""
+            val overriding = replacement.length > original.length || stringUntilCursor.length < original.length
+            var startIndex = lazyString.selection.min - stringUntilCursor.length
+
+
+
             lazyString.delete(startIndex, startIndex + original.length)
             lazyString.addString(startIndex, replacement)
-            lazyString.moveSelectionAndCandidate(candidateBeforeSelection, candidateBeforeSelection, candidateBeforeSelection, candidateBeforeSelection)
 
             // Delete the original text
             ic.setSelection(startIndex, startIndex)
@@ -329,7 +350,7 @@ class SoftKeyboard : InputMethodService() {
             if (cmd == "retypebksp") {
                 ic.setComposingText("", 0)
                 changeSelection(ic, lazyString.selection.start, lazyString.selection.start, lazyString.selection.start, lazyString.selection.start, null)
-
+                inRetype = true
             }
         }
 
@@ -433,8 +454,7 @@ class SoftKeyboard : InputMethodService() {
                     op.end,
                     op.fromStart,
                     op.signal,
-                    ic,
-                    next is TextOp.MuCommand && next.command == "retypebksp"
+                    ic
                 )
 
                 is TextOp.BackspaceReplacement -> performBackReplacement(
