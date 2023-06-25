@@ -217,8 +217,7 @@ class SoftKeyboard : InputMethodService() {
                 selectionDiffRetype = SimpleCursor(selectionDiffRetype!!.start - lazyString.selection.end, selectionDiffRetype!!.end - lazyString.selection.end)
             }
 
-
-            if (signal || keepCandidate) {
+            if (!inRetype) {
                 signalCursorCandidacyResult(ic, "setselle")
             }
         }
@@ -355,30 +354,29 @@ class SoftKeyboard : InputMethodService() {
         }
 
         private fun performBackspacing(mode: String?, singleCharacterMode: Boolean, ic: InputConnection) {
-
-            if (lazyString.selection.isNotEmpty()) {
-                lazyString.delete(lazyString.selection.min, lazyString.selection.max)
+            val (min, max) = when {
+                lazyString.selection.isNotEmpty() -> {
+                    Pair(lazyString.selection.min, lazyString.selection.max)
+                }
+                lazyString.candidate.isNotEmpty() -> {
+                    Pair(lazyString.candidate.min, lazyString.candidate.max)
+                }
+                singleCharacterMode -> {
+                    Pair(lazyString.selection.min - lazyString.getCharsBeforeCursor(1).length, lazyString.selection.min)
+                }
+                else -> {
+                    Pair(lazyString.selection.min - lazyString.getWordBeforeCursor().length, lazyString.selection.min)
+                }
             }
+            val length = max - min
 
-            if (lazyString.candidate.isNotEmpty()) {
-                lazyString.delete(lazyString.candidate.min, lazyString.candidate.max)
-            }
+            ic.setComposingRegion(min, min)
+            ic.setSelection(min, min)
+            ic.deleteSurroundingText(0, length)
 
-            val toDelete = if (singleCharacterMode) {
-                lazyString.getCharsBeforeCursor(1)
-            }
-            else {
-                lazyString.getWordBeforeCursor()
-            }
+            lazyString.delete(min, max)
 
-            if (toDelete.isNotEmpty()) {
-                lazyString.delete(lazyString.selection.min - toDelete.length, lazyString.selection.min)
-            }
-
-            ic.setComposingRegion(lazyString.selection.min, lazyString.selection.min)
-            ic.setSelection(lazyString.selection.min, lazyString.selection.min)
-            ic.deleteSurroundingText(0, toDelete.length)
-            changeSelection(ic, lazyString.selection.min, lazyString.selection.min, lazyString.candidate.min, lazyString.candidate.min, mode ?: "setselle")
+            changeSelection(ic, min, min, -1, -1, mode ?: "setselle")
         }
 
         fun processTextOps() {
