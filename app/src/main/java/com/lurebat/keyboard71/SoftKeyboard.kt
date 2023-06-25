@@ -195,8 +195,8 @@ class SoftKeyboard : InputMethodService() {
 
                 finalSelectionStart = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.start, start)
                 finalSelectionEnd = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.start, end)
-                finalCandidateStart = 0
-                finalCandidateEnd = 0
+                finalCandidateStart = -lazyString.candidate.start - 1
+                finalCandidateEnd = -lazyString.candidate.end - 1
 
                 if (!inRetype) {
                     // get the selection before retype
