@@ -62,12 +62,13 @@ interface LazyString {
     fun getWordBeforeCursor(): CharSequence
     fun getStringByBytesBeforeCursor(byteCount: Int): String
     fun addString(index: Int, string: String)
-    fun delete(start: Int, end: Int)
+    fun delete(start: Int, end: Int): Int
     fun getStringByIndex(start: Int, end: Int): String
     fun getCandidate(): CharSequence?
     fun getGraphemesAfterCursor(count: Int): Int
     fun getGraphemesAtIndex(startIndex: Int, isBackwards: Boolean, isWord: Boolean, count: Int): Int
     fun byteOffsetToGraphemeOffset(index: Int, byteCount: Int): Int
+    fun selectedText(): CharSequence
 }
 data class SimpleCursor(override var start: Int, override var end: Int = start) : Cursor {
     override var min: Int = -1
@@ -144,7 +145,7 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         return rope.get(selection.max, selection.max + safe) ?: requestCharsAfterCursor(count)
     }
 
-    fun getSelection(): CharSequence {
+    override fun selectedText(): CharSequence {
         return rope.get(selection.min, selection.max) ?: requestSelection()
     }
 
@@ -203,11 +204,13 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         fixCursorWithoutChangingSize(candidate, index, string.length, false)
     }
 
-    override fun delete(start: Int, end: Int) {
+    override fun delete(start: Int, end: Int): Int {
         rope.delete(start, end)
         // change selection to match
         fixCursorWithoutChangingSize(selection, start, end - start, true)
         fixCursorWithoutChangingSize(candidate, start, end - start, true)
+
+        return end - start
     }
 
     private fun fixCursorWithoutChangingSize(cursor: SimpleCursor, start: Int, count: Int, delete: Boolean) {
@@ -241,7 +244,7 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
             builder.append(before.substring(0, minOf(max - min, before.length)))
         }
         if (charsAtCount > 0) {
-            val at = getSelection()
+            val at = selectedText()
             builder.append(at.substring(0, minOf(max - selection.min, at.length)))
         }
         if (charsAfterCount > 0) {
