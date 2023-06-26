@@ -1,4 +1,4 @@
-package com.jormy.nin
+package com.lurebat.keyboard71
 
 enum class TextEventType {
     SELECTION,
@@ -7,23 +7,23 @@ enum class TextEventType {
     WORD_DESTRUCTION,
 }
 
-sealed class TextEvent {
-    object Reset : TextEvent()
+sealed class TextBoxEvent {
+    object Reset : TextBoxEvent()
     data class Selection(
         val currentWord: String?,
         val textBefore: String,
         val textAfter: String,
         val mode: String?
-    ) : TextEvent()
+    ) : TextBoxEvent()
 
     data class AppFieldChange(val packageName: String?, val field: String?, val mode: String?) :
-        TextEvent()
+        TextBoxEvent()
 
     data class WordDestruction(var destroyedWord: String?, var destroyedString: String?) :
-        TextEvent()
+        TextBoxEvent()
 
     companion object {
-        fun fromType(type: TextEventType, vararg args: String?): TextEvent {
+        fun fromType(type: TextEventType, vararg args: String?): TextBoxEvent {
             return when (type) {
                 TextEventType.SELECTION -> Selection(args[0], args[1]!!, args[2]!!, args[3])
                 TextEventType.RESET -> Reset

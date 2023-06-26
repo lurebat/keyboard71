@@ -1,4 +1,4 @@
-package com.jormy.nin
+package com.lurebat.keyboard71
 
 import android.content.Context
 import android.graphics.PixelFormat
@@ -11,11 +11,11 @@ import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
+import com.jormy.nin.EXSurfaceView
 import com.jormy.nin.NINLib.init
 import com.jormy.nin.NINLib.onTouchEvent
 import com.jormy.nin.NINLib.step
 import com.jormy.nin.NINLib.syncTiming
-import com.jormy.nin.SoftKeyboard.Companion.relayDelayedEvents
 import com.jormy.nin.Utils.prin
 import com.jormy.nin.Utils.tracedims
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -260,16 +260,16 @@ class NINView(context: Context) : EXSurfaceView(context) {
                 val rti = movementEventsQueue.poll()
                 if (rti != null) {
                     onTouchEvent(
-                        rti.touchid,
-                        rti.jormactionid,
+                        rti.touchId,
+                        rti.jormyActionId,
                         rti.xPos,
                         rti.yPos,
                         rti.pressureValue,
                         rti.areaValue,
-                        rti.timestamp_long
+                        rti.timestampLong
                     )
                 } else {
-                    relayDelayedEvents()
+                    SoftKeyboard.keyboard?.relayDelayedEvents()
                     step()
                     return
                 }
@@ -293,12 +293,9 @@ class NINView(context: Context) : EXSurfaceView(context) {
         var movementEventsQueue: ConcurrentLinkedQueue<RelayTouchInfo> = ConcurrentLinkedQueue()
         private const val TAG = "NINView"
 
-        @get:Api
-        @JvmStatic
+
         var devicePPI = 326.0f
 
-        @get:Api
-        @JvmStatic
         var devicePortraitWidth = 640.0f
 
         var desiredScaling = 1.0f
@@ -326,29 +323,24 @@ class NINView(context: Context) : EXSurfaceView(context) {
             }
         }
 
-        @Api
-        @JvmStatic
+
         fun adjustWantedScaling(scaling: Float) {
             desiredScaling = scaling
             Handler(Looper.getMainLooper()).post { globalView.requestLayout() }
         }
 
-        @Api
-        @JvmStatic
+
         fun onRoenSignalDirty() {
             globalView.requestRender()
         }
 
-        @Api
-        @JvmStatic
+
         fun onRoenFrozennessChange(truth: Boolean) {
             if (!truth) {
                 globalView.requestRender()
             }
         }
 
-        @Api
-        @JvmStatic
         fun adjustKeyboardDimensions(wantedRoenHeight: Float, fullscreen: Boolean) {
             globalView.desiredRoenPixelHeight = 2.0f * wantedRoenHeight
             globalView.desiredRoenFullscreen = fullscreen
@@ -369,8 +361,7 @@ class NINView(context: Context) : EXSurfaceView(context) {
             } else {
                 prin("Roenpixheight : " + globalView.desiredRoenPixelHeight)
             }
-            // from class: com.jormy.nin.NINView.3
-// java.lang.Runnable
+
             Handler(Looper.getMainLooper()).post { globalView.requestLayout() }
         }
     }

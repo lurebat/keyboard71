@@ -1,4 +1,4 @@
-package com.lurebat.keyboard71
+package com.lurebat.keyboard71.tasker
 
 import android.content.Context
 import android.os.Bundle
@@ -37,7 +37,6 @@ import com.joaomgcd.taskerpluginlibrary.output.TaskerOutputVariable
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultCondition
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultConditionSatisfied
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultConditionUnsatisfied
-import com.jormy.nin.SoftKeyboard
 
 const val COMPARE_METHOD_FULL = "full"
 const val COMPARE_METHOD_STARTS_WITH = "startsWith"
@@ -84,8 +83,7 @@ class OnWordRunner : TaskerPluginRunnerConditionEvent<OnWordInput, OnWordOutput,
         }
 
         if (!input.regular.shouldOutputText) {
-            SoftKeyboard.callSimpleBackspace(false)
-            SoftKeyboard.callSimpleBackspace(false)
+            //TODO remove this
         }
 
         return TaskerPluginResultConditionSatisfied(context, OnWordOutput(update))
