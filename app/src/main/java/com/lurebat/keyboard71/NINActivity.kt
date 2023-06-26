@@ -1,4 +1,4 @@
-package com.jormy.nin
+package com.lurebat.keyboard71
 
 import android.content.Context
 import android.content.Intent
@@ -92,7 +92,7 @@ class NINActivity : ComponentActivity() {
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
-                            "Keyboard 71",
+                            "Keyboard 72",
                             style = MaterialTheme.typography.headlineLarge.copy(color = MaterialTheme.colorScheme.primary),
                             modifier = Modifier.padding(bottom = 16.dp)
                         )

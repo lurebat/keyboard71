@@ -1,6 +1,6 @@
 @file:Suppress("USELESS_ELVIS")
 
-package com.lurebat.keyboard71
+package com.lurebat.keyboard71.tasker
 
 import android.content.Context
 import android.os.Bundle
@@ -40,11 +40,10 @@ import com.joaomgcd.taskerpluginlibrary.input.TaskerInputObject
 import com.joaomgcd.taskerpluginlibrary.input.TaskerInputRoot
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResult
 import com.joaomgcd.taskerpluginlibrary.runner.TaskerPluginResultSucess
-import com.jormy.nin.SoftKeyboard
-import com.jormy.nin.TextEvent
-import com.jormy.nin.TextEventType
-import com.jormy.nin.TextOp
-import com.jormy.nin.TextOpType
+import com.lurebat.keyboard71.TextBoxEvent
+import com.lurebat.keyboard71.TextEventType
+import com.lurebat.keyboard71.TextOp
+import com.lurebat.keyboard71.TextOpType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -81,7 +80,7 @@ class ActionRunner : TaskerPluginRunnerActionNoOutput<ActionInput>() {
         Log.d("ActionRunner", "run: ${input.regular}")
         when (input.regular.opType) {
             "TextOp" -> {
-                SoftKeyboard.doTextOp(
+                com.lurebat.keyboard71.SoftKeyboard.doTextOp(
                     TextOp.parse(
                         TextOpType.valueOf(input.regular.opType!!),
                         input.regular.textOperation.int1,
@@ -95,8 +94,8 @@ class ActionRunner : TaskerPluginRunnerActionNoOutput<ActionInput>() {
             }
 
             "TextEvent" -> {
-                SoftKeyboard.doTextEvent(
-                    TextEvent.fromType(
+                com.lurebat.keyboard71.SoftKeyboard.doTextEvent(
+                    TextBoxEvent.fromType(
                         TextEventType.valueOf(input.regular.taskerTextEvent.type!!),
                         input.regular.taskerTextEvent.first,
                         input.regular.taskerTextEvent.second,
