@@ -6,7 +6,6 @@ import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -50,9 +49,7 @@ class SoftKeyboard : InputMethodService() {
     ) {
         val shouldSignal =
             !didProcessTextOps && System.currentTimeMillis() - lastTextOpTimeMillis >= 55
-        Log.d("SoftKeyboard",
-            "candstart $lazyString"
-        )
+        //Log.d("SoftKeyboard", "candstart $lazyString")
         changeSelection(
             currentInputConnection,
             newSelStart,
@@ -81,9 +78,9 @@ class SoftKeyboard : InputMethodService() {
 
     override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
-        Log.d("SoftKeyboard",
-            "------------ jormoust Editor Info : ${attribute.packageName} | ${attribute.fieldName}|${attribute.inputType}"
-        )
+//        Log.d("SoftKeyboard",
+//            "------------ jormoust Editor Info : ${attribute.packageName} | ${attribute.fieldName}|${attribute.inputType}"
+//        )
         var keyboardType = ""
         when (attribute.inputType and EditorInfo.TYPE_MASK_CLASS) {
             EditorInfo.TYPE_CLASS_TEXT -> {
@@ -154,12 +151,10 @@ class SoftKeyboard : InputMethodService() {
 
             var start = selectStart
             var end = selectEnd
-            var signal = signal
+            val isNormalMovement = start == end && !fromStart && !signal
 
             var finalSelectionStart = 0
             var finalSelectionEnd = 0
-            var finalCandidateStart = 0
-            var finalCandidateEnd = 0
 
             val isAfterRetype = selectStart == 5000 && selectEnd == 5000 && !fromStart && !signal
             if (isAfterRetype) {
@@ -170,24 +165,20 @@ class SoftKeyboard : InputMethodService() {
                 afterRetypeCounter = 0
                 val deltaSelection = selectionDiffRetype ?: SimpleCursor(0, 0)
 
-//                val deltaCandidate = candidateLocationBeforeRetype?.let {
-//                    candidateLocationBeforeRetype = null
-//                    if (it.start == -1 || it.end == -1) {
-//                        SimpleCursor(0, 0)
-//                    } else {
-//                        SimpleCursor(deltaSelection.start, deltaSelection.start + it.length())
-//                    }
-//                } ?: SimpleCursor(0, 0)
+                val candidateStart = candidateLocationBeforeRetype?.let {
+                    candidateLocationBeforeRetype = null
+                    if (it.start == -1 || it.end == -1) {
+                        SimpleCursor(-1, -1)
+                    } else {
+                        SimpleCursor(lazyString.selection.end + it.start , lazyString.selection.end + it.end)
+                    }
+                } ?: SimpleCursor(0, 0)
 
+                lazyString.candidate.set(candidateStart.start, candidateStart.end)
                 finalSelectionStart = deltaSelection.start
                 finalSelectionEnd = deltaSelection.end
-/*                finalCandidateStart = deltaCandidate.start
-                finalCandidateEnd = deltaCandidate.end
-                keepCandidate = true*/
-                // reset candidate
-                finalCandidateStart = -lazyString.candidate.start - 1
-                finalCandidateEnd = -lazyString.candidate.end - 1
-                signal = true
+                keepCandidate = false // TODO - If there is an api that let's us continue with an existing candidate, this should be true
+                keepSelection = true
             } else {
                 val candidate = lazyString.getCandidate()
                 if (candidate != null && fromStart) {
@@ -198,25 +189,29 @@ class SoftKeyboard : InputMethodService() {
                     }
                 }
 
-                finalSelectionStart = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.min, start)
-                finalSelectionEnd = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.max,-lazyString.selection.length() + end)
-                finalCandidateStart = -lazyString.candidate.start - 1
-                finalCandidateEnd = -lazyString.candidate.end - 1
+                if ((isNormalMovement && selectionMode)) {
+                    keepSelection = true
+                    finalSelectionEnd = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.end, end)
+                } else {
+                    finalSelectionStart = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.start, start)
+                    finalSelectionEnd = lazyString.byteOffsetToGraphemeOffset(lazyString.selection.end,-lazyString.selection.length() + end)
+                }
+
+
 
                 if (!startedRetype) {
                     // get the selection before retype
                     selectionDiffRetype = SimpleCursor(lazyString.selection.start, lazyString.selection.end)
+                    candidateLocationBeforeRetype = SimpleCursor(lazyString.candidate.start, lazyString.candidate.end)
                 }
+
+
             }
 
 
-            lazyString.moveSelectionAndCandidate(finalSelectionStart, finalSelectionEnd, finalCandidateStart, finalCandidateEnd)
+            lazyString.moveSelection(finalSelectionStart, finalSelectionEnd)
 
-/*            if (lazyString.selection.start >= lazyString.candidate.start && lazyString.selection.end <= lazyString.candidate.end) {
-                keepCandidate = true
-            }*/
-
-            if (fromStart) {
+            if (fromStart || start != end) {
                 keepSelection = true
             }
 
@@ -224,6 +219,7 @@ class SoftKeyboard : InputMethodService() {
             ic.setSelection(if (keepSelection) lazyString.selection.start else lazyString.selection.end, lazyString.selection.end)
             if (!startedRetype) {
                 selectionDiffRetype = SimpleCursor(selectionDiffRetype!!.start - lazyString.selection.end, selectionDiffRetype!!.end - lazyString.selection.end)
+                candidateLocationBeforeRetype = SimpleCursor(candidateLocationBeforeRetype!!.start - lazyString.selection.end, candidateLocationBeforeRetype!!.end - lazyString.selection.end)
             }
 
             if (startedRetype) {
@@ -242,7 +238,6 @@ class SoftKeyboard : InputMethodService() {
             ic: InputConnection
         ) {
             var backIndexBytes = rawBackIndex
-            //todo handle candidate
 
             var candidateBeforeSelection = 0
             // For some reason it only skips the candidate if the selection is at the end of the candidate
@@ -321,7 +316,7 @@ class SoftKeyboard : InputMethodService() {
             while (true) {
                 val event = textBoxEventQueue.poll()
                 if (event != null) {
-                    Log.d("relayDelayedEvents", "Relaying delayed event: $event")
+                    //Log.d("relayDelayedEvents", "Relaying delayed event: $event")
                 }
                 when (event) {
                     is TextBoxEvent.AppFieldChange -> onChangeAppOrTextbox(
@@ -418,7 +413,7 @@ class SoftKeyboard : InputMethodService() {
             ic: InputConnection
         ) {
 
-            Log.d("NIN", "processOperation: $op, next: $next")
+            //Log.d("NIN", "processOperation: $op, next: $next")
             when (op) {
                 is TextOp.MarkLiquid -> {
                     if (ignoreNullCandidateFlag) {
@@ -548,6 +543,8 @@ class SoftKeyboard : InputMethodService() {
                         else -> parts[0].toInt()
                     }
                 )
+
+                's' -> selectionMode = !selectionMode
 
                 't' -> this.triggerBasicTaskerEvent(rest)
             }
