@@ -6,6 +6,7 @@ import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +50,7 @@ class SoftKeyboard : InputMethodService() {
     ) {
         val shouldSignal =
             !didProcessTextOps && System.currentTimeMillis() - lastTextOpTimeMillis >= 55
-        //Log.d("SoftKeyboard", "candstart $lazyString")
+        Log.d("SoftKeyboard", "candstart $lazyString")
         changeSelection(
             currentInputConnection,
             newSelStart,
@@ -78,9 +79,9 @@ class SoftKeyboard : InputMethodService() {
 
     override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
-//        Log.d("SoftKeyboard",
-//            "------------ jormoust Editor Info : ${attribute.packageName} | ${attribute.fieldName}|${attribute.inputType}"
-//        )
+        Log.d("SoftKeyboard",
+            "------------ jormoust Editor Info : ${attribute.packageName} | ${attribute.fieldName}|${attribute.inputType}"
+        )
         var keyboardType = ""
         when (attribute.inputType and EditorInfo.TYPE_MASK_CLASS) {
             EditorInfo.TYPE_CLASS_TEXT -> {
@@ -280,8 +281,6 @@ class SoftKeyboard : InputMethodService() {
             selectionMode: Boolean,
             ic: InputConnection
         ) {
-            //todo handle candidate
-
             lazyString.moveSelection(xmove, xmove)
             if (!selectionMode) {
                 lazyString.setSelection(lazyString.selection.end, lazyString.selection.end)
@@ -316,7 +315,7 @@ class SoftKeyboard : InputMethodService() {
             while (true) {
                 val event = textBoxEventQueue.poll()
                 if (event != null) {
-                    //Log.d("relayDelayedEvents", "Relaying delayed event: $event")
+                    Log.d("relayDelayedEvents", "Relaying delayed event: $event")
                 }
                 when (event) {
                     is TextBoxEvent.AppFieldChange -> onChangeAppOrTextbox(
@@ -396,8 +395,10 @@ class SoftKeyboard : InputMethodService() {
 
             try {
                 for (i in 0 until bufferSize) {
+                    checkIfWeirdDelete(textOpQueue)
                     val op = textOpQueue.poll() ?: break
                     val next = textOpQueue.peek()
+
                     processOperation(op, next, ic)
                 }
             } finally {
@@ -407,13 +408,35 @@ class SoftKeyboard : InputMethodService() {
             }
         }
 
-        private fun processOperation(
+    private fun checkIfWeirdDelete(textOpQueue: ConcurrentLinkedQueue<TextOp>) {
+        if (textOpQueue.size != 3) {
+            return
+        }
+
+        val first = textOpQueue.poll()
+        val second = textOpQueue.poll()
+        val third = textOpQueue.poll()
+
+        if (first is TextOp.SetSelection && !first.fromStart && first.signal &&
+            second is TextOp.MarkLiquid && second.newString == "" &&
+            third is TextOp.SetSelection && third.start == 0 && third.end == 0 && !third.fromStart && !third.signal) {
+            // this is a weird delete
+            doTextOp(TextOp.SimpleBackspace(false));
+            return;
+        }
+
+        textOpQueue.add(first)
+        textOpQueue.add(second)
+        textOpQueue.add(third)
+    }
+
+    private fun processOperation(
             op: TextOp,
             next: TextOp?,
             ic: InputConnection
         ) {
 
-            //Log.d("NIN", "processOperation: $op, next: $next")
+            Log.d("NIN", "processOperation: $op, next: $next")
             when (op) {
                 is TextOp.MarkLiquid -> {
                     if (ignoreNullCandidateFlag) {
