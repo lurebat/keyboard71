@@ -50,7 +50,7 @@ class SoftKeyboard : InputMethodService() {
     ) {
         val shouldSignal =
             !didProcessTextOps && System.currentTimeMillis() - lastTextOpTimeMillis >= 55
-        Log.d("SoftKeyboard", "candstart $lazyString")
+        //Log.d("NIN", "candstart $lazyString")
         changeSelection(
             currentInputConnection,
             newSelStart,
@@ -83,10 +83,13 @@ class SoftKeyboard : InputMethodService() {
             "------------ jormoust Editor Info : ${attribute.packageName} | ${attribute.fieldName}|${attribute.inputType}"
         )
         var keyboardType = ""
+
         when (attribute.inputType and EditorInfo.TYPE_MASK_CLASS) {
             EditorInfo.TYPE_CLASS_TEXT -> {
                 val variation = attribute.inputType and EditorInfo.TYPE_MASK_VARIATION
-                keyboardType = "uri"
+                if (variation == EditorInfo.TYPE_TEXT_VARIATION_URI || variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
+                    keyboardType = "uri"
+                }
                 if (variation == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD) {
                     keyboardType = "passwd"
                 }
@@ -315,7 +318,7 @@ class SoftKeyboard : InputMethodService() {
             while (true) {
                 val event = textBoxEventQueue.poll()
                 if (event != null) {
-                    Log.d("relayDelayedEvents", "Relaying delayed event: $event")
+                    //Log.d("NIN", "Relaying delayed event: $event")
                 }
                 when (event) {
                     is TextBoxEvent.AppFieldChange -> onChangeAppOrTextbox(
@@ -420,7 +423,7 @@ class SoftKeyboard : InputMethodService() {
         if (first is TextOp.SetSelection && !first.fromStart && first.signal &&
             second is TextOp.MarkLiquid && second.newString == "" &&
             third is TextOp.SetSelection && third.start == 0 && third.end == 0 && !third.fromStart && !third.signal) {
-            // this is a weird delete
+            //Log.d("NIN","this is a weird delete");
             doTextOp(TextOp.SimpleBackspace(false));
             return;
         }
@@ -436,7 +439,7 @@ class SoftKeyboard : InputMethodService() {
             ic: InputConnection
         ) {
 
-            Log.d("NIN", "processOperation: $op, next: $next")
+            //Log.d("NIN", "processOperation: $op, next: $next")
             when (op) {
                 is TextOp.MarkLiquid -> {
                     if (ignoreNullCandidateFlag) {
