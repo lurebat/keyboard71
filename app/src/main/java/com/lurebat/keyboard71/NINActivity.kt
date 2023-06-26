@@ -92,7 +92,7 @@ class NINActivity : ComponentActivity() {
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
-                            "Keyboard 72",
+                            "Keyboard 71",
                             style = MaterialTheme.typography.headlineLarge.copy(color = MaterialTheme.colorScheme.primary),
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
