@@ -24,8 +24,8 @@ android {
         applicationId 'com.lurebat.keyboard71'
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 601
-        versionName "71.2.0"
+        versionCode 602
+        versionName "71.4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
