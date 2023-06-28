@@ -34,6 +34,7 @@ import com.alorma.compose.settings.ui.SettingsCheckbox
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import com.lurebat.keyboard71.BuildConfig;
 
 @Composable
 fun ComposeSettingsTheme(
@@ -92,7 +93,7 @@ class NINActivity : ComponentActivity() {
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
-                            "Keyboard 71",
+                            "Keyboard 71 - Version " + BuildConfig.VERSION_NAME ,
                             style = MaterialTheme.typography.headlineLarge.copy(color = MaterialTheme.colorScheme.primary),
                             modifier = Modifier.padding(bottom = 16.dp)
                         )

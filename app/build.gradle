@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -5,6 +7,7 @@ plugins {
 }
 
 android {
+    namespace = "com.lurebat.keyboard71"
     signingConfigs {
         debug {
             storeFile file('C:\\Users\\lureb\\Programming\\nintype\\keys.jks')
@@ -25,7 +28,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 33
         versionCode 602
-        versionName "71.4.0"
+        versionName "71.4.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -47,6 +50,7 @@ android {
 
     buildFeatures {
         compose true
+        buildConfig true
     }
 
     composeOptions {
@@ -76,7 +80,15 @@ android {
         }
     }
 }
-
+tasks.withType(KotlinCompile).configureEach {
+    kotlinOptions {
+        freeCompilerArgs += [
+                "-Xallow-jvm-ir-dependencies",
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+        ]
+    }
+}
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.10.1'
@@ -88,9 +100,8 @@ dependencies {
     implementation 'com.github.alorma:compose-settings-ui-m3:0.27.0'
     implementation 'com.github.alorma:compose-settings-storage-datastore:0.27.0'
 
-    def composeBom = platform('androidx.compose:compose-bom:2023.04.01')
-    implementation platform('androidx.compose:compose-bom:2023.06.00')
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.06.00')
+    implementation platform('androidx.compose:compose-bom:2023.06.01')
+    androidTestImplementation platform('androidx.compose:compose-bom:2023.06.01')
 
     implementation 'androidx.compose.material3:material3'
     // Android Studio Preview support

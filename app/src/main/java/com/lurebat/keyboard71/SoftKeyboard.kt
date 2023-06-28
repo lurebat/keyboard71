@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
+import com.lurebat.keyboard71.BuildConfig
 import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
@@ -49,7 +50,9 @@ class SoftKeyboard : InputMethodService() {
     ) {
         val shouldSignal =
             !didProcessTextOps && System.currentTimeMillis() - lastTextOpTimeMillis >= 55
-        //Log.d("NIN", "candstart $lazyString")
+        if (BuildConfig.DEBUG) {
+            Log.d("NIN", "candstart $lazyString")
+        }
         changeSelection(
             currentInputConnection,
             newSelStart,
@@ -322,8 +325,8 @@ class SoftKeyboard : InputMethodService() {
         fun relayDelayedEvents() {
             while (true) {
                 val event = textBoxEventQueue.poll()
-                if (event != null) {
-                    //Log.d("NIN", "Relaying delayed event: $event")
+                if (event != null && BuildConfig.DEBUG) {
+                    Log.d("NIN", "Relaying delayed event: $event")
                 }
                 when (event) {
                     is TextBoxEvent.AppFieldChange -> onChangeAppOrTextbox(
@@ -428,7 +431,9 @@ class SoftKeyboard : InputMethodService() {
         if (first is TextOp.SetSelection && !first.fromStart && first.signal &&
             second is TextOp.MarkLiquid && second.newString == "" &&
             third is TextOp.SetSelection && third.start == 0 && third.end == 0 && !third.fromStart && !third.signal) {
-            //Log.d("NIN","this is a weird delete");
+            if (BuildConfig.DEBUG) {
+                Log.d("NIN", "this is a weird delete")
+            }
             doTextOp(TextOp.SimpleBackspace(false));
             return;
         }
@@ -443,8 +448,9 @@ class SoftKeyboard : InputMethodService() {
             next: TextOp?,
             ic: InputConnection
         ) {
-
-            //Log.d("NIN", "processOperation: $op, next: $next")
+            if (BuildConfig.DEBUG) {
+                Log.d("NIN", "processOperation: $op, next: $next")
+            }
             when (op) {
                 is TextOp.MarkLiquid -> {
                     if (next !is TextOp.MarkLiquid && next !is TextOp.Solidify) {
