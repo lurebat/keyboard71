@@ -18,6 +18,7 @@ import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
 import com.lurebat.keyboard71.tasker.triggerBasicTaskerEvent
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.min
 
 class SoftKeyboard : InputMethodService() {
     private var startedRetype: Boolean = false
@@ -30,8 +31,6 @@ class SoftKeyboard : InputMethodService() {
     private var selectionDiffRetype: SimpleCursor? = null
     private var candidateLocationBeforeRetype: SimpleCursor? = null
     private var afterRetypeCounter = 0
-
-    private var ignoreNullCandidateFlag = false
 
     private var selectionMode = false
 
@@ -149,6 +148,9 @@ class SoftKeyboard : InputMethodService() {
             signal: Boolean,
             ic: InputConnection,
         ) {
+
+            var shouldSignal = !fromStart || signal
+
             var keepSelection = false
 
             var keepCandidate = false
@@ -181,15 +183,18 @@ class SoftKeyboard : InputMethodService() {
                 lazyString.candidate.set(candidateStart.start, candidateStart.end)
                 finalSelectionStart = deltaSelection.start
                 finalSelectionEnd = deltaSelection.end
-                keepCandidate = false // TODO - If there is an api that let's us continue with an existing candidate, this should be true
+                keepCandidate = false // Sadly signaling messes up the candidate, if we find a way to avoid signaling - we can turn this on
                 keepSelection = true
             } else {
                 val candidate = lazyString.getCandidate()
                 if (candidate != null && fromStart) {
-                    val candidateBeforeSelection = lazyString.selection.min - lazyString.candidate.min
-                    if (candidateBeforeSelection > 0) {
-                        start -= candidateBeforeSelection
-                        end -= candidateBeforeSelection
+                    val candidate = lazyString.getCandidate()
+                    if (candidate != null) {
+                        val candidateBeforeSelection = candidate.substring(0, min(candidate.length, lazyString.selection.min - lazyString.candidate.min)).toByteArray().size
+                        if (candidateBeforeSelection > 0) {
+                            start -= candidateBeforeSelection
+                            end -= candidateBeforeSelection
+                        }
                     }
                 }
 
@@ -230,7 +235,7 @@ class SoftKeyboard : InputMethodService() {
                 startedRetype = false
             }
 
-            if (!fromStart) {
+            if (shouldSignal) {
                 signalCursorCandidacyResult(ic, "setselle")
             }
         }
@@ -248,7 +253,7 @@ class SoftKeyboard : InputMethodService() {
             if (lazyString.selection.max == lazyString.candidate.max) {
                 val candidate = lazyString.getCandidate()
                 if (candidate != null) {
-                    candidateBeforeSelection = lazyString.selection.min - lazyString.candidate.min
+                    candidateBeforeSelection = candidate.substring(0, min(candidate.length, lazyString.selection.min - lazyString.candidate.min)).toByteArray().size
                     if (candidateBeforeSelection > 0) {
                         backIndexBytes += candidateBeforeSelection
                     }
@@ -258,8 +263,7 @@ class SoftKeyboard : InputMethodService() {
             val stringUntilCursor = lazyString.getStringByBytesBeforeCursor(backIndexBytes)
             val replacement = replacement ?: ""
             var startIndex = lazyString.selection.min - stringUntilCursor.length
-
-
+            val replacingMiddleOfWord = stringUntilCursor.length < original.length
 
             lazyString.delete(startIndex, startIndex + original.length)
             lazyString.addString(startIndex, replacement)
@@ -273,8 +277,9 @@ class SoftKeyboard : InputMethodService() {
             ic.commitText(replacement, 1)
             ic.setComposingRegion(lazyString.candidate.start, lazyString.candidate.end)
             ic.setSelection(lazyString.selection.start, lazyString.selection.end)
-            ignoreNullCandidateFlag = true
-            signalCursorCandidacyResult(ic, "backrepl")
+            if (replacingMiddleOfWord) {
+                signalCursorCandidacyResult(ic, "backrepl")
+            }
         }
 
         @Suppress("UNUSED_PARAMETER")
@@ -311,7 +316,7 @@ class SoftKeyboard : InputMethodService() {
             val beforeCandidate = if (candidate != null) lazyString.getStringByIndex(maxOf(0, lazyString.candidate.min - charCount), lazyString.candidate.min) else lazyString.getCharsBeforeCursor(charCount).toString()
             val afterCandidate = if (candidate != null) lazyString.getStringByIndex(lazyString.candidate.max, lazyString.candidate.max + charCount) else lazyString.getCharsAfterCursor(charCount).toString()
 
-            doTextEvent(TextBoxEvent.Selection(candidate, beforeCandidate, afterCandidate, mode))
+            doTextEvent(TextBoxEvent.Selection(candidate ?: "", beforeCandidate, afterCandidate, mode))
         }
 
         fun relayDelayedEvents() {
@@ -442,10 +447,6 @@ class SoftKeyboard : InputMethodService() {
             //Log.d("NIN", "processOperation: $op, next: $next")
             when (op) {
                 is TextOp.MarkLiquid -> {
-                    if (ignoreNullCandidateFlag) {
-                        ignoreNullCandidateFlag = false
-                        return
-                    }
                     if (next !is TextOp.MarkLiquid && next !is TextOp.Solidify) {
                         ic.setComposingText(op.newString, 1)
                     }
