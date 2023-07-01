@@ -10,23 +10,32 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import com.lurebat.keyboard71.BuildConfig
 import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
+import com.lurebat.keyboard71.BuildConfig
 import com.lurebat.keyboard71.tasker.triggerBasicTaskerEvent
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
+
 
 class SoftKeyboard : InputMethodService() {
     private var startedRetype: Boolean = false
     val textBoxEventQueue: ConcurrentLinkedQueue<TextBoxEvent> = ConcurrentLinkedQueue()
     val textOpQueue: ConcurrentLinkedQueue<TextOp> = ConcurrentLinkedQueue()
     private var ninView: NINView? = null
-    private lateinit var lazyString: LazyString
+    private var lazyString: LazyString = LazyStringRope(
+        SimpleCursor(0,0),
+        SimpleCursor(-1, -1),
+        "",
+        "",
+        "",
+        InputConnectionRefresher(){ currentInputConnection }
+    )
     private var didProcessTextOps = false
     private var lastTextOpTimeMillis: Long = 0
     private var selectionDiffRetype: SimpleCursor? = null
@@ -38,6 +47,12 @@ class SoftKeyboard : InputMethodService() {
     override fun onCreate() {
         super.onCreate()
         keyboard = this
+        window.window?.addFlags(
+            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        )
+
     }
 
     override fun onUpdateSelection(
@@ -69,9 +84,7 @@ class SoftKeyboard : InputMethodService() {
     override fun onCreateInputView(): View {
         val view = ninView
         if (view == null) {
-            ninView = NINView(this).apply {
-                setZOrderOnTop(true)
-            }
+            ninView = NINView(this)
         } else {
             (view.parent as ViewGroup?)?.removeView(view)
         }
@@ -81,6 +94,7 @@ class SoftKeyboard : InputMethodService() {
 
     override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
+
         Log.d("SoftKeyboard",
             "------------ jormoust Editor Info : ${attribute.packageName} | ${attribute.fieldName}|${attribute.inputType}"
         )
