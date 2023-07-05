@@ -384,20 +384,39 @@ class SoftKeyboard : InputMethodService() {
         }
 
         private fun performBackspacing(mode: String?, singleCharacterMode: Boolean, ic: InputConnection) {
-            val (min, max) = when {
-                lazyString.selection.isNotEmpty() -> {
-                    Pair(lazyString.selection.min, lazyString.selection.max)
-                }
-                lazyString.candidate.isNotEmpty() -> {
-                    Pair(lazyString.candidate.min, lazyString.candidate.max)
-                }
-                singleCharacterMode -> {
-                    Pair(lazyString.selection.min - lazyString.getCharsBeforeCursor(1).length, lazyString.selection.min)
-                }
-                else -> {
-                    Pair(lazyString.selection.min - lazyString.getWordBeforeCursor().length, lazyString.selection.min)
+            val (min, max) = if (lazyString.selection.isNotEmpty()) {
+                Pair(lazyString.selection.min, lazyString.selection.max)
+            }
+            else if (lazyString.candidate.isNotEmpty()) {
+                Pair(lazyString.candidate.min, lazyString.candidate.max)
+            } else {
+                var singleCharacterMode = singleCharacterMode
+                var count = 1;
+                when(mode) {
+                    // deletes punctuation
+                    "S" -> {Pair(lazyString.findCharBeforeCursor(charArrayOf('\n', '.', '!', ',', '?')), lazyString.selection.min)}
+                    // Deletes line
+                    "L" -> {Pair(lazyString.findCharBeforeCursor(charArrayOf('\n')), lazyString.selection.min)}
+                    // does nothing
+                    "C", ". " -> {Pair(lazyString.selection.min, lazyString.selection.min)}
+                    "emjf" -> {
+                        val word = lazyString.getWordsBeforeCursor(1).takeIf { it.isNotBlank() } ?: lazyString.getWordsBeforeCursor(2)
+                        Pair(lazyString.selection.min - word.length, lazyString.selection.min)
+                    }
+                    else -> {
+                        if (mode != null && mode.startsWith("X:")) {
+                            count = mode.substring(2).toInt()
+                        }
+                        if (mode == "emjf") {
+                            singleCharacterMode = false
+                        }
+
+                        val method = if(singleCharacterMode) lazyString::getCharsBeforeCursor else lazyString::getWordsBeforeCursor
+                        Pair(lazyString.selection.min - method(count).length, lazyString.selection.min)
+                    }
                 }
             }
+
             val length = max - min
 
             ic.setComposingRegion(min, min)
