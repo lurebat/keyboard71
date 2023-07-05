@@ -6,6 +6,7 @@ import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -27,7 +28,6 @@ class SoftKeyboard : InputMethodService() {
     private var startedRetype: Boolean = false
     val textBoxEventQueue: ConcurrentLinkedQueue<TextBoxEvent> = ConcurrentLinkedQueue()
     val textOpQueue: ConcurrentLinkedQueue<TextOp> = ConcurrentLinkedQueue()
-    private var ninView: NINView? = null
     private var lazyString: LazyString = LazyStringRope(
         SimpleCursor(0,0),
         SimpleCursor(-1, -1),
@@ -66,7 +66,7 @@ class SoftKeyboard : InputMethodService() {
         val shouldSignal =
             !didProcessTextOps && System.currentTimeMillis() - lastTextOpTimeMillis >= 55
         if (BuildConfig.DEBUG) {
-            Log.d("NIN", "candstart $lazyString")
+            Log.d("NIN", "[before $lazyString, $oldSelStart, $oldSelEnd, $newSelStart, $newSelEnd, $candidatesStart, $candidatesEnd]")
         }
         changeSelection(
             currentInputConnection,
@@ -78,6 +78,10 @@ class SoftKeyboard : InputMethodService() {
         )
         if (!shouldSignal) {
             didProcessTextOps = false
+        }
+
+        if (BuildConfig.DEBUG) {
+            Log.d("NIN", "[after $lazyString]")
         }
     }
 
@@ -502,7 +506,7 @@ class SoftKeyboard : InputMethodService() {
                             if (action != 1) {
                                 ic.performEditorAction(action)
                             } else {
-                                keyDownUp(ic, 66, 0, 0, KeyEvent.FLAG_SOFT_KEYBOARD)
+                                ic.commitText(op.newString, 1)
                             }
                         }
 
@@ -618,6 +622,7 @@ class SoftKeyboard : InputMethodService() {
 
     companion object {
         var keyboard: SoftKeyboard? = null
+        var ninView: NINView? = null
 
         fun doTextOp(op: TextOp) = keyboard?.let{ k ->
             k.textOpQueue.let {
@@ -635,10 +640,11 @@ class SoftKeyboard : InputMethodService() {
             repeat: Int,
             flags: Int
         ) {
+            val eventTime = SystemClock.uptimeMillis()
             ic.sendKeyEvent(
                 KeyEvent(
-                    0,
-                    0,
+                    eventTime,
+                    eventTime,
                     KeyEvent.ACTION_DOWN,
                     keyEventCode,
                     repeat,
@@ -650,8 +656,8 @@ class SoftKeyboard : InputMethodService() {
             )
             ic.sendKeyEvent(
                 KeyEvent(
-                    0,
-                    0,
+                    eventTime,
+                    SystemClock.uptimeMillis(),
                     KeyEvent.ACTION_UP,
                     keyEventCode,
                     repeat,
