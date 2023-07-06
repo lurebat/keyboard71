@@ -104,6 +104,8 @@ class SoftKeyboard : InputMethodService() {
         )
         var keyboardType = ""
 
+        var switchToNumpad = false
+
         when (attribute.inputType and EditorInfo.TYPE_MASK_CLASS) {
             EditorInfo.TYPE_CLASS_TEXT -> {
                 val variation = attribute.inputType and EditorInfo.TYPE_MASK_VARIATION
@@ -114,10 +116,13 @@ class SoftKeyboard : InputMethodService() {
                     keyboardType = "passwd"
                 }
             }
+            EditorInfo.TYPE_CLASS_NUMBER -> {
+                switchToNumpad = true
+            }
         }
 
         doTextEvent(
-            TextBoxEvent.AppFieldChange(attribute.packageName, attribute.fieldName, keyboardType)
+            TextBoxEvent.AppFieldChange(attribute.packageName, attribute.fieldName, keyboardType, switchToNumpad)
         )
 
         lazyString = LazyStringRope(
@@ -347,11 +352,16 @@ class SoftKeyboard : InputMethodService() {
                     Log.d("NIN", "Relaying delayed event: $event")
                 }
                 when (event) {
-                    is TextBoxEvent.AppFieldChange -> onChangeAppOrTextbox(
-                        event.packageName,
-                        event.field,
-                        event.mode
-                    )
+                    is TextBoxEvent.AppFieldChange -> {
+                        onChangeAppOrTextbox(
+                            event.packageName,
+                            event.field,
+                            event.mode
+                        )
+                        if (event.switchToNumpad) {
+                            doTextEvent(TextBoxEvent.Shortcut('a', "ninenumboard"))
+                        }
+                    }
 
                     TextBoxEvent.Reset -> onExternalSelChange()
 

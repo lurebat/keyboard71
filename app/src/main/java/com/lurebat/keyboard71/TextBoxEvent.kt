@@ -16,7 +16,7 @@ sealed class TextBoxEvent {
         val mode: String?
     ) : TextBoxEvent()
 
-    data class AppFieldChange(val packageName: String?, val field: String?, val mode: String?) :
+    data class AppFieldChange(val packageName: String?, val field: String?, val mode: String?, val switchToNumpad: Boolean = false) :
         TextBoxEvent()
 
     data class WordDestruction(var destroyedWord: String?, var destroyedString: String?) :
