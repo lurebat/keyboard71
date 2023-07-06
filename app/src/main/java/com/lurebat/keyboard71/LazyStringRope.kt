@@ -59,7 +59,6 @@ interface LazyString {
     fun getCharsBeforeCursor(count: Int): CharSequence
     fun getCharsAfterCursor(count: Int): CharSequence
     fun getGraphemesBeforeCursor(count: Int): Int
-    fun getWordBeforeCursor(): CharSequence
     fun getStringByBytesBeforeCursor(byteCount: Int): String
     fun addString(index: Int, string: String)
     fun delete(start: Int, end: Int): Int
@@ -69,6 +68,8 @@ interface LazyString {
     fun getGraphemesAtIndex(startIndex: Int, isBackwards: Boolean, isWord: Boolean, count: Int): Int
     fun byteOffsetToGraphemeOffset(index: Int, byteCount: Int): Int
     fun selectedText(): CharSequence
+    fun getWordsBeforeCursor(count: Int): CharSequence
+    fun findCharBeforeCursor(charOptions: CharArray): Int
 }
 data class SimpleCursor(override var start: Int, override var end: Int = start) : Cursor {
     override var min: Int = -1
@@ -140,6 +141,21 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         return rope.get(selection.min - safe, selection.min) ?: requestCharsBeforeCursor(count)
     }
 
+    override fun findCharBeforeCursor(charOptions: CharArray): Int {
+        var bufferCount = 100
+        while (true) {
+            val chars = getCharsBeforeCursor(bufferCount)
+            val index = chars.lastIndexOfAny(charOptions)
+            if (index != -1) {
+                return selection.min - chars.length - index
+            }
+            bufferCount *= 2
+            if (chars.length >= selection.min) {
+                return 0
+            }
+        }
+    }
+
     override fun getCharsAfterCursor(count: Int): CharSequence {
         val safe = maxOf(count, 0)
         return rope.get(selection.max, selection.max + safe) ?: requestCharsAfterCursor(count)
@@ -192,8 +208,8 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         return getGraphemesAtIndex(selection.max, isBackwards = false, isWord = false, count = count)
     }
 
-    override fun getWordBeforeCursor(): CharSequence {
-        return getGraphemesAtIndex(selection.max, isBackwards = true, isWord = true, count = 1).let {
+    override fun getWordsBeforeCursor(count: Int): CharSequence {
+        return getGraphemesAtIndex(selection.max, isBackwards = true, isWord = true, count = count).let {
             getCharsBeforeCursor(it).toString()
         }
     }
@@ -319,7 +335,6 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
                 iterator.preceding(oldLength)
             }
         }
-
     }
 
     override fun toString(): String {

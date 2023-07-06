@@ -90,8 +90,6 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private void init() {
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-        KeyboardGLPauser mKeyboardGLPauser = new KeyboardGLPauser(this);
-        mKeyboardGLPauser.start();
     }
 
     public void setPreserveEGLContextOnPause(boolean preserveOnPause) {
@@ -486,41 +484,6 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         public static String formatEglError(String function, int error) {
             return function + " formatEglError failed: " + error;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public static class KeyboardGLPauser extends Thread {
-        public static boolean utils_lockedstat = false;
-        EXSurfaceView exsv;
-
-        KeyboardGLPauser(EXSurfaceView theref) {
-            this.exsv = theref;
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            setName("KeyboardGLPauser");
-            Utils.prin("KEYBOARD GL PAUSER IS RUNNINNGGGGG ---------------------------------------------------");
-            while (true) {
-                try {
-                    Thread.sleep(500L);
-                    boolean cur_locked = Utils.androidScreenLocked();
-                    if (cur_locked != utils_lockedstat) {
-                        utils_lockedstat = cur_locked;
-                        if (cur_locked) {
-                            this.exsv.onPause();
-                        } else {
-                            this.exsv.onResume();
-                        }
-                    }
-                } catch (Throwable ex) {
-                    Utils.prin("KeyboardGLPauser loop Got exception... : " + ex.toString());
-                    ex.printStackTrace();
-                    return;
-                }
-            }
         }
     }
 

@@ -35,6 +35,7 @@
             </intent-filter>
         </activity>
         <service android:name="com.lurebat.keyboard71.SoftKeyboard" android:permission="android.permission.BIND_INPUT_METHOD"
+                android:showOnLockScreen="true"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.view.InputMethod"/>

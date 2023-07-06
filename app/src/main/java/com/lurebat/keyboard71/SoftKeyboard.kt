@@ -6,27 +6,36 @@ import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import com.lurebat.keyboard71.BuildConfig
 import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
+import com.lurebat.keyboard71.BuildConfig
 import com.lurebat.keyboard71.tasker.triggerBasicTaskerEvent
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
+
 
 class SoftKeyboard : InputMethodService() {
     private var startedRetype: Boolean = false
     val textBoxEventQueue: ConcurrentLinkedQueue<TextBoxEvent> = ConcurrentLinkedQueue()
     val textOpQueue: ConcurrentLinkedQueue<TextOp> = ConcurrentLinkedQueue()
-    private var ninView: NINView? = null
-    private lateinit var lazyString: LazyString
+    private var lazyString: LazyString = LazyStringRope(
+        SimpleCursor(0,0),
+        SimpleCursor(-1, -1),
+        "",
+        "",
+        "",
+        InputConnectionRefresher(){ currentInputConnection }
+    )
     private var didProcessTextOps = false
     private var lastTextOpTimeMillis: Long = 0
     private var selectionDiffRetype: SimpleCursor? = null
@@ -38,6 +47,12 @@ class SoftKeyboard : InputMethodService() {
     override fun onCreate() {
         super.onCreate()
         keyboard = this
+        window.window?.addFlags(
+            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        )
+
     }
 
     override fun onUpdateSelection(
@@ -51,7 +66,7 @@ class SoftKeyboard : InputMethodService() {
         val shouldSignal =
             !didProcessTextOps && System.currentTimeMillis() - lastTextOpTimeMillis >= 55
         if (BuildConfig.DEBUG) {
-            Log.d("NIN", "candstart $lazyString")
+            Log.d("NIN", "[before $lazyString, $oldSelStart, $oldSelEnd, $newSelStart, $newSelEnd, $candidatesStart, $candidatesEnd]")
         }
         changeSelection(
             currentInputConnection,
@@ -64,14 +79,16 @@ class SoftKeyboard : InputMethodService() {
         if (!shouldSignal) {
             didProcessTextOps = false
         }
+
+        if (BuildConfig.DEBUG) {
+            Log.d("NIN", "[after $lazyString]")
+        }
     }
 
     override fun onCreateInputView(): View {
         val view = ninView
         if (view == null) {
-            ninView = NINView(this).apply {
-                setZOrderOnTop(true)
-            }
+            ninView = NINView(this)
         } else {
             (view.parent as ViewGroup?)?.removeView(view)
         }
@@ -81,6 +98,7 @@ class SoftKeyboard : InputMethodService() {
 
     override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
+
         Log.d("SoftKeyboard",
             "------------ jormoust Editor Info : ${attribute.packageName} | ${attribute.fieldName}|${attribute.inputType}"
         )
@@ -370,20 +388,39 @@ class SoftKeyboard : InputMethodService() {
         }
 
         private fun performBackspacing(mode: String?, singleCharacterMode: Boolean, ic: InputConnection) {
-            val (min, max) = when {
-                lazyString.selection.isNotEmpty() -> {
-                    Pair(lazyString.selection.min, lazyString.selection.max)
-                }
-                lazyString.candidate.isNotEmpty() -> {
-                    Pair(lazyString.candidate.min, lazyString.candidate.max)
-                }
-                singleCharacterMode -> {
-                    Pair(lazyString.selection.min - lazyString.getCharsBeforeCursor(1).length, lazyString.selection.min)
-                }
-                else -> {
-                    Pair(lazyString.selection.min - lazyString.getWordBeforeCursor().length, lazyString.selection.min)
+            val (min, max) = if (lazyString.selection.isNotEmpty()) {
+                Pair(lazyString.selection.min, lazyString.selection.max)
+            }
+            else if (lazyString.candidate.isNotEmpty()) {
+                Pair(lazyString.candidate.min, lazyString.candidate.max)
+            } else {
+                var singleCharacterMode = singleCharacterMode
+                var count = 1;
+                when(mode) {
+                    // deletes punctuation
+                    "S" -> {Pair(lazyString.findCharBeforeCursor(charArrayOf('\n', '.', '!', ',', '?')), lazyString.selection.min)}
+                    // Deletes line
+                    "L" -> {Pair(lazyString.findCharBeforeCursor(charArrayOf('\n')), lazyString.selection.min)}
+                    // does nothing
+                    "C", ". " -> {Pair(lazyString.selection.min, lazyString.selection.min)}
+                    "emjf" -> {
+                        val word = lazyString.getWordsBeforeCursor(1).takeIf { it.isNotBlank() } ?: lazyString.getWordsBeforeCursor(2)
+                        Pair(lazyString.selection.min - word.length, lazyString.selection.min)
+                    }
+                    else -> {
+                        if (mode != null && mode.startsWith("X:")) {
+                            count = mode.substring(2).toInt()
+                        }
+                        if (mode == "emjf") {
+                            singleCharacterMode = false
+                        }
+
+                        val method = if(singleCharacterMode) lazyString::getCharsBeforeCursor else lazyString::getWordsBeforeCursor
+                        Pair(lazyString.selection.min - method(count).length, lazyString.selection.min)
+                    }
                 }
             }
+
             val length = max - min
 
             ic.setComposingRegion(min, min)
@@ -469,7 +506,7 @@ class SoftKeyboard : InputMethodService() {
                             if (action != 1) {
                                 ic.performEditorAction(action)
                             } else {
-                                keyDownUp(ic, 66, 0, 0, KeyEvent.FLAG_SOFT_KEYBOARD)
+                                ic.commitText(op.newString, 1)
                             }
                         }
 
@@ -579,12 +616,17 @@ class SoftKeyboard : InputMethodService() {
 
                 's' -> selectionMode = !selectionMode
 
-                't' -> this.triggerBasicTaskerEvent(rest)
+                't' -> this.triggerBasicTaskerEvent(
+                    rest,
+                    lazyString.getCharsBeforeCursor(1000).toString(),
+                    lazyString.getCharsAfterCursor(1000).toString()
+                )
             }
         }
 
     companion object {
         var keyboard: SoftKeyboard? = null
+        var ninView: NINView? = null
 
         fun doTextOp(op: TextOp) = keyboard?.let{ k ->
             k.textOpQueue.let {
@@ -602,10 +644,11 @@ class SoftKeyboard : InputMethodService() {
             repeat: Int,
             flags: Int
         ) {
+            val eventTime = SystemClock.uptimeMillis()
             ic.sendKeyEvent(
                 KeyEvent(
-                    0,
-                    0,
+                    eventTime,
+                    eventTime,
                     KeyEvent.ACTION_DOWN,
                     keyEventCode,
                     repeat,
@@ -617,8 +660,8 @@ class SoftKeyboard : InputMethodService() {
             )
             ic.sendKeyEvent(
                 KeyEvent(
-                    0,
-                    0,
+                    eventTime,
+                    SystemClock.uptimeMillis(),
                     KeyEvent.ACTION_UP,
                     keyEventCode,
                     repeat,
