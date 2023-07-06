@@ -2,6 +2,7 @@ package com.lurebat.keyboard71.tasker
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -51,10 +52,18 @@ class OnWordInput @JvmOverloads constructor(
 )
 
 @TaskerInputRoot
-class OnWordUpdate @JvmOverloads constructor(@field:TaskerInputField("wordUpdate") var wordUpdate: String? = null)
+class OnWordUpdate @JvmOverloads constructor(@field:TaskerInputField("keyboardTextOutput") var                                                        keyboardTextOutput: String = "",
+                                                 @field:TaskerInputField("keyboardTextBefore") var keyboardTextBefore: String = "",
+                                                 @field:TaskerInputField("keyboardTextAfter") var keyboardTextAfter: String = "") {
+    fun toOutput() = OnWordOutput(keyboardTextOutput, keyboardTextBefore, keyboardTextAfter)
+}
 
 @TaskerOutputObject()
-class OnWordOutput(@get:TaskerOutputVariable("wordOutput") val wordOutput: String) {
+class OnWordOutput @JvmOverloads constructor(
+    @get:TaskerOutputVariable("keyboardTextOutput") var keyboardTextOutput: String = "",
+    @get:TaskerOutputVariable("keyboardTextBefore") var keyboardTextBefore: String = "",
+    @get:TaskerOutputVariable("keyboardTextAfter") var keyboardTextAfter: String = ""
+    ) {
 
 }
 
@@ -65,10 +74,12 @@ class OnWordRunner : TaskerPluginRunnerConditionEvent<OnWordInput, OnWordOutput,
         update: OnWordUpdate?
     ): TaskerPluginResultCondition<OnWordOutput> {
         val wordInput = input.regular.wordInput
-        val update = (update?.wordUpdate ?: "").trim()
+        val text = (update?.keyboardTextOutput ?: "").trim()
         if (wordInput.isNullOrEmpty()) {
-            return TaskerPluginResultConditionSatisfied(context, OnWordOutput(update))
+            return TaskerPluginResultConditionSatisfied(context, update?.toOutput() ?: OnWordOutput())
         }
+
+        Log.e("OnWordRunner", "$wordInput, ${update?.keyboardTextOutput} ${update?.keyboardTextBefore} ${update?.keyboardTextAfter}");
 
         val compareFun =
             when (input.regular.compareMethod) {
@@ -78,15 +89,11 @@ class OnWordRunner : TaskerPluginRunnerConditionEvent<OnWordInput, OnWordOutput,
                 else -> { word: String -> word == wordInput }
             }
 
-        if (!compareFun(update)) {
+        if (!compareFun(text)) {
             return TaskerPluginResultConditionUnsatisfied()
         }
 
-        if (!input.regular.shouldOutputText) {
-            //TODO remove this
-        }
-
-        return TaskerPluginResultConditionSatisfied(context, OnWordOutput(update))
+        return TaskerPluginResultConditionSatisfied(context, update?.toOutput() ?: OnWordOutput())
     }
 }
 
@@ -195,6 +202,6 @@ class KeyboardOnWordActivity : ComponentActivity(), TaskerPluginConfig<OnWordInp
 
 }
 
-fun Context.triggerBasicTaskerEvent(string: String) {
-    KeyboardOnWordActivity::class.java.requestQuery(this, OnWordUpdate(string))
+fun Context.triggerBasicTaskerEvent(string: String, before: String, after: String) {
+    KeyboardOnWordActivity::class.java.requestQuery(this, OnWordUpdate(string, before, after))
 }

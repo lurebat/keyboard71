@@ -82,7 +82,7 @@ class ActionRunner : TaskerPluginRunnerActionNoOutput<ActionInput>() {
             "TextOp" -> {
                 com.lurebat.keyboard71.SoftKeyboard.doTextOp(
                     TextOp.parse(
-                        TextOpType.valueOf(input.regular.opType!!),
+                        TextOpType.valueOf(input.regular.textOperation.type!!),
                         input.regular.textOperation.int1,
                         input.regular.textOperation.int2,
                         input.regular.textOperation.bool1,
