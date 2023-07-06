@@ -22,6 +22,12 @@ sealed class TextBoxEvent {
     data class WordDestruction(var destroyedWord: String?, var destroyedString: String?) :
         TextBoxEvent()
 
+    // TODO - make proper enums
+    data class Shortcut(
+        val category: Char,
+        val action: String,
+    ) : TextBoxEvent()
+
     companion object {
         fun fromType(type: TextEventType, vararg args: String?): TextBoxEvent {
             return when (type) {

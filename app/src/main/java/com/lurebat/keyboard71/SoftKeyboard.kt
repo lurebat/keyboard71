@@ -362,6 +362,11 @@ class SoftKeyboard : InputMethodService() {
                         event.mode
                     )
 
+                    is TextBoxEvent.Shortcut -> Native.run_shortcut(
+                        event.category,
+                        event.action
+                    )
+
                     is TextBoxEvent.WordDestruction -> onWordDestruction(
                         event.destroyedWord,
                         event.destroyedString
