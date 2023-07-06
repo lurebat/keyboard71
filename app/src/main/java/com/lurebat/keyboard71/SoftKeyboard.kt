@@ -616,7 +616,11 @@ class SoftKeyboard : InputMethodService() {
 
                 's' -> selectionMode = !selectionMode
 
-                't' -> this.triggerBasicTaskerEvent(rest)
+                't' -> this.triggerBasicTaskerEvent(
+                    rest,
+                    lazyString.getCharsBeforeCursor(1000).toString(),
+                    lazyString.getCharsAfterCursor(1000).toString()
+                )
             }
         }
 
