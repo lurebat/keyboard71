@@ -9,7 +9,12 @@ object WordHelper {
 
     private val keyCodesMap =
         KeyEvent::class.java.fields.asSequence().filter { it.name.startsWith("KEYCODE_") }
-            .associateTo(mutableMapOf()) { Pair(it.name.substring(8), it.getInt(null)) }
+            .associateTo(mutableMapOf()) { Pair(it.name.substring(8), it.getInt(null)) }.apply {
+                this["CTRL"] = this["CTRL_LEFT"]!!
+                this["SHIFT"] = this["SHIFT_LEFT"]!!
+                this["ALT"] = this["ALT_LEFT"]!!
+                this["META"] = this["ALT_LEFT"]!!
+            }
     private val modifiersMap = KeyEvent::class.java.fields.asSequence()
         .filter { it.name.startsWith("META_") && it.name.endsWith("_ON") }
         .associateTo(mutableMapOf()) {
@@ -19,7 +24,7 @@ object WordHelper {
             )
         }
 
-    fun parseKeyCode(keyCode: String): Int = keyCodesMap[keyCode.uppercase()] ?: keyCode.toInt()
+    fun parseKeyCode(keyCode: String): Int? = keyCodesMap[keyCode.uppercase()] ?: keyCode.toIntOrNull() ?: null
     fun parseModifiers(modifiers: String): Int {
         if (modifiers.all { it.isDigit() }) return modifiers.toInt()
         return modifiers.split(",").map { it.trim() }
