@@ -75,7 +75,7 @@ class Native {
 
         @JvmStatic
         @Api
-        external fun run_shortcut(category: Char, action: String)
+        external fun runShortcut(category: Char, action: String)
 
         init {
             System.loadLibrary("keyboard71");

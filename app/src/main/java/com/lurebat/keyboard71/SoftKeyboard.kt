@@ -19,7 +19,7 @@ import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
 import com.lurebat.keyboard71.BuildConfig
-import com.lurebat.keyboard71.tasker.triggerBasicTaskerEvent
+import com.lurebat.keyboard71.tasker.triggerBasicTaskerEvent;
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
 
@@ -429,7 +429,7 @@ class SoftKeyboard : InputMethodService() {
                     event.mode
                 )
 
-                is TextBoxEvent.Shortcut -> Native.run_shortcut(
+                is TextBoxEvent.Shortcut -> Native.runShortcut(
                         event.category,
                         event.action
                     )
@@ -700,6 +700,12 @@ class SoftKeyboard : InputMethodService() {
 
                 'm' -> {
                     modifierSpecialCommand(parts, ic)
+                }
+
+                '!' -> {
+                    val category = parts[0][0]
+                    val command = parts[1]
+                    doTextEvent(TextBoxEvent.Shortcut(category, command))
                 }
 
                 'c' -> ic.performContextMenuAction(

@@ -21,10 +21,10 @@
 
 #pragma pack(push, 1)
 
-struct theirstring {
+struct NintypeString {
     int length;
     char padding[0x8];
-    char string[0x20];
+    char string[0x1024];
 };
 struct SCShortcut {
     void *unk;
@@ -59,45 +59,58 @@ struct StringR {
 
 #pragma pack(pop)
 
-extern "C" GlobalRoenGL *_ZN6RoenGL15getGlobalRoenGLEv();
-extern "C" Moopad *_ZN12KeyboardPage9getMoopadEv(KeyboardPage *a);
-extern "C" void _ZN5Emkey10SCShortcutC2Ev(SCShortcut *a);
+extern "C" GlobalRoenGL *_ZN6RoenGL15getGlobalRoenGLEv(); // getGlobalRoenGL
+extern "C" Moopad *_ZN12KeyboardPage9getMoopadEv(KeyboardPage *a); // getMoopad
+extern "C" void _ZN5Emkey10SCShortcutC2Ev(SCShortcut *a); // SCShortcut::SCShortcut
+extern "C" void *_ZN5Emkey10SCShortcut10makeActionERKSs(SCShortcut *a, void *b); // SCShortcut::makeAction
+extern "C" void *_ZN5Emkey14SpaceCompleter13performActionERKNS_10SCShortcutE(void *a, void *b); // SpaceCompleter::performAction
+extern "C" void _ZN5Shing7StringRC2EPKci(StringR *a, const char *s, int len); // StringR::StringR
+extern "C" NintypeString *_ZNK5Shing7StringR8toStringEv(StringR *a, int *type); // StringR::toString
+extern "C" void _ZN5Shing7StringRC2Ev(StringR *a); // StringR::StringR
+extern "C" void _ZNK5Shing7StringR6appendEh(StringR *a, char b); // StringR::append
 
 
-extern "C" void *_ZN5Emkey10SCShortcut10makeActionERKSs(SCShortcut *a, void *b);
-extern "C" void *_ZN5Emkey14SpaceCompleter13performActionERKNS_10SCShortcutE(void *a, void *b);
-extern "C" void _ZN5Shing7StringRC2EPKci(StringR *a, const char *s, int len);
-extern "C" theirstring *_ZNK5Shing7StringR8toStringEv(StringR *a, int *type);
-extern "C" void _ZN5Shing7StringRC2Ev(StringR *a);
-extern "C" void _ZNK5Shing7StringR6appendEh(StringR *a, char b);
-extern "C" JNIEXPORT void JNICALL Java_com_lurebat_keyboard71_Native_run_1shortcut(JNIEnv *env,
-                                                                                   jclass,
-                                                                                   jchar category_jstring,
-                                                                                   jstring action_jstring) {
+std::unique_ptr<NintypeString> makeNintypeString(const char* str, int len) {
+    auto ninStr = std::make_unique<NintypeString>();
+    ninStr->length = len;
+    memcpy(ninStr->string, str, len);
+    return ninStr;
+}
 
+// from jstring
+std::unique_ptr<NintypeString> makeNintypeString(JNIEnv *env, jstring str) {
+    auto len = env->GetStringLength(str);
+    auto ninStr = std::make_unique<NintypeString>();
+    ninStr->length = len;
+    memcpy(ninStr->string, env->GetStringUTFChars(str, nullptr), len);
+    return ninStr;
+}
+// from jchar
+std::unique_ptr<NintypeString> makeNintypeString(JNIEnv *env, jchar str) {
+    auto ninStr = std::make_unique<NintypeString>();
+    ninStr->length = 1;
+    ninStr->string[0] = str;
+    return ninStr;
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_lurebat_keyboard71_Native_runShortcut(JNIEnv *env,
+                                                                                 jclass,
+                                                                                 jchar category_jstring,
+                                                                                 jstring action_jstring) {
     auto globalRoenGL = _ZN6RoenGL15getGlobalRoenGLEv();
     auto keyboardPage = globalRoenGL->inner->keyboardPage;
     auto moopad = _ZN12KeyboardPage9getMoopadEv(keyboardPage);
-    auto *shortcut = new SCShortcut();
+    auto category = makeNintypeString(env, category_jstring);
+    auto action = makeNintypeString(env, action_jstring);
 
-    auto *category = new theirstring();
-    category->length = 1;
-    category->string[0] = category_jstring;
+    auto shortcut = std::make_unique<SCShortcut>();
     shortcut->category = category->string;
-
-    auto *action = new theirstring();
-    action->length = env->GetStringLength(action_jstring);
-    memcpy(action->string, env->GetStringUTFChars(action_jstring, nullptr), action->length);
     shortcut->action = action->string;
+
 
     MoopadWrapper wrapper = {0};
     wrapper.shortcut_ptr = moopad;
-
-    _ZN5Emkey14SpaceCompleter13performActionERKNS_10SCShortcutE(&wrapper, shortcut);
-
-    delete action;
-    delete category;
-    delete shortcut;
+    _ZN5Emkey14SpaceCompleter13performActionERKNS_10SCShortcutE(&wrapper, shortcut.get());
 }
 
 extern "C"

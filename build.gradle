@@ -4,10 +4,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.android.tools.build:gradle:8.1.0-rc01'
     }
 
-    ext.kotlin_version = '1.8.22'
+    ext.kotlin_version = '1.9.0'
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -17,6 +17,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://androidx.dev/storage/compose-compiler/repository/"
+        }
     }
 }
 
