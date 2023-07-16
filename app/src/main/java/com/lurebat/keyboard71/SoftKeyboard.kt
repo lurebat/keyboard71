@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Base64
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -120,13 +121,19 @@ class SoftKeyboard : InputMethodService() {
                     keyboardType = "passwd"
                 }
             }
+
             EditorInfo.TYPE_CLASS_NUMBER -> {
                 switchToNumpad = true
             }
         }
 
         doTextEvent(
-            TextBoxEvent.AppFieldChange(attribute.packageName, attribute.fieldName, keyboardType, switchToNumpad)
+            TextBoxEvent.AppFieldChange(
+                attribute.packageName,
+                attribute.fieldName,
+                keyboardType,
+                switchToNumpad
+            )
         )
 
         lazyString = LazyStringRope(
@@ -410,15 +417,15 @@ class SoftKeyboard : InputMethodService() {
             }
             when (event) {
                 is TextBoxEvent.AppFieldChange -> {
-                        onChangeAppOrTextbox(
-                            event.packageName,
-                            event.field,
-                            event.mode
-                        )
-                        if (event.switchToNumpad) {
-                            doTextEvent(TextBoxEvent.Shortcut('a', "ninenumboard"))
-                        }
+                    onChangeAppOrTextbox(
+                        event.packageName,
+                        event.field,
+                        event.mode
+                    )
+                    if (event.switchToNumpad) {
+                        doTextEvent(TextBoxEvent.Shortcut('a', "ninenumboard"))
                     }
+                }
 
                 TextBoxEvent.Reset -> onExternalSelChange()
 
@@ -429,15 +436,14 @@ class SoftKeyboard : InputMethodService() {
                     event.mode
                 )
 
-                is TextBoxEvent.Shortcut -> Native.runShortcut(
-                        event.category,
-                        event.action
-                    )
-
-                    is TextBoxEvent.WordDestruction -> onWordDestruction(
-                        event.destroyedWord,
-                        event.destroyedString
-                    )
+                is TextBoxEvent.Shortcut -> {
+                    val a =Native.getBackup()
+                    Log.d("NIN", Base64.encode(a, Base64.DEFAULT).toString(Charsets.UTF_8))
+                }
+                is TextBoxEvent.WordDestruction -> onWordDestruction(
+                    event.destroyedWord,
+                    event.destroyedString
+                )
 
                 null -> break
             }
@@ -726,7 +732,11 @@ class SoftKeyboard : InputMethodService() {
                         selectionMode = !selectionMode
                     } else {
                         modifierSpecialCommand(
-                            arrayOf("s", "dpad_" + if (rest[0] == 'r') "right" else "left", if (rest.getOrNull(1) == 'c') "ctrl" else ""),
+                            arrayOf(
+                                "s",
+                                "dpad_" + if (rest[0] == 'r') "right" else "left",
+                                if (rest.getOrNull(1) == 'c') "ctrl" else ""
+                            ),
                             ic
                         )
                     }

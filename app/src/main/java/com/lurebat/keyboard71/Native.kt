@@ -77,6 +77,10 @@ class Native {
         @Api
         external fun runShortcut(category: Char, action: String)
 
+        @JvmStatic
+        @Api
+        external fun getBackup(): ByteArray
+
         init {
             System.loadLibrary("keyboard71");
         }
