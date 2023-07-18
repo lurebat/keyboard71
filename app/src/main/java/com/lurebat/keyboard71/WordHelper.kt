@@ -14,6 +14,10 @@ object WordHelper {
                 this["SHIFT"] = this["SHIFT_LEFT"]!!
                 this["ALT"] = this["ALT_LEFT"]!!
                 this["META"] = this["ALT_LEFT"]!!
+                this["RIGHT"] = this["DPAD_RIGHT"]!!
+                this["LEFT"] = this["DPAD_LEFT"]!!
+                this["UP"] = this["DPAD_UP"]!!
+                this["DOWN"] = this["DPAD_DOWN"]!!
             }
     private val modifiersMap = KeyEvent::class.java.fields.asSequence()
         .filter { it.name.startsWith("META_") && it.name.endsWith("_ON") }

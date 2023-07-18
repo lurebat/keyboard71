@@ -479,9 +479,7 @@ class SoftKeyboard : InputMethodService() {
                     )
                 }
                 // does nothing
-                "C", ". " -> {
-                    Pair(lazyString.selection.min, lazyString.selection.min)
-                }
+
 
                 "emjf" -> {
                     val word = lazyString.getWordsBeforeCursor(1).takeIf { it.isNotBlank() }
@@ -490,11 +488,12 @@ class SoftKeyboard : InputMethodService() {
                 }
 
                 else -> {
-                    if (mode != null && mode.startsWith("X:")) {
+                    if (mode?.startsWith("X:") == true) {
                         count = mode.substring(2).toInt()
                     }
-                    if (mode == "emjf") {
-                        singleCharacterMode = false
+
+                    if (mode ==  "C" || mode ==  ". ") {
+                        singleCharacterMode = true
                     }
 
                     val method =
@@ -705,7 +704,7 @@ class SoftKeyboard : InputMethodService() {
                         selectionMode = !selectionMode
                     } else {
                         modifierSpecialCommand(
-                            arrayOf("s", "dpad_" + if (rest[0] == 'r') "right" else "left", if (rest.getOrNull(1) == 'c') "ctrl" else ""),
+                            arrayOf("s" + if (rest.getOrNull(0) == 'c') "c" else "", "dpad_" + if (rest.last() == 'r') "right" else "left", ),
                             ic
                         )
                     }
@@ -726,21 +725,27 @@ class SoftKeyboard : InputMethodService() {
         ic: InputConnection
     ) {
         val keys = mutableListOf<String>()
+        val modifiers = mutableListOf<String>()
         if ('c' in parts[0]) {
             keys += "ctrl_left"
+            modifiers += "ctrl"
         }
         if ('a' in parts[0]) {
             keys += "alt_left"
+            modifiers += "meta"
         }
         if ('s' in parts[0]) {
             keys += "shift_left"
+            modifiers += "shift"
         }
 
         for (key in keys) {
             keySpecialCommand(arrayOf(key), ic, 'd')
         }
 
-        keySpecialCommand(parts.sliceArray(1..parts.lastIndex), ic, 'd')
+        keySpecialCommand(
+            arrayOf(parts[1], modifiers.joinToString(","))
+            , ic, 'k')
 
         for (key in keys.reversed()) {
             keySpecialCommand(arrayOf(key), ic, 'u')
