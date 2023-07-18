@@ -28,7 +28,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 33
         versionCode 602
-        versionName "71.5.0"
+        versionName "71.6.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -73,22 +73,9 @@ android {
             }
         }
     }
-    externalNativeBuild {
-        cmake {
-            path file('src/main/cpp/CMakeLists.txt')
-            version '3.22.1'
-        }
-    }
-    ndkVersion '25.1.8937393'
-
     defaultConfig {
         ndk {
             abiFilters "armeabi-v7a"
-        }
-        externalNativeBuild {
-            cmake {
-                cppFlags ''
-            }
         }
     }
 }
