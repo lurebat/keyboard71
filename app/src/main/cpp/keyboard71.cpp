@@ -83,42 +83,70 @@ extern "C" void _ZN5Emkey6Moopad18summonWordExporterEv(Moopad* a);
 extern "C" int _ZN5Emkey7LangEnv23getBinarizedCustomWordsEv(void* a, void* b);
 extern "C" void _ZN5Emkey7LangEnv26importBinarizedCustomWordsERKSs(void* th, void* a);
 
-std::unique_ptr<NintypeString> makeNintypeString(const char* str, int len) {
-    auto ninStr = std::make_unique<NintypeString>();
-    ninStr->length = len;
-    memcpy(ninStr->string, str, len);
-    return ninStr;
-}
 
-// from jstring
-std::unique_ptr<NintypeString> makeNintypeString(JNIEnv *env, jstring str) {
-    auto len = env->GetStringLength(str);
-    auto ninStr = std::make_unique<NintypeString>();
-    ninStr->length = len;
-    memcpy(ninStr->string, env->GetStringUTFChars(str, nullptr), len);
-    return ninStr;
-}
-// from jchar
-std::unique_ptr<NintypeString> makeNintypeString(JNIEnv *env, jchar str) {
-    auto ninStr = std::make_unique<NintypeString>();
-    ninStr->length = 1;
-    ninStr->string[0] = str;
-    return ninStr;
+class NintypeStringWrapper {
+
+public:
+    char* data;
+
+    NintypeStringWrapper(char* str, int len) {
+        data = new char[sizeof(NintypeString) + len - 1];
+        auto ninStr = (NintypeString*)data;
+        ninStr->length = len;
+        memcpy(ninStr->string, str, len);
+    }
+
+    static NintypeStringWrapper fromJString(JNIEnv *env, jstring str) {
+        return {(char*)env->GetStringUTFChars(str, nullptr), env->GetStringLength(str)};
+    }
+
+    static NintypeStringWrapper fromJChar(JNIEnv *env, jchar str) {
+        return {(char*)&str, 1};
+    }
+
+    static NintypeStringWrapper fromJByteArray(JNIEnv *env, jbyteArray str) {
+        auto len = env->GetArrayLength(str);
+        auto* data = env->GetByteArrayElements(str, nullptr);
+        return { (char*)data, len };
+    }
+
+    ~NintypeStringWrapper() {
+        delete[] data;
+    }
+
+    signed char * getStr() {
+        return ((NintypeString*)data)->string;
+    }
+
+    NintypeString * getRaw() {
+        return (NintypeString*)data;
+    }
+
+    NintypeString** getRawPtr() {
+        return (NintypeString**)&data;
+    }
+
+
+
+};
+
+Moopad * getMoopad() {
+    auto globalRoenGL = _ZN6RoenGL15getGlobalRoenGLEv();
+    auto keyboardPage = globalRoenGL->inner->keyboardPage;
+    return _ZN12KeyboardPage9getMoopadEv(keyboardPage);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_com_lurebat_keyboard71_Native_runShortcut(JNIEnv *env,
                                                                                  jclass,
-                                                                                 jchar category_jstring,
-                                                                                 jstring action_jstring) {
-    auto globalRoenGL = _ZN6RoenGL15getGlobalRoenGLEv();
-    auto keyboardPage = globalRoenGL->inner->keyboardPage;
-    auto moopad = _ZN12KeyboardPage9getMoopadEv(keyboardPage);
-    auto category = makeNintypeString(env, category_jstring);
-    auto action = makeNintypeString(env, action_jstring);
+                                                                                 jchar categoryJchar,
+                                                                                 jstring actionJstring) {
+    auto moopad = getMoopad();
+    NintypeStringWrapper category = NintypeStringWrapper::fromJChar(env, categoryJchar);
+    NintypeStringWrapper action = NintypeStringWrapper::fromJString(env, actionJstring);
 
     auto shortcut = std::make_unique<SCShortcut>();
-    shortcut->category = category->string;
-    shortcut->action = action->string;
+    shortcut->category = category.getStr();
+    shortcut->action = action.getStr();
 
 
     MoopadWrapper wrapper = {0};
@@ -130,18 +158,22 @@ extern "C"
 JNIEXPORT jbyteArray JNICALL
 Java_com_lurebat_keyboard71_Native_getBackup(JNIEnv *env, jclass clazz) {
     jbyte * s =0;
-    auto globalRoenGL = _ZN6RoenGL15getGlobalRoenGLEv();
-    auto keyboardPage = globalRoenGL->inner->keyboardPage;
-    auto moopad = _ZN12KeyboardPage9getMoopadEv(keyboardPage);
+    auto moopad = getMoopad();
     //int ret = _ZN5Emkey14SpaceCompleter23binarizeShortcutsBackupEv(&s, moopad->spaceCompleter);
     int ret = _ZN5Emkey7LangEnv23getBinarizedCustomWordsEv(&s, &moopad->langEnv);
     auto* str = (NintypeString*)(s-0xc);
 
-    _ZN5Emkey7LangEnv26importBinarizedCustomWordsERKSs(moopad->langEnv, &s);
-
     jbyteArray arr = env->NewByteArray(str->length);
     env->SetByteArrayRegion(arr, 0, str->length, str->string);
     return arr;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_lurebat_keyboard71_Native_setBackup(JNIEnv *env, jclass clazz, jbyteArray backup) {
+    auto moopad = getMoopad();
+    NintypeStringWrapper backupStr = NintypeStringWrapper::fromJByteArray(env, backup);
+    _ZN5Emkey7LangEnv26importBinarizedCustomWordsERKSs(&moopad->langEnv, backupStr.getRawPtr());
 }
 
 extern "C"
