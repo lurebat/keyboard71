@@ -743,9 +743,9 @@ class SoftKeyboard : InputMethodService() {
             keySpecialCommand(arrayOf(key), ic, 'd')
         }
 
-        keySpecialCommand(
-            arrayOf(parts[1], modifiers.joinToString(","))
-            , ic, 'k')
+        for (part in parts.drop(1)) {
+            keySpecialCommand(arrayOf(part), ic, 'k')
+        }
 
         for (key in keys.reversed()) {
             keySpecialCommand(arrayOf(key), ic, 'u')
