@@ -8,7 +8,7 @@ enum class TextEventType {
 }
 
 sealed class TextBoxEvent {
-    object Reset : TextBoxEvent()
+    data object Reset : TextBoxEvent()
     data class Selection(
         val currentWord: String?,
         val textBefore: String,
