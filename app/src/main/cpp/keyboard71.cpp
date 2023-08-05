@@ -82,32 +82,32 @@ extern "C" int _ZN5Emkey14SpaceCompleter23binarizeShortcutsBackupEv(void* a, Spa
 extern "C" void _ZN5Emkey6Moopad18summonWordExporterEv(Moopad* a);
 extern "C" int _ZN5Emkey7LangEnv23getBinarizedCustomWordsEv(void* a, void* b);
 extern "C" void _ZN5Emkey7LangEnv26importBinarizedCustomWordsERKSs(void* th, void* a);
-
+extern "C" void _ZN5Emkey6Moopad16backToAlphaBoardERKSs(void* a, void* b);
 
 class NintypeStringWrapper {
 
 public:
     char* data;
 
-    NintypeStringWrapper(char* str, int len) {
-        data = new char[sizeof(NintypeString) + len - 1];
+    NintypeStringWrapper(const char* str, int len) {
+        data = new char[sizeof(NintypeString) + len + 1];
         auto ninStr = (NintypeString*)data;
         ninStr->length = len;
         memcpy(ninStr->string, str, len);
     }
 
     static NintypeStringWrapper fromJString(JNIEnv *env, jstring str) {
-        return {(char*)env->GetStringUTFChars(str, nullptr), env->GetStringLength(str)};
+        return {(const char*)env->GetStringUTFChars(str, nullptr), env->GetStringLength(str)};
     }
 
     static NintypeStringWrapper fromJChar(JNIEnv *env, jchar str) {
-        return {(char*)&str, 1};
+        return {(const char*)&str, 1};
     }
 
     static NintypeStringWrapper fromJByteArray(JNIEnv *env, jbyteArray str) {
         auto len = env->GetArrayLength(str);
         auto* data = env->GetByteArrayElements(str, nullptr);
-        return { (char*)data, len };
+        return { (const char*)data, len };
     }
 
     ~NintypeStringWrapper() {
@@ -331,4 +331,11 @@ extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_lurebat_keyboard71_Native_syncTiming(JNIEnv *env, jclass clazz, jlong j) {
     return Java_com_jormy_nin_NINLib_syncTiming(env, clazz, j);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_lurebat_keyboard71_Native_backToAlphaBoard(JNIEnv *env, jclass clazz) {
+    NintypeStringWrapper s = NintypeStringWrapper("a", 1);
+    _ZN5Emkey6Moopad16backToAlphaBoardERKSs(s.getStr(), getMoopad());
 }

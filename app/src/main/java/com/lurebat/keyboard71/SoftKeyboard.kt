@@ -424,6 +424,8 @@ class SoftKeyboard : InputMethodService() {
                     )
                     if (event.switchToNumpad) {
                         doTextEvent(TextBoxEvent.Shortcut('a', "ninenumboard"))
+                    } else {
+                        //doTextEvent(TextBoxEvent.Shortcut('a', "reset"))
                     }
                 }
 
@@ -436,9 +438,16 @@ class SoftKeyboard : InputMethodService() {
                     event.mode
                 )
 
-                is TextBoxEvent.Shortcut -> Native.runShortcut(
-                    event.category,
-                    event.action)
+                is TextBoxEvent.Shortcut -> {
+                    if (event.action == "reset") {
+                        Native.backToAlphaBoard()
+                    } else {
+                        Native.runShortcut(
+                            event.category,
+                            event.action
+                        )
+                    }
+                }
 
                 is TextBoxEvent.WordDestruction -> onWordDestruction(
                     event.destroyedWord,
@@ -513,7 +522,7 @@ class SoftKeyboard : InputMethodService() {
                         count = mode.substring(2).toInt()
                     }
 
-                    if (mode ==  "C" || mode ==  ". ") {
+                    if (mode == "C" || mode == ". ") {
                         singleCharacterMode = true
                     }
 
@@ -732,10 +741,10 @@ class SoftKeyboard : InputMethodService() {
                     } else {
                         modifierSpecialCommand(
                             arrayOf(
-                                "s"+ if (rest.getOrNull(0) == 'c') "c" else "",
+                                "s" + if (rest.getOrNull(0) == 'c') "c" else "",
                                 "dpad_" + if (rest.last() == 'r') "right" else "left",
 
-                            ),
+                                ),
                             ic
                         )
                     }

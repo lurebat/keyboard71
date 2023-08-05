@@ -85,6 +85,10 @@ class Native {
         @Api
         external fun setBackup(backup: ByteArray)
 
+        @JvmStatic
+        @Api
+        external fun backToAlphaBoard()
+
         init {
             System.loadLibrary("keyboard71");
         }
