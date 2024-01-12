@@ -26,7 +26,40 @@ interface Cursor {
     fun length(): Int {
         return max - min
     }
+
+    fun addLength(index: Int, count: Int) {
+        if (index < min) {
+            start += count
+            end += count
+        } else if (index < max) {
+            if (end == max) {
+                end += count
+            } else {
+                start += count
+            }
+        }
+        refresh()
+    }
+
+    fun deleteLength(index: Int, count: Int) {
+        if (index < min) {
+            start -= count
+            end -= count
+        } else if (index < max) {
+            if (end == max) {
+                end -= count
+            } else {
+                start -= count
+            }
+        }
+        refresh()
+    }
+
+    fun isNegative(): Boolean {
+        return start < 0 && end < 0
+    }
 }
+
 interface Refresher {
     fun beforeCursor(count: Int): CharSequence?
     fun afterCursor(count: Int): CharSequence?
@@ -53,7 +86,13 @@ interface LazyString {
     var candidate: SimpleCursor
     val refresher: Refresher
     fun moveSelection(deltaStart: Int, deltaEnd: Int)
-    fun moveSelectionAndCandidate(deltaStart: Int, deltaEnd: Int, deltaCandidateStart: Int, deltaCandidateEnd: Int)
+    fun moveSelectionAndCandidate(
+        deltaStart: Int,
+        deltaEnd: Int,
+        deltaCandidateStart: Int,
+        deltaCandidateEnd: Int
+    )
+
     fun setSelection(start: Int, end: Int)
     fun setSelectionAndCandidate(start: Int?, end: Int?, candidateStart: Int?, candidateEnd: Int?)
     fun getCharsBeforeCursor(count: Int): CharSequence
@@ -61,7 +100,7 @@ interface LazyString {
     fun getGraphemesBeforeCursor(count: Int): Int
     fun getStringByBytesBeforeCursor(byteCount: Int): String
     fun addString(index: Int, string: String)
-    fun delete(start: Int, end: Int): Int
+    fun delete(start: Int, end: Int)
     fun getStringByIndex(start: Int, end: Int): String
     fun getCandidate(): CharSequence?
     fun getGraphemesAfterCursor(count: Int): Int
@@ -71,6 +110,7 @@ interface LazyString {
     fun getWordsBeforeCursor(count: Int): CharSequence
     fun findCharBeforeCursor(charOptions: CharArray): Int
 }
+
 data class SimpleCursor(override var start: Int, override var end: Int = start) : Cursor {
     override var min: Int = -1
     override var max: Int = -1
@@ -102,17 +142,11 @@ data class SimpleCursor(override var start: Int, override var end: Int = start) 
 }
 
 
-
-class LazyStringRope(override var selection: SimpleCursor, override var candidate: SimpleCursor, initialTextBefore: CharSequence?, initialSelection: CharSequence?, initialTextAfter: CharSequence?, override val refresher: Refresher) :
-    LazyString {
-    private val rope = Rope()
-
-    init {
-        initialTextBefore?.let { rope.insert(selection.min-it.length, it) }
-        initialSelection?.let { rope.insert(selection.min, it) }
-        initialTextAfter?.let { rope.insert(selection.max, it) }
-    }
-
+abstract class BaseLazyString(
+    override var selection: SimpleCursor,
+    override var candidate: SimpleCursor,
+    override val refresher: Refresher
+): LazyString {
     override fun moveSelection(deltaStart: Int, deltaEnd: Int) {
         selection.move(deltaStart, deltaEnd)
     }
@@ -136,11 +170,7 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         selection.set(start, end)
     }
 
-    override fun getCharsBeforeCursor(count: Int): CharSequence {
-        val safe = minOf(count, selection.min)
-        return rope.get(selection.min - safe, selection.min) ?: requestCharsBeforeCursor(count)
-    }
-
+    abstract override fun getCharsBeforeCursor(count: Int): CharSequence
     override fun findCharBeforeCursor(charOptions: CharArray): Int {
         var bufferCount = 100
         while (true) {
@@ -156,37 +186,13 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         }
     }
 
-    override fun getCharsAfterCursor(count: Int): CharSequence {
-        val safe = maxOf(count, 0)
-        return rope.get(selection.max, selection.max + safe) ?: requestCharsAfterCursor(count)
-    }
-
-    override fun selectedText(): CharSequence {
-        return rope.get(selection.min, selection.max) ?: requestSelection()
-    }
-
-    private fun requestCharsBeforeCursor(count: Int): CharSequence {
-        val chars = refresher.beforeCursor(minOf(count, selection.min))
-        chars?.let { rope.insert(selection.min, it) }
-        return chars ?: ""
-    }
-
-    private fun requestCharsAfterCursor(count: Int): CharSequence {
-        val chars = refresher.afterCursor(maxOf(count, 0))
-        chars?.let { rope.insert(selection.max, it) }
-        return chars ?: ""
-    }
-
-    private fun requestSelection(): CharSequence {
-        val chars = refresher.atCursor()
-        chars?.let { rope.insert(selection.min, it) }
-        return chars ?: ""
-    }
-
+    abstract override fun getCharsAfterCursor(count: Int): CharSequence
+    abstract override fun selectedText(): CharSequence
     override fun getStringByBytesBeforeCursor(byteCount: Int): String {
-        getCharsBeforeCursor(byteCount * 2).toString().toByteArray().takeLast(byteCount).toByteArray().let {
-            return String(it)
-        }
+        getCharsBeforeCursor(byteCount * 2).toString().toByteArray().takeLast(byteCount)
+            .toByteArray().let {
+                return String(it)
+            }
     }
 
     override fun byteOffsetToGraphemeOffset(index: Int, byteCount: Int): Int {
@@ -196,8 +202,14 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
             maxOf(index + byteCount, index)
         val startString = getStringByIndex(newIndex, newStartEnd)
         val startBytes = startString.toByteArray()
-        val startChars = String(startBytes, 0, minOf(abs(byteCount), startBytes.size) , Charsets.UTF_8).length
-        return getGraphemesAtIndex(newIndex, isBackwards = byteCount < 0, isWord = false, count = startChars) * (if (byteCount < 0) -1 else 1)
+        val startChars =
+            String(startBytes, 0, minOf(abs(byteCount), startBytes.size), Charsets.UTF_8).length
+        return getGraphemesAtIndex(
+            newIndex,
+            isBackwards = byteCount < 0,
+            isWord = false,
+            count = startChars
+        ) * (if (byteCount < 0) -1 else 1)
     }
 
     override fun getGraphemesBeforeCursor(count: Int): Int {
@@ -205,43 +217,27 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
     }
 
     override fun getGraphemesAfterCursor(count: Int): Int {
-        return getGraphemesAtIndex(selection.max, isBackwards = false, isWord = false, count = count)
+        return getGraphemesAtIndex(
+            selection.max,
+            isBackwards = false,
+            isWord = false,
+            count = count
+        )
     }
 
     override fun getWordsBeforeCursor(count: Int): CharSequence {
-        return getGraphemesAtIndex(selection.max, isBackwards = true, isWord = true, count = count).let {
+        return getGraphemesAtIndex(
+            selection.max,
+            isBackwards = true,
+            isWord = true,
+            count = count
+        ).let {
             getCharsBeforeCursor(it).toString()
         }
     }
 
-    override fun addString(index: Int, string: String) {
-        rope.insert(index, string)
-        fixCursorWithoutChangingSize(selection, index, string.length, false)
-        fixCursorWithoutChangingSize(candidate, index, string.length, false)
-    }
-
-    override fun delete(start: Int, end: Int): Int {
-        rope.delete(start, end)
-        // change selection to match
-        fixCursorWithoutChangingSize(selection, start, end - start, true)
-        fixCursorWithoutChangingSize(candidate, start, end - start, true)
-
-        return end - start
-    }
-
-    private fun fixCursorWithoutChangingSize(cursor: SimpleCursor, start: Int, count: Int, delete: Boolean) {
-        val sign = if (delete) -1 else 1
-        if (cursor.start == -1 || cursor.end == -1) {
-            return
-        }
-        if (cursor.max < start) {
-            return
-        }
-        val afterCursor = if (delete) maxOf(start + count - cursor.max, 0) else 0
-        cursor.move(sign * (count - afterCursor), sign * (count - afterCursor))
-
-    }
-
+    abstract override fun addString(index: Int, string: String)
+    abstract override fun delete(start: Int, end: Int)
     override fun getStringByIndex(start: Int, end: Int): String {
         if (start == end) {
             return ""
@@ -265,11 +261,15 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         }
         if (charsAfterCount > 0) {
             val after = getCharsAfterCursor(charsAfterCount)
-            builder.append(after.substring(maxOf(0, after.length - charsAfterCount), minOf(max - selection.max, after.length)))
+            builder.append(
+                after.substring(
+                    maxOf(0, after.length - charsAfterCount),
+                    minOf(max - selection.max, after.length)
+                )
+            )
         }
         return builder.toString()
     }
-
     override fun getCandidate(): CharSequence? {
         if (candidate.max < 0 || candidate.min < 0) {
             return null
@@ -282,7 +282,12 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         return getStringByIndex(candidate.min, candidate.max)
     }
 
-    override fun getGraphemesAtIndex(startIndex: Int, isBackwards: Boolean, isWord: Boolean, count: Int): Int {
+    override fun getGraphemesAtIndex(
+        startIndex: Int,
+        isBackwards: Boolean,
+        isWord: Boolean,
+        count: Int
+    ): Int {
         var charsToGet = count
         charsToGet = 100
         if (isBackwards) {
@@ -323,7 +328,10 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
 
             val oldLength = totalLength
             totalLength *= 2
-            chars = getStringByIndex(startIndex, startIndex + totalLength * (if (isBackwards) -1 else 1))
+            chars = getStringByIndex(
+                startIndex,
+                startIndex + totalLength * (if (isBackwards) -1 else 1)
+            )
             if (chars.length < totalLength || totalLength == 0) {
                 isLast = true
             }
@@ -336,6 +344,126 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
             }
         }
     }
+
+}
+
+class NoBufferLazyString(
+    selection: SimpleCursor,
+    candidate: SimpleCursor,
+    refresher: Refresher
+) : BaseLazyString(selection, candidate, refresher){
+    override fun getCharsBeforeCursor(count: Int): CharSequence {
+        return refresher.beforeCursor(count) ?: ""
+    }
+
+    override fun getCharsAfterCursor(count: Int): CharSequence {
+        return refresher.afterCursor(count) ?: ""
+    }
+
+    override fun selectedText(): CharSequence {
+        return refresher.atCursor() ?: ""
+    }
+
+    override fun addString(index: Int, string: String)
+    {
+        if (!selection.isNegative()) {
+            selection.addLength(index, string.length)
+        }
+        if (!candidate.isNegative()) {
+            candidate.addLength(index, string.length)
+        }
+    }
+
+    override fun delete(start: Int, end: Int) {
+        if (!selection.isNegative()) {
+            selection.deleteLength(start, end - start)
+        }
+        if (!candidate.isNegative()) {
+            candidate.deleteLength(start, end - start)
+        }
+    }
+}
+
+class LazyStringRope(
+    selection: SimpleCursor,
+    candidate: SimpleCursor,
+    initialTextBefore: CharSequence?,
+    initialSelection: CharSequence?,
+    initialTextAfter: CharSequence?,
+    refresher: Refresher,
+) :
+    LazyString, BaseLazyString(selection, candidate, refresher) {
+    private val rope = Rope()
+
+    init {
+        initialTextBefore?.let { rope.insert(selection.min - it.length, it) }
+        initialSelection?.let { rope.insert(selection.min, it) }
+        initialTextAfter?.let { rope.insert(selection.max, it) }
+    }
+
+    override fun getCharsBeforeCursor(count: Int): CharSequence {
+        val safe = minOf(count, selection.min)
+        return rope.get(selection.min - safe, selection.min) ?: requestCharsBeforeCursor(count)
+    }
+
+    override fun getCharsAfterCursor(count: Int): CharSequence {
+        val safe = maxOf(count, 0)
+        return rope.get(selection.max, selection.max + safe) ?: requestCharsAfterCursor(count)
+    }
+
+    override fun selectedText(): CharSequence {
+        return rope.get(selection.min, selection.max) ?: requestSelection()
+    }
+
+    private fun requestCharsBeforeCursor(count: Int): CharSequence {
+        val chars = refresher.beforeCursor(minOf(count, selection.min))
+        chars?.let { rope.insert(selection.min, it) }
+        return chars ?: ""
+    }
+
+    private fun requestCharsAfterCursor(count: Int): CharSequence {
+        val chars = refresher.afterCursor(maxOf(count, 0))
+        chars?.let { rope.insert(selection.max, it) }
+        return chars ?: ""
+    }
+
+    private fun requestSelection(): CharSequence {
+        val chars = refresher.atCursor()
+        chars?.let { rope.insert(selection.min, it) }
+        return chars ?: ""
+    }
+
+    override fun addString(index: Int, string: String) {
+        rope.insert(index, string)
+        fixCursorWithoutChangingSize(selection, index, string.length, false)
+        fixCursorWithoutChangingSize(candidate, index, string.length, false)
+    }
+
+    override fun delete(start: Int, end: Int) {
+        rope.delete(start, end)
+        // change selection to match
+        fixCursorWithoutChangingSize(selection, start, end - start, true)
+        fixCursorWithoutChangingSize(candidate, start, end - start, true)
+    }
+
+    private fun fixCursorWithoutChangingSize(
+        cursor: SimpleCursor,
+        start: Int,
+        count: Int,
+        delete: Boolean
+    ) {
+        val sign = if (delete) -1 else 1
+        if (cursor.start == -1 || cursor.end == -1) {
+            return
+        }
+        if (cursor.max < start) {
+            return
+        }
+        val afterCursor = if (delete) maxOf(start + count - cursor.max, 0) else 0
+        cursor.move(sign * (count - afterCursor), sign * (count - afterCursor))
+
+    }
+
 
     override fun toString(): String {
         return "LazyStringRope(selection=$selection, candidate=$candidate, length=${rope.length()})"

@@ -15,7 +15,7 @@ enum class TextOpType {
 
 sealed class TextOp {
     data class MuCommand(val command: String, val arg1: String? = null, val arg2: String? = null, val arg3: String? = null) : TextOp()
-    object RequestSelection : TextOp()
+    data object RequestSelection : TextOp()
     data class SetSelection(val start: Int, val end: Int, val fromStart: Boolean, val signal: Boolean) : TextOp()
 
     data class DragCursorUp(val releasedDirection: Int) : TextOp()

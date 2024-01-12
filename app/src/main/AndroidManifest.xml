@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <application android:label="Keyboard 71" android:icon="@drawable/nintype_zenkey">
+    <application android:label="Keyboard 72" android:icon="@drawable/nintype_zenkey">
         <activity android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:name=".NINActivity" android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden"
                 android:exported="true">
             <intent-filter>

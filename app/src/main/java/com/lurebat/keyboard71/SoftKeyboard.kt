@@ -18,7 +18,6 @@ import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
-import com.lurebat.keyboard71.BuildConfig
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
 
@@ -46,6 +45,13 @@ class SoftKeyboard : InputMethodService() {
     override fun onCreate() {
         super.onCreate()
         keyboard = this
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            window?.ownerActivity?.setShowWhenLocked(true)
+            window?.ownerActivity?.setTurnScreenOn(true)
+        }
+
+        @Suppress("DEPRECATION")
         window.window?.addFlags(
             WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
@@ -119,12 +125,18 @@ class SoftKeyboard : InputMethodService() {
             TextBoxEvent.AppFieldChange(attribute.packageName, attribute.fieldName, keyboardType)
         )
 
-        lazyString = LazyStringRope(
+//        lazyString = LazyStringRope(
+//            SimpleCursor(attribute.initialSelStart, attribute.initialSelEnd),
+//            SimpleCursor(-1, -1),
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) attribute.getInitialTextBeforeCursor(1000, 0) else currentInputConnection.getTextBeforeCursor(1000, 0),
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) attribute.getInitialSelectedText(0) else currentInputConnection.getSelectedText(0),
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) attribute.getInitialTextAfterCursor(1000, 0) else currentInputConnection.getTextAfterCursor(1000, 0),
+//            InputConnectionRefresher(){ currentInputConnection }
+//        )
+
+        lazyString = NoBufferLazyString(
             SimpleCursor(attribute.initialSelStart, attribute.initialSelEnd),
             SimpleCursor(-1, -1),
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) attribute.getInitialTextBeforeCursor(1000, 0) else currentInputConnection.getTextBeforeCursor(1000, 0),
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) attribute.getInitialSelectedText(0) else currentInputConnection.getSelectedText(0),
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) attribute.getInitialTextAfterCursor(1000, 0) else currentInputConnection.getTextAfterCursor(1000, 0),
             InputConnectionRefresher(){ currentInputConnection }
         )
 
@@ -169,7 +181,7 @@ class SoftKeyboard : InputMethodService() {
             ic: InputConnection,
         ) {
 
-            var shouldSignal = !fromStart || signal
+            val shouldSignal = !fromStart || signal
 
             var keepSelection = false
 

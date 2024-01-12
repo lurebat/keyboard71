@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.lurebat.keyboard71"
+        applicationId = "com.lurebat.keyboard72"
         minSdk = 24
         targetSdk = 34
         versionCode = 716
