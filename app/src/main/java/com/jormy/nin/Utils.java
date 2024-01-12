@@ -139,12 +139,13 @@ public class Utils {
         if (theid == null) {
             int realid = -1;
             try {
-                AssetFileDescriptor descriptor = assetManager().openFd(soundname + ".ogg");
-                realid = sp.load(descriptor, 1);
+                try (AssetFileDescriptor descriptor = assetManager().openFd(soundname + ".ogg")) {
+                    realid = sp.load(descriptor, 1);
+                }
             } catch (IOException e) {
                 prin("Cannot load the sound : " + soundname);
             }
-            Integer theid2 = new Integer(realid);
+            Integer theid2 = Integer.valueOf(realid);
             soundeffect_map.put(soundname, theid2);
             return theid2;
         }

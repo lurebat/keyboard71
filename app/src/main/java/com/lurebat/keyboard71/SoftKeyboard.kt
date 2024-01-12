@@ -19,7 +19,6 @@ import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
 import com.lurebat.keyboard71.BuildConfig
-import com.lurebat.keyboard71.tasker.triggerBasicTaskerEvent
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
 
@@ -615,12 +614,12 @@ class SoftKeyboard : InputMethodService() {
                 )
 
                 's' -> selectionMode = !selectionMode
-
-                't' -> this.triggerBasicTaskerEvent(
-                    rest,
-                    lazyString.getCharsBeforeCursor(1000).toString(),
-                    lazyString.getCharsAfterCursor(1000).toString()
-                )
+//
+//                't' -> this.triggerBasicTaskerEvent(
+//                    rest,
+//                    lazyString.getCharsBeforeCursor(1000).toString(),
+//                    lazyString.getCharsAfterCursor(1000).toString()
+//                )
             }
         }
 

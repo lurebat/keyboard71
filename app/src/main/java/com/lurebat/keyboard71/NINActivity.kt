@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -90,7 +91,7 @@ class NINActivity : ComponentActivity() {
                 Scaffold(
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(it)
                     ) {
                         Text(
                             "Keyboard 71 - Version " + BuildConfig.VERSION_NAME ,
@@ -104,7 +105,7 @@ class NINActivity : ComponentActivity() {
                                     1.dp,
                                     MaterialTheme.colorScheme.error,
                                     RoundedCornerShape(8.dp)
-                                )
+                                ),
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -129,14 +130,13 @@ class NINActivity : ComponentActivity() {
                         }
 
                         Column(
-                            modifier = Modifier.padding(top = 16.dp).fillMaxWidth().align(
+                            modifier = Modifier.padding(it).fillMaxWidth().align(
                                 Alignment.CenterHorizontally)
                         ) {
                             Button(
                                 onClick = {
-                                    this@NINActivity.startActivityForResult(
-                                        Intent("android.settings.INPUT_METHOD_SETTINGS"),
-                                        0
+                                    this@NINActivity.startActivity(
+                                        Intent(Settings.ACTION_INPUT_METHOD_SETTINGS),
                                     )
                                 },
                                 modifier = Modifier

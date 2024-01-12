@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application android:label="Keyboard 71" android:icon="@drawable/nintype_zenkey">
         <activity android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:name=".NINActivity" android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden"
                 android:exported="true">
@@ -17,30 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-                android:name="com.lurebat.keyboard71.tasker.KeyboardActionActivity"
-                android:exported="true"
-                android:icon="@mipmap/ic_launcher"
-                android:label="Keyboard Action Activity">
-            <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.lurebat.keyboard71.tasker.KeyboardOnWordActivity"
-                android:exported="true"
-                android:icon="@mipmap/ic_launcher"
-                android:label="My Event Condition">
-            <intent-filter>
-                <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT" />
-            </intent-filter>
-        </activity>
         <service android:name="com.lurebat.keyboard71.SoftKeyboard" android:permission="android.permission.BIND_INPUT_METHOD"
                 android:showOnLockScreen="true"
-                android:exported="true">
+                android:exported="false">
             <intent-filter>
                 <action android:name="android.view.InputMethod"/>
             </intent-filter>
-
             <meta-data android:name="android.view.im" android:resource="@xml/method"/>
         </service>
     </application>
