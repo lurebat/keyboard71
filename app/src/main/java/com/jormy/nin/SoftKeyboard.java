@@ -1,5 +1,6 @@
 package com.jormy.nin;
 
+import com.lurebat.keyboard71.TextBoxEvent;
 import com.lurebat.keyboard71.TextOp;
 
 public class SoftKeyboard {
@@ -55,5 +56,10 @@ public class SoftKeyboard {
     @Api
     public static void callSolidify(String string) {
         com.lurebat.keyboard71.SoftKeyboard.Companion.doTextOp(new TextOp.Solidify(string));
+    }
+
+    @Api
+    public static void signalWordDestruction(String leword, String lestring) {
+        com.lurebat.keyboard71.SoftKeyboard.Companion.doTextEvent(new TextBoxEvent.WordDestruction(leword, lestring));
     }
 }

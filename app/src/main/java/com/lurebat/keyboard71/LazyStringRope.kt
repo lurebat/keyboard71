@@ -58,6 +58,17 @@ interface Cursor {
     fun isNegative(): Boolean {
         return start < 0 && end < 0
     }
+
+    fun zeroIfNegative(): Cursor {
+        if (start < 0) {
+            start = 0
+        }
+        if (end < 0) {
+            end = 0
+        }
+        refresh()
+        return this
+    }
 }
 
 interface Refresher {
@@ -372,6 +383,9 @@ class NoBufferLazyString(
         if (!candidate.isNegative()) {
             candidate.addLength(index, string.length)
         }
+
+        selection.zeroIfNegative()
+        candidate.zeroIfNegative()
     }
 
     override fun delete(start: Int, end: Int) {
