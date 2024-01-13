@@ -4,7 +4,6 @@ package com.lurebat.keyboard71
 
 import android.inputmethodservice.InputMethodService
 import android.os.Build
-import android.os.Debug
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -20,6 +19,7 @@ import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
+import com.jormy.nin.NINLib.processBackspaceAllowance
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
 
@@ -404,6 +404,7 @@ class SoftKeyboard : InputMethodService() {
     }
 
     fun relayDelayedEvents() {
+        val destructions = StringBuilder()
         while (true) {
             val event = textBoxEventQueue.poll()
             if (event != null && BuildConfig.DEBUG) {
@@ -425,13 +426,14 @@ class SoftKeyboard : InputMethodService() {
                     event.mode
                 )
 
-                is TextBoxEvent.WordDestruction -> onWordDestruction(
-                    event.destroyedWord,
-                    event.destroyedString
-                )
-
+                is TextBoxEvent.WordDestruction -> destructions.append(event.word.reversed())
                 null -> break
             }
+        }
+
+        if (destructions.isNotEmpty()) {
+            val str = destructions.reverse().toString()
+            onWordDestruction(str, str)
         }
     }
 
@@ -470,7 +472,6 @@ class SoftKeyboard : InputMethodService() {
             special = true;
             Pair(lazyString.candidate.min, lazyString.candidate.max)
         } else {
-            var singleCharacterMode = singleCharacterMode
             var count = 1;
             when (mode) {
                 // deletes punctuation
@@ -508,6 +509,7 @@ class SoftKeyboard : InputMethodService() {
                 }
             }
         }
+
         val length = max - min
 
         if (special) {
@@ -519,15 +521,16 @@ class SoftKeyboard : InputMethodService() {
             return
         }
 
-        val charsBeforeCursor = lazyString.getCharsBeforeCursor(120 + length).toString()
+        val charsBeforeCursor = lazyString.getCharsBeforeCursor(length).let{ it.substring(it.length - length) }
         if (charsBeforeCursor.isEmpty()) {
+            keyDownUp(ic, KeyEvent.KEYCODE_DEL, 0, 0, KeyEvent.FLAG_SOFT_KEYBOARD)
             return
         }
 
-        val backspaceCount = NINLib.processBackspaceAllowance(charsBeforeCursor, mode, if (singleCharacterMode) 1 else 0)
-
         lazyString.delete(min, max)
-        ic.deleteSurroundingText(backspaceCount, 0)
+        ic.deleteSurroundingText(length, 0)
+        doTextEvent(TextBoxEvent.WordDestruction(charsBeforeCursor))
+
     }
 
     fun processTextOps() {

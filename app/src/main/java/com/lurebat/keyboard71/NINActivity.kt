@@ -35,7 +35,6 @@ import com.alorma.compose.settings.ui.SettingsCheckbox
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import com.lurebat.keyboard71.BuildConfig;
 
 @Composable
 fun ComposeSettingsTheme(
@@ -89,16 +88,21 @@ class NINActivity : ComponentActivity() {
                 dynamicThemePreference = dynamicThemePreference.value
             ) {
                 Scaffold(
+                    topBar = {
+                        Text(
+                            "${
+                                BuildConfig.APPLICATION_ID.split(".").last()
+                                    .replaceFirstChar { it.titlecase() }
+                                    .replace(Regex("\\d+"), " $0")
+                            } - Version ${BuildConfig.VERSION_NAME}",
+                            style = MaterialTheme.typography.headlineLarge.copy(color = MaterialTheme.colorScheme.primary),
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    },
                 ) {
                     Column(
-                        modifier = Modifier.padding(it)
+                        modifier = Modifier.padding(it).padding(16.dp)
                     ) {
-                        Text(
-                            "Keyboard 71 - Version " + BuildConfig.VERSION_NAME ,
-                            style = MaterialTheme.typography.headlineLarge.copy(color = MaterialTheme.colorScheme.primary),
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-
                         Box(
                             modifier = Modifier
                                 .border(
@@ -130,8 +134,12 @@ class NINActivity : ComponentActivity() {
                         }
 
                         Column(
-                            modifier = Modifier.padding(it).fillMaxWidth().align(
-                                Alignment.CenterHorizontally)
+                            modifier = Modifier
+                                .padding(top=16.dp)
+                                .fillMaxWidth()
+                                .align(
+                                    Alignment.CenterHorizontally
+                                )
                         ) {
                             Button(
                                 onClick = {

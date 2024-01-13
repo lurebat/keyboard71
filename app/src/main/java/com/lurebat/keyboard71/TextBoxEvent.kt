@@ -8,7 +8,7 @@ enum class TextEventType {
 }
 
 sealed class TextBoxEvent {
-    object Reset : TextBoxEvent()
+    data object Reset : TextBoxEvent()
     data class Selection(
         val currentWord: String?,
         val textBefore: String,
@@ -19,17 +19,7 @@ sealed class TextBoxEvent {
     data class AppFieldChange(val packageName: String?, val field: String?, val mode: String?) :
         TextBoxEvent()
 
-    data class WordDestruction(var destroyedWord: String?, var destroyedString: String?) :
-        TextBoxEvent()
+    data class WordDestruction(val word: String) : TextBoxEvent()
 
-    companion object {
-        fun fromType(type: TextEventType, vararg args: String?): TextBoxEvent {
-            return when (type) {
-                TextEventType.SELECTION -> Selection(args[0], args[1]!!, args[2]!!, args[3])
-                TextEventType.RESET -> Reset
-                TextEventType.APP_FIELD_CHANGE -> AppFieldChange(args[0], args[1], args[2])
-                TextEventType.WORD_DESTRUCTION -> WordDestruction(args[0], args[1])
-            }
-        }
-    }
+
 }

@@ -1,7 +1,11 @@
 package com.jormy.nin;
 
+import android.util.Log;
+
 import com.lurebat.keyboard71.TextBoxEvent;
 import com.lurebat.keyboard71.TextOp;
+
+import java.util.Objects;
 
 public class SoftKeyboard {
     @Api
@@ -60,6 +64,10 @@ public class SoftKeyboard {
 
     @Api
     public static void signalWordDestruction(String leword, String lestring) {
-        com.lurebat.keyboard71.SoftKeyboard.Companion.doTextEvent(new TextBoxEvent.WordDestruction(leword, lestring));
+        if (!Objects.equals(leword, lestring)) {
+            Log.w("SoftKeyboard", "signalWordDestruction: leword != lestring");
+        }
+
+        com.lurebat.keyboard71.SoftKeyboard.Companion.doTextEvent(new TextBoxEvent.WordDestruction(lestring));
     }
 }
