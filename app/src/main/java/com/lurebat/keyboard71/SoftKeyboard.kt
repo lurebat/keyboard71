@@ -14,15 +14,12 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import com.jormy.nin.NINLib
 import com.jormy.nin.NINLib.onChangeAppOrTextbox
 import com.jormy.nin.NINLib.onExternalSelChange
 import com.jormy.nin.NINLib.onTextSelection
 import com.jormy.nin.NINLib.onWordDestruction
-import com.jormy.nin.NINLib.processBackspaceAllowance
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.min
-
 
 class SoftKeyboard : InputMethodService() {
     private var startedRetype: Boolean = false
@@ -72,7 +69,7 @@ class SoftKeyboard : InputMethodService() {
     ) {
         val shouldSignal =
             !didProcessTextOps && System.currentTimeMillis() - lastTextOpTimeMillis >= 55
-        if (BuildConfig.DEBUG) {
+        if (Utils.isDebug()) {
             Log.d(
                 "NIN",
                 "[before $lazyString, $oldSelStart, $oldSelEnd, $newSelStart, $newSelEnd, $candidatesStart, $candidatesEnd]"
@@ -90,7 +87,7 @@ class SoftKeyboard : InputMethodService() {
             didProcessTextOps = false
         }
 
-        if (BuildConfig.DEBUG) {
+        if (Utils.isDebug()) {
             Log.d("NIN", "[after $lazyString]")
         }
     }
@@ -407,7 +404,7 @@ class SoftKeyboard : InputMethodService() {
         val destructions = StringBuilder()
         while (true) {
             val event = textBoxEventQueue.poll()
-            if (event != null && BuildConfig.DEBUG) {
+            if (event != null && Utils.isDebug()) {
                 Log.d("NIN", "Relaying delayed event: $event")
             }
             when (event) {
@@ -570,7 +567,7 @@ class SoftKeyboard : InputMethodService() {
             second is TextOp.MarkLiquid && second.newString == "" &&
             third is TextOp.SetSelection && third.start == 0 && third.end == 0 && !third.fromStart && !third.signal
         ) {
-            if (BuildConfig.DEBUG) {
+            if (Utils.isDebug()) {
                 Log.d("NIN", "this is a weird delete")
             }
             doTextOp(TextOp.SimpleBackspace(false));
@@ -587,7 +584,7 @@ class SoftKeyboard : InputMethodService() {
         next: TextOp?,
         ic: InputConnection
     ) {
-        if (BuildConfig.DEBUG) {
+        if (Utils.isDebug()) {
             Log.d("NIN", "processOperation: $op, next: $next")
         }
         when (op) {

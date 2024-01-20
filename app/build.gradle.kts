@@ -28,6 +28,7 @@ android {
             isMinifyEnabled = false
             isJniDebuggable = true
             isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
