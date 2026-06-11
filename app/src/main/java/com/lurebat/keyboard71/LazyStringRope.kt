@@ -147,7 +147,7 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
             val chars = getCharsBeforeCursor(bufferCount)
             val index = chars.lastIndexOfAny(charOptions)
             if (index != -1) {
-                return selection.min - chars.length - index
+                return selection.min - chars.length + index
             }
             bufferCount *= 2
             if (chars.length >= selection.min) {
@@ -167,7 +167,7 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
 
     private fun requestCharsBeforeCursor(count: Int): CharSequence {
         val chars = refresher.beforeCursor(minOf(count, selection.min))
-        chars?.let { rope.insert(selection.min, it) }
+        chars?.let { rope.insert(maxOf(0, selection.min - it.length), it) }
         return chars ?: ""
     }
 
@@ -184,20 +184,57 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
     }
 
     override fun getStringByBytesBeforeCursor(byteCount: Int): String {
-        getCharsBeforeCursor(byteCount * 2).toString().toByteArray().takeLast(byteCount).toByteArray().let {
-            return String(it)
-        }
+        // Fetch generously (4 UTF-8 bytes per char worst case), then trim to the last byteCount bytes
+        // at a valid UTF-8 codepoint boundary.
+        val text = getCharsBeforeCursor(byteCount * 4).toString()
+        val allBytes = text.toByteArray(Charsets.UTF_8)
+        if (allBytes.size <= byteCount) return text
+        var start = allBytes.size - byteCount
+        // skip UTF-8 continuation bytes (10xxxxxx) to land on a valid codepoint start
+        while (start < allBytes.size && (allBytes[start].toInt() and 0xC0) == 0x80) start++
+        return String(allBytes, start, allBytes.size - start, Charsets.UTF_8)
     }
 
     override fun byteOffsetToGraphemeOffset(index: Int, byteCount: Int): Int {
-        val newIndex =
-            minOf(index + byteCount, index)
-        val newStartEnd =
-            maxOf(index + byteCount, index)
-        val startString = getStringByIndex(newIndex, newStartEnd)
-        val startBytes = startString.toByteArray()
-        val startChars = String(startBytes, 0, minOf(abs(byteCount), startBytes.size) , Charsets.UTF_8).length
-        return getGraphemesAtIndex(newIndex, isBackwards = byteCount < 0, isWord = false, count = startChars) * (if (byteCount < 0) -1 else 1)
+        val backwards = byteCount < 0
+        val absBytes = abs(byteCount)
+        // Fetch conservatively more chars than needed (4 UTF-8 bytes per UTF-16 char worst case)
+        val text = if (backwards) {
+            getStringByIndex(maxOf(0, index - absBytes * 4), index)
+        } else {
+            getStringByIndex(index, index + absBytes * 4)
+        }
+        // Walk grapheme clusters, summing their UTF-8 byte sizes, stopping before exceeding absBytes
+        val iter = BreakIterator.getCharacterInstance()
+        iter.setText(text)
+        var graphemes = 0
+        var bytesConsumed = 0
+        if (backwards) {
+            var pos = text.length
+            iter.last()
+            while (true) {
+                val prev = iter.previous()
+                if (prev == BreakIterator.DONE) break
+                val graphemeBytes = text.substring(prev, pos).toByteArray(Charsets.UTF_8).size
+                if (bytesConsumed + graphemeBytes > absBytes) break
+                bytesConsumed += graphemeBytes
+                graphemes++
+                pos = prev
+            }
+        } else {
+            var pos = 0
+            iter.first()
+            while (true) {
+                val next = iter.next()
+                if (next == BreakIterator.DONE) break
+                val graphemeBytes = text.substring(pos, next).toByteArray(Charsets.UTF_8).size
+                if (bytesConsumed + graphemeBytes > absBytes) break
+                bytesConsumed += graphemeBytes
+                graphemes++
+                pos = next
+            }
+        }
+        return if (backwards) -graphemes else graphemes
     }
 
     override fun getGraphemesBeforeCursor(count: Int): Int {
@@ -257,15 +294,22 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
         val builder = StringBuilder()
         if (charsBeforeCount > 0) {
             val before = getCharsBeforeCursor(charsBeforeCount)
-            builder.append(before.substring(0, minOf(max - min, before.length)))
+            // before covers [selection.min - before.length, selection.min); we want [min, min(max, selection.min))
+            val fromIdx = before.length - (selection.min - min)
+            val toIdx = before.length - (selection.min - minOf(max, selection.min))
+            builder.append(before.substring(maxOf(0, fromIdx), minOf(before.length, toIdx)))
         }
         if (charsAtCount > 0) {
             val at = selectedText()
-            builder.append(at.substring(0, minOf(max - selection.min, at.length)))
+            val atStart = maxOf(min - selection.min, 0)
+            val atEnd = minOf(max - selection.min, at.length)
+            if (atStart < atEnd) builder.append(at.substring(atStart, atEnd))
         }
         if (charsAfterCount > 0) {
             val after = getCharsAfterCursor(charsAfterCount)
-            builder.append(after.substring(maxOf(0, after.length - charsAfterCount), minOf(max - selection.max, after.length)))
+            val afterStart = maxOf(min - selection.max, 0)
+            val afterEnd = minOf(max - selection.max, after.length)
+            if (afterStart < afterEnd) builder.append(after.substring(afterStart, afterEnd))
         }
         return builder.toString()
     }
@@ -313,7 +357,7 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
                 j++
             }
 
-            if (j <= count) {
+            if (j >= count) {
                 return if (isBackwards) chars.length - iterator.current() else iterator.current()
             }
 

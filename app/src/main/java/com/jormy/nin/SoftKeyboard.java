@@ -15,7 +15,7 @@ public class SoftKeyboard {
 
     @Api
     public static void callSetSel(int start, int end, boolean fromStart, boolean dontSignal) {
-        com.lurebat.keyboard71.SoftKeyboard.Companion.doTextOp(new TextOp.SetSelection(start, end, fromStart, dontSignal));
+        com.lurebat.keyboard71.SoftKeyboard.Companion.doTextOp(new TextOp.SetSelection(start, end, fromStart, !dontSignal));
     }
 
     @Api

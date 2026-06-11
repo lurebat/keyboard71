@@ -43,7 +43,7 @@ class NINView(context: Context) : EXSurfaceView(context) {
     })
 
     init {
-        syncTiming(System.currentTimeMillis())
+        // syncTiming is called on the GL thread once the EGL context is current (see Renderer.onSurfaceCreated)
         movementEventsQueue = ConcurrentLinkedQueue()
         holder.setFormat(PixelFormat.TRANSLUCENT)
         if (globalContextFactory == null) {
@@ -82,22 +82,30 @@ class NINView(context: Context) : EXSurfaceView(context) {
                 return context
             }
             if (display !== eglDisplay) {
-                prin("BUT THE DISPLAY IS FUCKING DIFFERENT!")
-                Thread.currentThread()
-                Thread.dumpStack()
-                System.exit(1)
+                Log.w(TAG, "display changed — destroying cached context and rebuilding")
+                egl10.eglDestroyContext(eglDisplay!!, eglContext!!)
+                eglContext = null
+                eglDisplay = null
+                val newContext = egl10.eglCreateContext(
+                    display,
+                    eglConfig,
+                    EGL10.EGL_NO_CONTEXT,
+                    intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE)
+                )
+                checkEglError("After eglCreateContext (display rebuild)", egl10)
+                eglContext = newContext
+                eglDisplay = display
+                return newContext
             }
             return eglContext!!
         }
 
         // com.jormy.nin.EXSurfaceView.EGLContextFactory
         override fun destroyContext(egl: EGL10, display: EGLDisplay, context: EGLContext) {
-            prin("--------------------- Destroy context, but nope")
-            prin("Exiting, because we need to recreate the OGL Context!")
+            prin("--------------------- Destroy context")
             egl.eglDestroyContext(display, context)
-            Thread.currentThread()
-            Thread.dumpStack()
-            System.exit(1)
+            eglContext = null
+            eglDisplay = null
         }
 
         companion object {
@@ -179,7 +187,8 @@ class NINView(context: Context) : EXSurfaceView(context) {
             val portraitPixels = min(width, height)
             val portraitInches = portraitPixels / ppi
             val pixelPerfectRoenPixelWidth = desiredRoenPixelWidth * (portraitInches / 1.9631902f)
-            val desiredPortrait = pixelPerfectRoenPixelWidth / desiredScaling
+            val effectiveScaling = if (desiredScaling.isFinite() && desiredScaling > 0f) desiredScaling else 1.0f
+            val desiredPortrait = pixelPerfectRoenPixelWidth / effectiveScaling
             lastDesiredPortrait = desiredPortrait
             return if (width <= height) desiredPortrait else desiredPortrait * (width / height)
         }
@@ -284,7 +293,9 @@ class NINView(context: Context) : EXSurfaceView(context) {
             init(width, height, widthPixels, heightPixels)
         }
 
-        override fun onSurfaceCreated(gl10: GL10, config: EGLConfig) {}
+        override fun onSurfaceCreated(gl10: GL10, config: EGLConfig) {
+            syncTiming(System.currentTimeMillis())
+        }
     }
 
     companion object {
@@ -325,8 +336,11 @@ class NINView(context: Context) : EXSurfaceView(context) {
 
 
         fun adjustWantedScaling(scaling: Float) {
-            desiredScaling = scaling
-            Handler(Looper.getMainLooper()).post { globalView.requestLayout() }
+            if (!scaling.isFinite() || scaling <= 0f) return
+            Handler(Looper.getMainLooper()).post {
+                desiredScaling = scaling
+                globalView.requestLayout()
+            }
         }
 
 
@@ -342,27 +356,28 @@ class NINView(context: Context) : EXSurfaceView(context) {
         }
 
         fun adjustKeyboardDimensions(wantedRoenHeight: Float, fullscreen: Boolean) {
-            globalView.desiredRoenPixelHeight = 2.0f * wantedRoenHeight
-            globalView.desiredRoenFullscreen = fullscreen
-            prin("::::::::::: onAdjustKeyboardDimension : $wantedRoenHeight // $fullscreen")
-            if (fullscreen) {
-                val metrics = globalView.resources.displayMetrics
-                val wwww = metrics.widthPixels.toFloat()
-                val height = (metrics.heightPixels - 240).toFloat()
-                val wantedratio = height / wwww
-                tracedims("fullmode metrics, after cut", wwww, height)
-                val desiredpixwidth = globalView.desiredPixelWidth
-                globalView.desiredRoenPixelHeight = desiredpixwidth * wantedratio
-                prin("Desired pixwidth : $desiredpixwidth")
+            Handler(Looper.getMainLooper()).post {
+                globalView.desiredRoenPixelHeight = 2.0f * wantedRoenHeight
+                globalView.desiredRoenFullscreen = fullscreen
+                prin("::::::::::: onAdjustKeyboardDimension : $wantedRoenHeight // $fullscreen")
+                if (fullscreen) {
+                    val metrics = globalView.resources.displayMetrics
+                    val wwww = metrics.widthPixels.toFloat()
+                    val height = (metrics.heightPixels - 240).toFloat()
+                    val wantedratio = height / wwww
+                    tracedims("fullmode metrics, after cut", wwww, height)
+                    val desiredpixwidth = globalView.desiredPixelWidth
+                    globalView.desiredRoenPixelHeight = desiredpixwidth * wantedratio
+                    prin("Desired pixwidth : $desiredpixwidth")
+                }
+                prin("what is scaling: " + desiredScaling)
+                if (!fullscreen) {
+                    prin("Roenpixheight : " + globalView.desiredRoenPixelHeight + " from " + wantedRoenHeight)
+                } else {
+                    prin("Roenpixheight : " + globalView.desiredRoenPixelHeight)
+                }
+                globalView.requestLayout()
             }
-            prin("what is scaling: " + desiredScaling)
-            if (!fullscreen) {
-                prin("Roenpixheight : " + globalView.desiredRoenPixelHeight + " from " + wantedRoenHeight)
-            } else {
-                prin("Roenpixheight : " + globalView.desiredRoenPixelHeight)
-            }
-
-            Handler(Looper.getMainLooper()).post { globalView.requestLayout() }
         }
     }
 }

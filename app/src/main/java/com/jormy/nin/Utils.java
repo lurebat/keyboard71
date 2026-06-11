@@ -138,8 +138,7 @@ public class Utils {
         Integer theid = soundeffect_map.get(soundname);
         if (theid == null) {
             int realid = -1;
-            try {
-                AssetFileDescriptor descriptor = assetManager().openFd(soundname + ".ogg");
+            try (AssetFileDescriptor descriptor = assetManager().openFd(soundname + ".ogg")) {
                 realid = sp.load(descriptor, 1);
             } catch (IOException e) {
                 prin("Cannot load the sound : " + soundname);
