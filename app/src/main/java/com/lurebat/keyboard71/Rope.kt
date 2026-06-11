@@ -1,9 +1,12 @@
 package com.lurebat.keyboard71
 
-class RopeNode(val value: CharSequence) {
+class RopeNode(val value: CharSequence = "") {
     var left: RopeNode? = null
     var right: RopeNode? = null
-    var weight = value.length
+    // weight = total character count in this subtree
+    var weight: Int = value.length
+
+    val isLeaf: Boolean get() = left == null && right == null
 }
 
 class Rope {
@@ -11,69 +14,107 @@ class Rope {
 
     fun length(): Int = root?.weight ?: 0
 
+    private fun join(left: RopeNode?, right: RopeNode?): RopeNode? {
+        if (left == null) return right
+        if (right == null) return left
+        val n = RopeNode()
+        n.left = left
+        n.right = right
+        n.weight = left.weight + right.weight
+        return n
+    }
+
     fun concatenate(rope: Rope) {
-        val newRoot = RopeNode("")
-        newRoot.left = root
-        newRoot.right = rope.root
-        newRoot.weight = root?.weight ?: 0
-        root = newRoot
+        root = join(root, rope.root)
     }
 
     fun insert(index: Int, value: CharSequence) {
-        val split = split(root, index)
-        val newNode = RopeNode(value)
-        newNode.left = split.first
-        newNode.right = split.second
-        newNode.weight = split.first?.weight ?: 0
-        root = newNode
+        if (value.isEmpty()) return
+        val clampedIndex = index.coerceIn(0, length())
+        val (left, right) = split(root, clampedIndex)
+        root = join(join(left, RopeNode(value)), right)
     }
 
     fun delete(start: Int, end: Int) {
-        val rightSplit = split(root, end)
-        val leftSplit = split(rightSplit.first, start)
-        val newNode = RopeNode("")
-        newNode.left = leftSplit.first
-        newNode.right = rightSplit.second
-        newNode.weight = leftSplit.first?.weight ?: 0
-        root = newNode
+        if (start >= end) return
+        val (left, rest) = split(root, start)
+        val (_, right) = split(rest, end - start)
+        root = join(left, right)
     }
 
+    /** Non-destructive range read: collects leaf text in [start, end) without mutating root. */
     fun get(start: Int, end: Int): CharSequence? {
-        val rightSplit = split(root, end)
-        val leftSplit = split(rightSplit.first, start)
-        return leftSplit.second?.value
+        if (start >= end || root == null) return null
+        val clampedStart = maxOf(start, 0)
+        val clampedEnd = minOf(end, length())
+        if (clampedStart >= clampedEnd) return null
+        val sb = StringBuilder()
+        collectLeaves(root, 0, clampedStart, clampedEnd, sb)
+        return if (sb.isEmpty()) null else sb
+    }
+
+    private fun collectLeaves(
+        node: RopeNode?,
+        nodeStart: Int,
+        start: Int,
+        end: Int,
+        sb: StringBuilder
+    ) {
+        if (node == null) return
+        val nodeEnd = nodeStart + node.weight
+        if (nodeEnd <= start || nodeStart >= end) return
+        if (node.isLeaf) {
+            val from = maxOf(start - nodeStart, 0)
+            val to = minOf(end - nodeStart, node.value.length)
+            if (from < to) sb.append(node.value, from, to)
+            return
+        }
+        val leftWeight = node.left?.weight ?: 0
+        collectLeaves(node.left, nodeStart, start, end, sb)
+        collectLeaves(node.right, nodeStart + leftWeight, start, end, sb)
     }
 
     fun report(index: Int): Char? {
-        var node = root
+        var node = root ?: return null
         var i = index
-        while (node != null) {
-            if (node.left != null && node.weight > i) {
-                node = node.left
-            } else {
-                i -= node.weight
-                node = node.right
+        while (true) {
+            if (node.isLeaf) {
+                return if (i in node.value.indices) node.value[i] else null
             }
-            if (node != null && i < 0) { // check if index is negative
-                return node.value[i + node.weight] // adjust index by adding weight
+            val leftWeight = node.left?.weight ?: 0
+            node = if (i < leftWeight) {
+                node.left ?: return null
+            } else {
+                i -= leftWeight
+                node.right ?: return null
             }
         }
-        return null
     }
 
-
+    /**
+     * Splits the subtree at [index]: returns (everything in [0, index), everything in [index, end)).
+     * Mutates the nodes passed in — callers must not reuse [node] after this call.
+     */
     private fun split(node: RopeNode?, index: Int): Pair<RopeNode?, RopeNode?> {
         if (node == null) return Pair(null, null)
-        return if (node.left != null && node.weight > index) {
-            val split = split(node.left, index)
-            node.left = split.second
-            node.weight -= split.second?.weight ?: 0
-            Pair(split.first, node)
+        if (index <= 0) return Pair(null, node)
+        if (index >= node.weight) return Pair(node, null)
+        if (node.isLeaf) {
+            val leftVal = node.value.subSequence(0, index)
+            val rightVal = node.value.subSequence(index, node.value.length)
+            return Pair(RopeNode(leftVal), RopeNode(rightVal))
+        }
+        val leftWeight = node.left?.weight ?: 0
+        return if (index <= leftWeight) {
+            val (ll, lr) = split(node.left, index)
+            node.left = lr
+            node.weight = (lr?.weight ?: 0) + (node.right?.weight ?: 0)
+            Pair(ll, node)
         } else {
-            val i = index - (node.left?.weight ?: 0)
-            val split = split(node.right, i)
-            node.right = split.first
-            Pair(node, split.second)
+            val (rl, rr) = split(node.right, index - leftWeight)
+            node.right = rl
+            node.weight = leftWeight + (rl?.weight ?: 0)
+            Pair(node, rr)
         }
     }
 }

@@ -25,7 +25,7 @@ sealed class TextBoxEvent {
     companion object {
         fun fromType(type: TextEventType, vararg args: String?): TextBoxEvent {
             return when (type) {
-                TextEventType.SELECTION -> Selection(args[0], args[1]!!, args[2]!!, args[3])
+                TextEventType.SELECTION -> Selection(args[0], args[1]!!, args[2]!!, args.getOrNull(3))
                 TextEventType.RESET -> Reset
                 TextEventType.APP_FIELD_CHANGE -> AppFieldChange(args[0], args[1], args[2])
                 TextEventType.WORD_DESTRUCTION -> WordDestruction(args[0], args[1])

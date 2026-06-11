@@ -27,7 +27,10 @@ import kotlin.math.min
 class SoftKeyboard : InputMethodService() {
     private var startedRetype: Boolean = false
     val textBoxEventQueue: ConcurrentLinkedQueue<TextBoxEvent> = ConcurrentLinkedQueue()
-    val textOpQueue: ConcurrentLinkedQueue<TextOp> = ConcurrentLinkedQueue()
+    /** Epoch-tagged op: discarded when inputEpoch has advanced past op.epoch. */
+    private data class EpochedOp(val epoch: Int, val op: TextOp)
+    @Volatile private var inputEpoch: Int = 0
+    private val textOpQueue: ConcurrentLinkedQueue<EpochedOp> = ConcurrentLinkedQueue()
     private var lazyString: LazyString = LazyStringRope(
         SimpleCursor(0,0),
         SimpleCursor(-1, -1),
@@ -53,6 +56,13 @@ class SoftKeyboard : InputMethodService() {
                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         )
 
+    }
+
+    override fun onDestroy() {
+        ninView?.onPause()
+        if (keyboard === this) keyboard = null
+        if (ninView?.context === this) ninView = null
+        super.onDestroy()
     }
 
     override fun onUpdateSelection(
@@ -87,17 +97,21 @@ class SoftKeyboard : InputMethodService() {
 
     override fun onCreateInputView(): View {
         val view = ninView
-        if (view == null) {
+        if (view == null || view.context !== this) {
+            // Either first time, or view was built against a different service instance — recreate.
+            view?.onPause()
             ninView = NINView(this)
         } else {
             (view.parent as ViewGroup?)?.removeView(view)
         }
-
         return ninView!!
     }
 
     override fun onStartInputView(attribute: EditorInfo, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
+        // Advance epoch so any ops enqueued for the previous editor are discarded.
+        inputEpoch++
+        textOpQueue.clear()
 
         Log.d("SoftKeyboard",
             "------------ jormoust Editor Info : ${attribute.packageName} | ${attribute.fieldName}|${attribute.inputType}"
@@ -433,21 +447,21 @@ class SoftKeyboard : InputMethodService() {
         }
 
         fun processTextOps() {
-            val buffer = textOpQueue
-            val bufferSize = buffer.size
-            if (bufferSize == 0) return
-
-            val ic = keyboard?.currentInputConnection ?: return
-
+            if (textOpQueue.isEmpty()) return
+            val ic = keyboard?.currentInputConnection
+            if (ic == null) {
+                textOpQueue.clear()
+                return
+            }
+            val currentEpoch = inputEpoch
             ic.beginBatchEdit()
-
             try {
-                for (i in 0 until bufferSize) {
-                    checkIfWeirdDelete(textOpQueue)
-                    val op = textOpQueue.poll() ?: break
-                    val next = textOpQueue.peek()
-
-                    processOperation(op, next, ic)
+                while (true) {
+                    checkIfWeirdDelete(textOpQueue, currentEpoch)
+                    val eop = textOpQueue.poll() ?: break
+                    if (eop.epoch != currentEpoch) continue  // discard stale
+                    val nextOp = textOpQueue.peek()?.takeIf { it.epoch == currentEpoch }?.op
+                    processOperation(eop.op, nextOp, ic)
                 }
             } finally {
                 didProcessTextOps = true
@@ -456,28 +470,28 @@ class SoftKeyboard : InputMethodService() {
             }
         }
 
-    private fun checkIfWeirdDelete(textOpQueue: ConcurrentLinkedQueue<TextOp>) {
-        if (textOpQueue.size != 3) {
-            return
+    private fun checkIfWeirdDelete(queue: ConcurrentLinkedQueue<EpochedOp>, currentEpoch: Int) {
+        // Non-destructive lookahead: inspect first 3 items without removing them.
+        val snapshot = mutableListOf<TextOp>()
+        for (eop in queue) {
+            if (eop.epoch != currentEpoch) continue
+            snapshot.add(eop.op)
+            if (snapshot.size == 3) break
         }
-
-        val first = textOpQueue.poll()
-        val second = textOpQueue.poll()
-        val third = textOpQueue.poll()
-
+        if (snapshot.size != 3) return
+        val first = snapshot[0]
+        val second = snapshot[1]
+        val third = snapshot[2]
         if (first is TextOp.SetSelection && !first.fromStart && first.signal &&
             second is TextOp.MarkLiquid && second.newString == "" &&
             third is TextOp.SetSelection && third.start == 0 && third.end == 0 && !third.fromStart && !third.signal) {
             if (BuildConfig.DEBUG) {
                 Log.d("NIN", "this is a weird delete")
             }
-            doTextOp(TextOp.SimpleBackspace(false));
-            return;
+            // Drain these 3 ops (they are at the head for the current epoch) and replace.
+            repeat(3) { queue.poll() }
+            queue.add(EpochedOp(currentEpoch, TextOp.SimpleBackspace(false)))
         }
-
-        textOpQueue.add(first)
-        textOpQueue.add(second)
-        textOpQueue.add(third)
     }
 
     private fun processOperation(
@@ -628,11 +642,9 @@ class SoftKeyboard : InputMethodService() {
         var keyboard: SoftKeyboard? = null
         var ninView: NINView? = null
 
-        fun doTextOp(op: TextOp) = keyboard?.let{ k ->
-            k.textOpQueue.let {
-                it.add(op)
-                Handler(Looper.getMainLooper()).post{ k.processTextOps()}
-            }
+        fun doTextOp(op: TextOp) = keyboard?.let { k ->
+            k.textOpQueue.add(EpochedOp(k.inputEpoch, op))
+            Handler(Looper.getMainLooper()).post { k.processTextOps() }
         }
 
         fun doTextEvent(event: TextBoxEvent) = keyboard?.textBoxEventQueue?.add(event)

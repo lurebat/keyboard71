@@ -79,7 +79,6 @@ class OnWordRunner : TaskerPluginRunnerConditionEvent<OnWordInput, OnWordOutput,
             return TaskerPluginResultConditionSatisfied(context, update?.toOutput() ?: OnWordOutput())
         }
 
-        Log.e("OnWordRunner", "$wordInput, ${update?.keyboardTextOutput} ${update?.keyboardTextBefore} ${update?.keyboardTextAfter}");
 
         val compareFun =
             when (input.regular.compareMethod) {
