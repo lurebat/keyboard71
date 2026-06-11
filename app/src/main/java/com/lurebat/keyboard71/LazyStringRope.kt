@@ -105,12 +105,81 @@ data class SimpleCursor(override var start: Int, override var end: Int = start) 
 
 class LazyStringRope(override var selection: SimpleCursor, override var candidate: SimpleCursor, initialTextBefore: CharSequence?, initialSelection: CharSequence?, initialTextAfter: CharSequence?, override val refresher: Refresher) :
     LazyString {
-    private val rope = Rope()
+    private var rope = Rope()
+    private var ropeStart = selection.min
 
     init {
-        initialTextBefore?.let { rope.insert(selection.min-it.length, it) }
-        initialSelection?.let { rope.insert(selection.min, it) }
-        initialTextAfter?.let { rope.insert(selection.max, it) }
+        initialTextBefore?.let { cacheText(selection.min - it.length, it) }
+        initialSelection?.let { cacheText(selection.min, it) }
+        initialTextAfter?.let { cacheText(selection.max, it) }
+    }
+
+    private val ropeEnd: Int get() = ropeStart + rope.length()
+
+    private fun cachedRange(start: Int, end: Int): CharSequence? {
+        if (start >= end) return null
+        if (start < ropeStart || end > ropeEnd) return null
+        return rope.get(start - ropeStart, end - ropeStart)
+    }
+
+    private fun cacheText(start: Int, text: CharSequence) {
+        if (text.isEmpty()) return
+        val end = start + text.length
+        if (rope.length() == 0) {
+            rope = Rope()
+            ropeStart = start
+            rope.insert(0, text)
+            return
+        }
+
+        if (end < ropeStart || start > ropeEnd) {
+            rope = Rope()
+            ropeStart = start
+            rope.insert(0, text)
+            return
+        }
+        val oldRopeEnd = ropeEnd
+        if (start < ropeStart) {
+            val prefixLength = ropeStart - start
+            rope.insert(0, text.subSequence(0, prefixLength))
+            ropeStart = start
+        }
+
+        if (end > oldRopeEnd) {
+            val suffixStart = text.length - (end - oldRopeEnd)
+            rope.insert(rope.length(), text.subSequence(suffixStart, text.length))
+        }
+    }
+
+    private fun cacheInsert(index: Int, string: CharSequence) {
+        if (string.isEmpty()) return
+        if (rope.length() == 0) {
+            ropeStart = index
+            rope.insert(0, string)
+            return
+        }
+        if (index < ropeStart || index > ropeEnd) {
+            rope = Rope()
+            ropeStart = index
+            rope.insert(0, string)
+            return
+        }
+        rope.insert(index - ropeStart, string)
+    }
+
+    private fun cacheDelete(start: Int, end: Int) {
+        if (start >= end || rope.length() == 0) return
+        val cachedStart = maxOf(start, ropeStart)
+        val cachedEnd = minOf(end, ropeEnd)
+        if (cachedStart < cachedEnd) {
+            rope.delete(cachedStart - ropeStart, cachedEnd - ropeStart)
+        }
+        if (end <= ropeStart) {
+            ropeStart -= end - start
+        } else if (start < ropeStart) {
+            ropeStart = start
+        }
+        if (rope.length() == 0) ropeStart = start
     }
 
     override fun moveSelection(deltaStart: Int, deltaEnd: Int) {
@@ -138,7 +207,7 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
 
     override fun getCharsBeforeCursor(count: Int): CharSequence {
         val safe = minOf(count, selection.min)
-        return rope.get(selection.min - safe, selection.min) ?: requestCharsBeforeCursor(count)
+        return cachedRange(selection.min - safe, selection.min) ?: requestCharsBeforeCursor(count)
     }
 
     override fun findCharBeforeCursor(charOptions: CharArray): Int {
@@ -158,28 +227,27 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
 
     override fun getCharsAfterCursor(count: Int): CharSequence {
         val safe = maxOf(count, 0)
-        return rope.get(selection.max, selection.max + safe) ?: requestCharsAfterCursor(count)
+        return cachedRange(selection.max, selection.max + safe) ?: requestCharsAfterCursor(count)
     }
-
     override fun selectedText(): CharSequence {
-        return rope.get(selection.min, selection.max) ?: requestSelection()
+        return cachedRange(selection.min, selection.max) ?: requestSelection()
     }
 
     private fun requestCharsBeforeCursor(count: Int): CharSequence {
         val chars = refresher.beforeCursor(minOf(count, selection.min))
-        chars?.let { rope.insert(maxOf(0, selection.min - it.length), it) }
+        chars?.let { cacheText(selection.min - it.length, it) }
         return chars ?: ""
     }
 
     private fun requestCharsAfterCursor(count: Int): CharSequence {
         val chars = refresher.afterCursor(maxOf(count, 0))
-        chars?.let { rope.insert(selection.max, it) }
+        chars?.let { cacheText(selection.max, it) }
         return chars ?: ""
     }
 
     private fun requestSelection(): CharSequence {
         val chars = refresher.atCursor()
-        chars?.let { rope.insert(selection.min, it) }
+        chars?.let { cacheText(selection.min, it) }
         return chars ?: ""
     }
 
@@ -252,13 +320,13 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
     }
 
     override fun addString(index: Int, string: String) {
-        rope.insert(index, string)
+        cacheInsert(index, string)
         fixCursorWithoutChangingSize(selection, index, string.length, false)
         fixCursorWithoutChangingSize(candidate, index, string.length, false)
     }
 
     override fun delete(start: Int, end: Int): Int {
-        rope.delete(start, end)
+        cacheDelete(start, end)
         // change selection to match
         fixCursorWithoutChangingSize(selection, start, end - start, true)
         fixCursorWithoutChangingSize(candidate, start, end - start, true)
@@ -382,6 +450,6 @@ class LazyStringRope(override var selection: SimpleCursor, override var candidat
     }
 
     override fun toString(): String {
-        return "LazyStringRope(selection=$selection, candidate=$candidate, length=${rope.length()})"
+        return "LazyStringRope(selection=$selection, candidate=$candidate, cache=$ropeStart..$ropeEnd)"
     }
 }

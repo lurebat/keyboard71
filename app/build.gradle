@@ -55,6 +55,12 @@ android {
         }
     }
 
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+
     buildFeatures {
         compose true
         buildConfig true
