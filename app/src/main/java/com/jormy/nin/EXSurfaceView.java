@@ -194,6 +194,10 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override // android.view.SurfaceView, android.view.View
     protected void onDetachedFromWindow() {
+        if (this.mGLThread != null) {
+            this.mGLThread.requestExitAndWait();
+        }
+        this.mDetached = true;
         super.onDetachedFromWindow();
     }
 
@@ -845,9 +849,6 @@ public class EXSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
 
         public void requestExitAndWait() {
-            Thread.currentThread();
-            Thread.dumpStack();
-            System.exit(1);
             synchronized (EXSurfaceView.sGLThreadManager) {
                 this.mShouldExit = true;
                 EXSurfaceView.sGLThreadManager.notifyAll();

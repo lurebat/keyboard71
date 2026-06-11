@@ -8,18 +8,25 @@ plugins {
 
 android {
     namespace = "com.lurebat.keyboard71"
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    }
+    // WARNING: the keystore path and plaintext passwords previously committed in this file
+    // must be rotated — they remain in git history and are no longer used here.
     signingConfigs {
         debug {
-            storeFile file('REMOVED_OLD_KEYSTORE_PATH')
-            storePassword 'REMOVED_OLD_KEYSTORE_PASSWORD'
-            keyAlias 'key'
-            keyPassword 'REMOVED_OLD_KEYSTORE_PASSWORD'
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword'] ?: ''
+            keyAlias keystoreProperties['keyAlias'] ?: ''
+            keyPassword keystoreProperties['keyPassword'] ?: ''
         }
         release {
-            storeFile file('REMOVED_OLD_KEYSTORE_PATH')
-            storePassword 'REMOVED_OLD_KEYSTORE_PASSWORD'
-            keyAlias 'key'
-            keyPassword 'REMOVED_OLD_KEYSTORE_PASSWORD'
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword'] ?: ''
+            keyAlias keystoreProperties['keyAlias'] ?: ''
+            keyPassword keystoreProperties['keyPassword'] ?: ''
         }
     }
     defaultConfig {
@@ -42,9 +49,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            jniDebuggable true
-            debuggable true
-            renderscriptDebuggable true
+            jniDebuggable false
+            debuggable false
+            renderscriptDebuggable false
         }
     }
 

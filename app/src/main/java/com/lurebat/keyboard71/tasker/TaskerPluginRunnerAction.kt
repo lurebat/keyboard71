@@ -193,7 +193,7 @@ class KeyboardActionActivity : ComponentActivity(), TaskerPluginConfig<ActionInp
         super.onCreate(savedInstanceState)
 
         setContent {
-            ActionInputForm(inputForTasker.regular, { taskerHelper.finishForTasker() }) {
+            ActionInputForm(inputForTasker.regular, { input = it; taskerHelper.finishForTasker() }) {
                 Log.d("KeyboardActionActivity", "setContent: $it")
                 input = it
             }

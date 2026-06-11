@@ -31,9 +31,12 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import com.alorma.compose.settings.storage.datastore.composeSettingsDataStore
 import com.alorma.compose.settings.storage.datastore.rememberPreferenceDataStoreBooleanSettingState
 import com.alorma.compose.settings.ui.SettingsCheckbox
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import com.lurebat.keyboard71.BuildConfig;
 
 @Composable
@@ -196,6 +199,16 @@ class Preferences(val context: Context) {
         s[booleanPreferencesKey(NINActivity.HAPTIC_FEEDBACK_PREFERENCE)] ?: true
     }
 
-    fun hapticFeedbackBlocking() = runBlocking { hapticFeedback.first() }
+    @Volatile
+    private var hapticFeedbackCache: Boolean = true
 
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    init {
+        scope.launch {
+            hapticFeedback.collect { hapticFeedbackCache = it }
+        }
+    }
+
+    fun hapticFeedbackBlocking() = hapticFeedbackCache
 }
